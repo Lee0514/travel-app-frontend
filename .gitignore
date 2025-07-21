@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Env files
+.env
+.env.*.local
+
+# Lockfiles（保留 npm 用的 lock file）
+# yarn.lock
+# pnpm-lock.yaml
+
+# Optional npm cache directory
+.npm/
+
+# Coverage reports (如用 Jest)
+coverage/
