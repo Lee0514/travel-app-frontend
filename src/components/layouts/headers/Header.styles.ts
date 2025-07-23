@@ -1,0 +1,160 @@
+import styled from 'styled-components';
+
+const breakpoints = {
+  sm: '600px',
+  md: '900px',
+  lg: '1200px',
+};
+
+export const HeaderContainer = styled.header`
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+// 新增：左側容器（手機排版用）
+export const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+// 調整 logoContainer 的顯示邏輯
+export const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  img {
+    width: 32px;
+    height: 32px;
+
+    @media (max-width: ${breakpoints.sm}) {
+      display: none;
+    }
+  }
+`;
+
+export const WebsiteName = styled.h1`
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+
+  @media (max-width: ${breakpoints.sm}) {
+    font-size: 1rem;
+  }
+`;
+
+export const Nav = styled.nav`
+  display: flex;
+  gap: 1.5rem;
+
+  @media (max-width: ${breakpoints.sm}) {
+    display: none;
+  }
+`;
+
+export const NavItem = styled.a`
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0077cc;
+  }
+`;
+
+export const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const SearchBar = styled.input`
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid #ccc;
+  outline: none;
+  margin-left: 1rem;
+  width: 180px;
+
+  @media (max-width: ${breakpoints.md}) {
+    width: 140px;
+  }
+
+  @media (max-width: ${breakpoints.sm}) {
+    display: none;
+  }
+`;
+
+export const SearchIcon = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-left: 1rem;
+
+  @media (min-width: ${breakpoints.md}) {
+   display: none;
+  }
+`;
+
+export const UserAvatar = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-left: 1rem;
+`;
+
+export const Hamburger = styled.div`
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  margin-right: 1rem;
+
+  div {
+    width: 24px;
+    height: 3px;
+    background-color: #333;
+    border-radius: 2px;
+  }
+
+  @media (max-width: ${breakpoints.sm}) {
+    display: flex;
+  }
+`;
+
+export const MobileMenu = styled.div<{ isOpen: boolean }>`
+  display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: 64px;
+  left: 0;
+  flex-direction: column;
+  width: 100%;
+  background-color: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  a {
+    margin: 0.5rem 0;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+
+    &:hover {
+      color: #0077cc;
+    }
+  }
+
+  input {
+    margin-bottom: 1rem;
+  }
+`;
