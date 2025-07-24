@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import QuickNavigation from '../../components/quickNavigation/QuickNavigation'
-import Nearby from '../nearby'
-import Upcoming from '../upcoming'
-import Weather from '../weather'
-import Collections from '../collection'
+import NearbyQuickNavigation from '../../components/nearbyQuickNavigation'
+import UpcomingQuickNavigation from '../../components/upcomingQuickNavigation'
+import WeatherQuickNavigation from '../../components/weatherQuickNavigation'
+import CollectionsQuickNavigation from '../../components/collectionQuickNavigation'
 import styles from './Home.module.css'
 import { FaMapMarkerAlt, FaRegCalendarAlt, FaCloudSun, FaGlobe } from 'react-icons/fa'
 
@@ -33,10 +33,10 @@ const Home = () => {
       </div>
 
       <div className={styles.content}>
-        {activeTab === 'nearby' && <Nearby />}
-        {activeTab === 'upcoming' && <Upcoming />}
-        {activeTab === 'weather' && <Weather />}
-        {activeTab === 'collections' && <Collections />}
+        {activeTab === 'nearby' && <NearbyQuickNavigation />}
+        {activeTab === 'upcoming' && <UpcomingQuickNavigation />}
+        {activeTab === 'weather' && <WeatherQuickNavigation />}
+        {activeTab === 'collections' && <CollectionsQuickNavigation />}
       </div>
     </div>
   )

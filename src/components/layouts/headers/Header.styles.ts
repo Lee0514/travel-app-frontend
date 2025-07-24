@@ -156,8 +156,9 @@ export const Hamburger = styled.div`
   }
 `;
 
-export const MobileMenu = styled.div<{ isOpen: boolean }>`
-  display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+export const MobileMenu = styled.div<{ $isOpen: boolean }>`
+  display: ${({ $isOpen }) => ($isOpen ? 'flex' : 'none')};
+  flex-direction: column;
   position: absolute;
   top: 64px;
   left: 0;

@@ -76,7 +76,7 @@ const Header: React.FC = () => {
       </RightSection>
 
       {/* 手機展開選單 */}
-      <MobileMenu isOpen={isMenuOpen}>
+      <MobileMenu $isOpen={isMenuOpen}>
         {/* <SearchBar type="text" placeholder="Search..." /> */}
         <NavItem href="#">Home</NavItem>
         <NavItem href="#">Collection</NavItem>
