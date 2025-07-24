@@ -8,7 +8,14 @@ type NavItemProps = {
   onClick: () => void
 }
 
+const breakpoints = {
+  sm: '600px',
+  md: '900px',
+  lg: '1200px'
+};
+
 const NavButton = styled.button<{ $active: boolean }>`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,9 +31,12 @@ const NavButton = styled.button<{ $active: boolean }>`
     opacity: 0.85;
   }
 
-  @media (max-width: 600px) {
-    padding: 0.25rem 0.85rem;
-  }
+  @media (max-width: ${breakpoints.sm}) {
+  flex: 1;
+  padding: 0.5rem 0;
+  min-width: 0;
+}
+
 `
 
 const Icon = styled.span`

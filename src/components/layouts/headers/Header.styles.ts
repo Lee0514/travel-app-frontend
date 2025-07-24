@@ -1,9 +1,11 @@
 import styled from 'styled-components';
-
+interface MobileLangMenuProps {
+  $visible: boolean;
+}
 const breakpoints = {
   sm: '600px',
   md: '900px',
-  lg: '1200px',
+  lg: '1200px'
 };
 
 export const HeaderContainer = styled.header`
@@ -100,13 +102,12 @@ export const RightSection = styled.div`
       align-items: center;
     }
 
-    input[type="text"] {
+    input[type='text'] {
       font-size: 1rem;
       padding: 0.3rem 0.6rem;
     }
   }
 `;
-
 
 export const SearchBar = styled.input`
   padding: 0.5rem 1rem;
@@ -122,17 +123,18 @@ export const SearchBar = styled.input`
 `;
 
 export const SearchIcon = styled.div`
+  display: flex;
   border-radius: 50%;
   margin-left: 1rem;
 
   @media (min-width: ${breakpoints.sm}) {
-   display: none;
+    display: none;
   }
 `;
 
 export const UserAvatar = styled.div`
   width: 32px;
-  height: 32px;
+  height: 30px;
   border-radius: 50%;
   margin-left: 1rem;
 `;
@@ -181,5 +183,88 @@ export const MobileMenu = styled.div<{ $isOpen: boolean }>`
 
   input {
     margin-bottom: 1rem;
+  }
+`;
+
+//多語系按鈕
+export const LanguageSwitcher = styled.div`
+  display: flex;
+  margin-left: 1rem;
+
+  @media (max-width: ${breakpoints.sm}) {
+    display: none;
+  }
+`;
+
+export const LangButton = styled.button<{ $active?: boolean }>`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: ${({ $active }) => ($active ? 'black' : '#888')};
+  font-weight: ${({ $active }) => ($active ? 'bold' : 'normal')};
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+
+  &:disabled {
+    cursor: default;
+  }
+`;
+
+export const IconGroup = styled.div`
+  display: flex;
+  align-items: center;
+  color: #333;
+`;
+
+// 手機版專用語言切換 icon
+export const LanguageIconWrapper = styled.div`
+  display: none;
+
+  @media (max-width: ${breakpoints.sm}) {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 1rem;
+    color: #333;
+    font-size: 1.3rem;
+    user-select: none;
+  }
+`;
+
+// 手機版彈出語言選擇容器
+export const MobileLangMenu = styled.div<{ $visible: boolean }>`
+  display: ${({ $visible }) => ($visible ? 'flex' : 'none')};
+  flex-direction: column;
+  position: absolute;
+  top: 3.5rem;
+  right: 3.5rem;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1100;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    border-width: 0 8px 8px 8px;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -9px;
+    right: 11px;
+    border-width: 0 9px 9px 9px;
+    border-style: solid;
+    border-color: transparent transparent #ccc transparent;
+    z-index: -1;
   }
 `;

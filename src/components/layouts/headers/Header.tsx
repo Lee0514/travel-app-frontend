@@ -11,17 +11,29 @@ import {
   SearchIcon,
   UserAvatar,
   Hamburger,
-  MobileMenu
+  MobileMenu,
+  LanguageSwitcher,
+  LangButton,
+  LanguageIconWrapper,
+  MobileLangMenu,
+  IconGroup
 } from './Header.styles';
-import { FaGlobe, FaSearch, FaUserCircle  } from 'react-icons/fa';
+import { FaGlobe, FaSearch, FaUserCircle } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setLangMenuOpen(false);
+  };
 
   return (
     <HeaderContainer>
-      {/* 左側：漢堡 + 標題（手機版） */}
       <LeftSection>
         <Hamburger onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <div />
@@ -30,60 +42,85 @@ const Header: React.FC = () => {
         </Hamburger>
 
         <LogoContainer>
-           {/* <img src="src/assets/img/logo.png" alt="Logo" /> */}
           <FaGlobe size={28} style={{ marginRight: '8px' }} />
           <WebsiteName>Globetrekker</WebsiteName>
         </LogoContainer>
       </LeftSection>
 
-      {/* 桌面版 Nav 與 Search */}
       <Nav>
-        <NavItem href="#">Home</NavItem>
-        <NavItem href="#">Collection</NavItem>
-        <NavItem href="#">Culture</NavItem>
-        <NavItem href="#">Guided</NavItem>
-        <NavItem href="#">Nearby</NavItem>
-        <NavItem href="#">Weather</NavItem>
+        <NavItem as="div" style={{ display: 'flex', gap: '8px', cursor: 'pointer' }}>
+          <LangButton $active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')}>
+            CN
+          </LangButton>
+          <LangButton $active={i18n.language === 'en'} onClick={() => changeLanguage('en')}>
+            EN
+          </LangButton>
+          <LangButton $active={i18n.language === 'jp'} onClick={() => changeLanguage('jp')}>
+            JP
+          </LangButton>
+        </NavItem>
       </Nav>
 
       <RightSection>
-        {/* 桌面版一直顯示 SearchBar */}
         <div className="desktop-search">
           <SearchBar type="text" placeholder="Search..." />
         </div>
 
-        {/* 手機版：只顯示搜尋 icon，點擊後顯示輸入框 */}
         <div className="mobile-search">
           {showMobileSearch ? (
-            <SearchBar
-              type="text"
-              placeholder="Search..."
-              autoFocus
-              onBlur={() => setShowMobileSearch(false)}
-            />
+            <SearchBar type="text" placeholder="Search..." autoFocus onBlur={() => setShowMobileSearch(false)} />
           ) : (
-            <SearchIcon
-              onClick={() => setShowMobileSearch(true)}
-              style={{ cursor: 'pointer' }}
-            > <FaSearch size={20} />
+            <SearchIcon onClick={() => setShowMobileSearch(true)} style={{ cursor: 'pointer' }}>
+              <FaSearch size={20} />
             </SearchIcon>
           )}
         </div>
-        {/* 永遠顯示的使用者頭像 */}
-        <UserAvatar>
-          <FaUserCircle size={28} />
-        </UserAvatar>
+
+        <LanguageSwitcher>
+          {/* 桌機版多語系按鈕*/}
+          <LangButton $active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')}>
+            CN
+          </LangButton>
+          <LangButton $active={i18n.language === 'en'} onClick={() => changeLanguage('en')}>
+            EN
+          </LangButton>
+          <LangButton $active={i18n.language === 'jp'} onClick={() => changeLanguage('jp')}>
+            JP
+          </LangButton>
+        </LanguageSwitcher>
+
+        {/* 手機版多語系圖示 */}
+        <IconGroup>
+          <LanguageIconWrapper onClick={() => setLangMenuOpen(!langMenuOpen)} style={{ cursor: 'pointer' }}>
+            <FaGlobe size={24} />
+          </LanguageIconWrapper>
+
+          <UserAvatar>
+            <FaUserCircle size={28} />
+          </UserAvatar>
+        </IconGroup>
+
+        {/* 手機版彈出語言選擇 */}
+        <MobileLangMenu $visible={langMenuOpen}>
+          <LangButton $active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')}>
+            CN
+          </LangButton>
+          <LangButton $active={i18n.language === 'en'} onClick={() => changeLanguage('en')}>
+            EN
+          </LangButton>
+          <LangButton $active={i18n.language === 'jp'} onClick={() => changeLanguage('jp')}>
+            JP
+          </LangButton>
+        </MobileLangMenu>
       </RightSection>
 
-      {/* 手機展開選單 */}
       <MobileMenu $isOpen={isMenuOpen}>
-        {/* <SearchBar type="text" placeholder="Search..." /> */}
-        <NavItem href="#">Home</NavItem>
-        <NavItem href="#">Collection</NavItem>
-        <NavItem href="#">Culture</NavItem>
-        <NavItem href="#">Guided</NavItem>
-        <NavItem href="#">Nearby</NavItem>
-        <NavItem href="#">Weather</NavItem>
+        <NavItem href="#">{t('nav.home')}</NavItem>
+        <NavItem href="#">{t('nav.collection')}</NavItem>
+        <NavItem href="#">{t('nav.culture')}</NavItem>
+        <NavItem href="#">{t('nav.guided')}</NavItem>
+        <NavItem href="#">{t('nav.nearby')}</NavItem>
+        <NavItem href="#">{t('nav.weather')}</NavItem>
       </MobileMenu>
     </HeaderContainer>
   );

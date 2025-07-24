@@ -1,0 +1,20 @@
+{
+  "category": {
+    "attraction": "観光地",
+    "restaurant": "レストラン",
+    "hotel": "ホテル",
+    "store": "お店",
+    "transport": "交通"
+  },
+  "distanceWithValue": "{{value}} 離れています",
+  "nav": {
+    "home": "ホーム",
+    "collection": "コレクション",
+    "culture": "文化",
+    "guided": "ガイド",
+    "nearby": "近く",
+    "weather": "天気",
+    "upcoming": "近日開催",
+    "collections": "コレクション"
+  }
+}

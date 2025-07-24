@@ -1,0 +1,20 @@
+{
+  "category": {
+    "attraction": "景點",
+    "restaurant": "餐廳",
+    "hotel": "住宿",
+    "store": "商店",
+    "transport": "交通"
+  },
+  "distanceWithValue": "距離 {{value}}",
+  "nav": {
+    "home": "首頁",
+    "collection": "收藏",
+    "culture": "文化",
+    "guided": "導覽",
+    "nearby": "附近",
+    "weather": "天氣",
+    "upcoming": "即將活動",
+     "collections": "收藏"
+  }
+}
