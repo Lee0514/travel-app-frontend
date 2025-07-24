@@ -16,6 +16,7 @@ import {
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   return (
     <HeaderContainer>
@@ -44,8 +45,30 @@ const Header: React.FC = () => {
       </Nav>
 
       <RightSection>
-        <SearchBar type="text" placeholder="Search..." />
+        {/* 桌面版一直顯示 SearchBar */}
+        <div className="desktop-search">
+          <SearchBar type="text" placeholder="Search..." />
           <SearchIcon src="src/assets/img/search.svg" alt="Search Icon" />
+        </div>
+
+        {/* 手機版：只顯示搜尋 icon，點擊後顯示輸入框 */}
+        <div className="mobile-search">
+          {showMobileSearch ? (
+            <SearchBar
+              type="text"
+              placeholder="Search..."
+              autoFocus
+              onBlur={() => setShowMobileSearch(false)}
+            />
+          ) : (
+            <SearchIcon
+              src="src/assets/img/search.svg"
+              alt="Search Icon"
+              onClick={() => setShowMobileSearch(true)}
+              style={{ cursor: 'pointer' }}
+            />
+          )}
+        </div>
             {/* 永遠顯示的使用者頭像 */}
             <UserAvatar src="src/assets/img/visitor.png" alt="User Avatar" />
       </RightSection>
