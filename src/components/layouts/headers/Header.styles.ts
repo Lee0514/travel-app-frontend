@@ -77,7 +77,32 @@ export const NavItem = styled.a`
 export const RightSection = styled.div`
   display: flex;
   align-items: center;
+
+  .desktop-search {
+    display: flex;
+  }
+
+  .mobile-search {
+    display: none;
+  }
+
+  @media (max-width: ${breakpoints.sm}) {
+    .desktop-search {
+      display: none;
+    }
+
+    .mobile-search {
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      font-size: 1rem;
+      padding: 0.3rem 0.6rem;
+    }
+  }
 `;
+
 
 export const SearchBar = styled.input`
   padding: 0.5rem 1rem;
@@ -89,10 +114,6 @@ export const SearchBar = styled.input`
 
   @media (max-width: ${breakpoints.md}) {
     width: 140px;
-  }
-
-  @media (max-width: ${breakpoints.sm}) {
-    display: none;
   }
 `;
 
