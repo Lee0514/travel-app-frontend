@@ -122,8 +122,6 @@ export const SearchBar = styled.input`
 `;
 
 export const SearchIcon = styled.div`
-  width: 32px;
-  height: 32px;
   border-radius: 50%;
   margin-left: 1rem;
 
