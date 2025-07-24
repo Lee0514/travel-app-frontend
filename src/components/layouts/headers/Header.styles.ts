@@ -16,9 +16,13 @@ export const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 3rem;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: ${breakpoints.sm}) {
+    padding: 1rem;
+  }
 `;
 
 // 新增：左側容器（手機排版用）
@@ -117,7 +121,7 @@ export const SearchBar = styled.input`
   }
 `;
 
-export const SearchIcon = styled.img`
+export const SearchIcon = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -128,7 +132,7 @@ export const SearchIcon = styled.img`
   }
 `;
 
-export const UserAvatar = styled.img`
+export const UserAvatar = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;

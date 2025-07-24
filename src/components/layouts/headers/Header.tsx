@@ -13,6 +13,7 @@ import {
   Hamburger,
   MobileMenu
 } from './Header.styles';
+import { FaGlobe, FaSearch, FaUserCircle  } from 'react-icons/fa';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +30,8 @@ const Header: React.FC = () => {
         </Hamburger>
 
         <LogoContainer>
-          <img src="src/assets/img/logo.png" alt="Logo" />
+           {/* <img src="src/assets/img/logo.png" alt="Logo" /> */}
+          <FaGlobe size={28} style={{ marginRight: '8px' }} />
           <WebsiteName>Globetrekker</WebsiteName>
         </LogoContainer>
       </LeftSection>
@@ -48,7 +50,6 @@ const Header: React.FC = () => {
         {/* 桌面版一直顯示 SearchBar */}
         <div className="desktop-search">
           <SearchBar type="text" placeholder="Search..." />
-          <SearchIcon src="src/assets/img/search.svg" alt="Search Icon" />
         </div>
 
         {/* 手機版：只顯示搜尋 icon，點擊後顯示輸入框 */}
@@ -62,15 +63,16 @@ const Header: React.FC = () => {
             />
           ) : (
             <SearchIcon
-              src="src/assets/img/search.svg"
-              alt="Search Icon"
               onClick={() => setShowMobileSearch(true)}
               style={{ cursor: 'pointer' }}
-            />
+            > <FaSearch size={20} />
+            </SearchIcon>
           )}
         </div>
-            {/* 永遠顯示的使用者頭像 */}
-            <UserAvatar src="src/assets/img/visitor.png" alt="User Avatar" />
+        {/* 永遠顯示的使用者頭像 */}
+        <UserAvatar>
+          <FaUserCircle size={28} />
+        </UserAvatar>
       </RightSection>
 
       {/* 手機展開選單 */}
