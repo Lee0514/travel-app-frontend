@@ -32,6 +32,7 @@ export const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-right: 0.5rem;
 
   img {
     width: 32px;
@@ -57,7 +58,7 @@ export const Nav = styled.nav`
   display: flex;
   gap: 1.5rem;
 
-  @media (max-width: ${breakpoints.sm}) {
+  @media (max-width: ${breakpoints.md}) {
     display: none;
   }
 `;
@@ -101,7 +102,7 @@ export const SearchIcon = styled.img`
   border-radius: 50%;
   margin-left: 1rem;
 
-  @media (min-width: ${breakpoints.md}) {
+  @media (min-width: ${breakpoints.sm}) {
    display: none;
   }
 `;
@@ -127,7 +128,7 @@ export const Hamburger = styled.div`
     border-radius: 2px;
   }
 
-  @media (max-width: ${breakpoints.sm}) {
+  @media (max-width: ${breakpoints.md}) {
     display: flex;
   }
 `;
