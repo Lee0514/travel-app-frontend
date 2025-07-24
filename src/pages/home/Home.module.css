@@ -1,0 +1,34 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+.navBar {
+  display: flex;
+}
+
+
+.content {
+  margin-top: 1.5rem;
+  padding: 0 1rem;
+}
+
+@media (max-width: 600px) {
+  .navBar {
+    position: fixed;
+    bottom: 0;
+    justify-content: space-around;
+    padding: 0.5rem 0;
+    z-index: 1000;
+  }
+
+  .content {
+    padding-bottom: 4rem;
+  }
+}
