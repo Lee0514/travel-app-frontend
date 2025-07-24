@@ -1,0 +1,20 @@
+{
+  "category": {
+    "attraction": "View",
+    "restaurant": "Restaurant",
+    "hotel": "Hotel",
+    "store": "Store",
+    "transport": "Transport"
+  },
+  "distanceWithValue": "{{value}} away",
+  "nav": {
+    "home": "Home",
+    "collection": "Collection",
+    "culture": "Culture",
+    "guided": "Guided",
+    "nearby": "Nearby",
+    "weather": "Weather",
+    "upcoming": "Upcoming",
+    "collections": "Collections"
+  }
+}
