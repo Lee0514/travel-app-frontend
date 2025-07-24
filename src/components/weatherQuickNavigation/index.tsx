@@ -41,7 +41,7 @@ const City = styled.div`
   font-weight: 600;
 `;
 
-const Condition = styled.div`
+const Temp = styled.div`
   font-size: 2rem;
   font-weight: 600;
   color: #555;
@@ -106,7 +106,7 @@ const WeatherCard: React.FC = () => {
         </Left>
         <Right>
           <City>{city}</City>
-          <Condition>{temp}</Condition>
+          <Temp>{temp}</Temp>
         </Right>
       </TopRow>
       <BottomRow>
