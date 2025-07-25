@@ -1,0 +1,32 @@
+{
+  "category": {
+    "attraction": "観光地",
+    "restaurant": "レストラン",
+    "hotel": "ホテル",
+    "store": "お店",
+    "transport": "交通"
+  },
+  "distanceWithValue": "{{value}} 離れています",
+  "nav": {
+    "home": "ホーム",
+    "collection": "コレクション",
+    "culture": "文化",
+    "guided": "ガイド",
+    "nearby": "近く",
+    "weather": "天気",
+    "upcoming": "近日開催",
+    "collections": "コレクション"
+  },
+  "banner": {
+    "title": "GlobeTrekker で世界を旅しよう",
+    "subtitle": "あなたの旅をサポートする専属コンパニオン。リアルタイム案内と多言語対応で、快適な冒険を。"
+  },
+  "weather": {
+    "feels_like": "体感温度",
+    "high": "最高",
+    "low": "最低",
+    "clouds": "曇り",
+    "rain": "雨",
+    "clear": "晴れ"
+  }
+}
