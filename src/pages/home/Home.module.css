@@ -2,33 +2,88 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  padding: 20px;
+  margin-top: 5rem;
   box-sizing: border-box;
+  width: 100%;
 }
-
 
 .navBar {
+  background-color: #ffffff;
   display: flex;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 
+.container {
+  max-width: 56.25rem;
+  margin: 0 auto;
+  width: 100%;
+}
 
-.content {
-  margin-top: 1.5rem;
-  padding: 0 1rem;
+.bannerWrapper {
+  position: sticky;
+  z-index: 10;
 }
 
 @media (max-width: 600px) {
   .navBar {
     position: fixed;
     bottom: 0;
-    justify-content: space-around;
-    padding: 0.5rem 0;
+    margin-top: 5rem;
     z-index: 1000;
+    width: 100%; 
   }
 
   .content {
     padding-bottom: 4rem;
+  }
+}
+
+.bannerWrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0.2rem;
+}
+
+.bannerImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.bannerText {
+  position: absolute;
+  top: 55%;
+  left: 5%;
+  color: white;
+  z-index: 2;
+  max-width: 90%;
+}
+
+.bannerText h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.bannerText h2 {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 600px) {
+  .bannerText h1 {
+    font-size: 1.2rem;
+    font-weight: 900;
+  }
+
+  .bannerText h2 {
+    font-size: 0.7rem;
   }
 }

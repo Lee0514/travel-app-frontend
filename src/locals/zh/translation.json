@@ -1,0 +1,32 @@
+{
+  "category": {
+    "attraction": "景點",
+    "restaurant": "餐廳",
+    "hotel": "住宿",
+    "store": "商店",
+    "transport": "交通"
+  },
+  "distanceWithValue": "距離 {{value}}",
+  "nav": {
+    "home": "首頁",
+    "collection": "收藏",
+    "culture": "文化",
+    "guided": "導覽",
+    "nearby": "附近",
+    "weather": "天氣",
+    "upcoming": "即將活動",
+    "collections": "收藏"
+  },
+  "banner": {
+    "title": "用 GlobeTrekker 探索世界的每一角落",
+    "subtitle": "您的專屬旅遊夥伴，提供即時導覽與多語言支援，讓探索變得無比順暢。"
+  },
+  "weather": {
+    "feels_like": "體感溫度",
+    "high": "最高",
+    "low": "最低",
+    "clouds": "多雲",
+    "rain": "下雨",
+    "clear": "晴朗"
+  }
+}
