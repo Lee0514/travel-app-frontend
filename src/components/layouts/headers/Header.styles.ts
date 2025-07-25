@@ -22,6 +22,10 @@ export const HeaderContainer = styled.header`
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
+  @media (max-width: ${breakpoints.lg}) {
+    padding: 1rem;
+  }
+
   @media (max-width: ${breakpoints.sm}) {
     padding: 1rem;
   }
@@ -118,7 +122,7 @@ export const SearchBar = styled.input`
   margin-left: 1rem;
   width: 180px;
 
-  @media (max-width: ${breakpoints.md}) {
+  @media (max-width: ${breakpoints.lg}) {
     width: 140px;
   }
 `;
@@ -192,7 +196,7 @@ export const LanguageSwitcher = styled.div`
   display: flex;
   margin-left: 1rem;
 
-  @media (max-width: ${breakpoints.sm}) {
+  @media (max-width: ${breakpoints.md}) {
     display: none;
   }
 `;
@@ -223,7 +227,7 @@ export const IconGroup = styled.div`
 export const LanguageIconWrapper = styled.div`
   display: none;
 
-  @media (max-width: ${breakpoints.sm}) {
+  @media (max-width: ${breakpoints.md}) {
     display: flex;
     align-items: center;
     cursor: pointer;

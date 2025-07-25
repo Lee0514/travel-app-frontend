@@ -45,8 +45,8 @@ const Header: React.FC = () => {
           <FaGlobe size={28} style={{ marginRight: '8px' }} />
           <WebsiteName>Globetrekker</WebsiteName>
         </LogoContainer>
-
-        {/* 桌面版 Nav 與 Search */}
+      </LeftSection>
+      {/* 桌面版 Nav 與 Search */}
       <Nav>
         <NavItem href="#">{t('nav.home')}</NavItem>
         <NavItem href="#">{t('nav.collection')}</NavItem>
@@ -55,7 +55,7 @@ const Header: React.FC = () => {
         <NavItem href="#">{t('nav.nearby')}</NavItem>
         <NavItem href="#">{t('nav.weather')}</NavItem>
       </Nav>
-      </LeftSection>
+      
 
       <RightSection>
         <div className="desktop-search">
