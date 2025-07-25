@@ -6,12 +6,11 @@ import { useTranslation } from 'react-i18next';
 const Card = styled.div`
   background: #f4f4f4;
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 0.2rem;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  min-width: 23rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0.5rem 1rem;
 `;
 
 const TopRow = styled.div`
