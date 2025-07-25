@@ -45,17 +45,17 @@ const Header: React.FC = () => {
           <FaGlobe size={28} style={{ marginRight: '8px' }} />
           <WebsiteName>Globetrekker</WebsiteName>
         </LogoContainer>
-      </LeftSection>
-      {/* 桌面版 Nav 與 Search */}
-      <Nav>
-        <NavItem href="#">{t('nav.home')}</NavItem>
-        <NavItem href="#">{t('nav.collection')}</NavItem>
-        <NavItem href="#">{t('nav.culture')}</NavItem>
-        <NavItem href="#">{t('nav.guided')}</NavItem>
-        <NavItem href="#">{t('nav.nearby')}</NavItem>
-        <NavItem href="#">{t('nav.weather')}</NavItem>
-      </Nav>
       
+        {/* 桌面版 Nav 與 Search */}
+        <Nav>
+          <NavItem href="#">{t('nav.home')}</NavItem>
+          <NavItem href="#">{t('nav.collection')}</NavItem>
+          <NavItem href="#">{t('nav.culture')}</NavItem>
+          <NavItem href="#">{t('nav.guided')}</NavItem>
+          <NavItem href="#">{t('nav.nearby')}</NavItem>
+          <NavItem href="#">{t('nav.weather')}</NavItem>
+        </Nav>
+      </LeftSection>
 
       <RightSection>
         <div className="desktop-search">
