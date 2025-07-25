@@ -69,7 +69,7 @@ const WeatherCard: React.FC = () => {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(async position => {
       const { latitude, longitude } = position.coords;
-      const apiKey = (import.meta as any).env.VITE_OPENWEATHER_API_KEY;
+      const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
