@@ -47,20 +47,6 @@ const Header: React.FC = () => {
         </LogoContainer>
       </LeftSection>
 
-      <Nav>
-        <NavItem as="div" style={{ display: 'flex', gap: '8px', cursor: 'pointer' }}>
-          <LangButton $active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')}>
-            CN
-          </LangButton>
-          <LangButton $active={i18n.language === 'en'} onClick={() => changeLanguage('en')}>
-            EN
-          </LangButton>
-          <LangButton $active={i18n.language === 'jp'} onClick={() => changeLanguage('jp')}>
-            JP
-          </LangButton>
-        </NavItem>
-      </Nav>
-
       <RightSection>
         <div className="desktop-search">
           <SearchBar type="text" placeholder="Search..." />
