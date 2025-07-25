@@ -16,5 +16,13 @@
     "weather": "Weather",
     "upcoming": "Upcoming",
     "collections": "Collections"
+  },
+  "weather": {
+    "feels_like": "Feels like",
+    "high": "High",
+    "low": "Low",
+    "clouds": "Clouds",
+    "rain": "Rain",
+    "clear": "Clear"
   }
 }
