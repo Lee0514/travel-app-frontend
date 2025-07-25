@@ -43,7 +43,7 @@ const Header: React.FC = () => {
 
         <LogoContainer>
           <FaGlobe size={28} style={{ marginRight: '8px' }} />
-          <WebsiteName>Globetrekker</WebsiteName>
+          <WebsiteName>GlobeTrekker</WebsiteName>
         </LogoContainer>
       
         {/* 桌面版 Nav 與 Search */}
