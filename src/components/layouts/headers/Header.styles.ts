@@ -62,7 +62,8 @@ export const WebsiteName = styled.h1`
 
 export const Nav = styled.nav`
   display: flex;
-  gap: 1.5rem;
+  gap: 1.2rem;
+  margin-left: 0.5rem;
 
   @media (max-width: ${breakpoints.md}) {
     display: none;
