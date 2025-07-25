@@ -66,8 +66,8 @@ export const WebsiteName = styled.h1`
 
 export const Nav = styled.nav`
   display: flex;
-  gap: 1.2rem;
-  margin-left: 0.5rem;
+  gap: 2rem;
+  margin-left: 0.8rem;
 
   @media (max-width: ${breakpoints.md}) {
     display: none;
@@ -97,7 +97,7 @@ export const RightSection = styled.div`
     display: none;
   }
 
-  @media (max-width: ${breakpoints.sm}) {
+  @media (max-width: ${breakpoints.lg}) {
     .desktop-search {
       display: none;
     }
@@ -133,7 +133,7 @@ export const SearchIcon = styled.div`
   margin-left: 1rem;
 
   @media (min-width: ${breakpoints.sm}) {
-    display: none;
+    display: flex;
   }
 `;
 
@@ -196,7 +196,7 @@ export const LanguageSwitcher = styled.div`
   display: flex;
   margin-left: 1rem;
 
-  @media (max-width: ${breakpoints.md}) {
+  @media (max-width: ${breakpoints.lg}) {
     display: none;
   }
 `;
@@ -227,7 +227,7 @@ export const IconGroup = styled.div`
 export const LanguageIconWrapper = styled.div`
   display: none;
 
-  @media (max-width: ${breakpoints.md}) {
+  @media (max-width: ${breakpoints.lg}) {
     display: flex;
     align-items: center;
     cursor: pointer;
