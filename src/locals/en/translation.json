@@ -16,5 +16,9 @@
     "weather": "Weather",
     "upcoming": "Upcoming",
     "collections": "Collections"
+  },
+  "banner": {
+    "title": "Discover the World with GlobeTrekker",
+    "subtitle": "Your personal travel companion, providing real-time guidance and multilingual support for seamless exploration."
   }
 }

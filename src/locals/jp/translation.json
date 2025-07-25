@@ -16,5 +16,9 @@
     "weather": "天気",
     "upcoming": "近日開催",
     "collections": "コレクション"
+  },
+  "banner": {
+    "title": "GlobeTrekker で世界を旅しよう",
+    "subtitle": "あなたの旅をサポートする専属コンパニオン。リアルタイム案内と多言語対応で、快適な冒険を。"
   }
 }

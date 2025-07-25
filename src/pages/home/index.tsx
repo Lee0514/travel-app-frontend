@@ -23,22 +23,16 @@ const Home = () => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.bannerWrapper}>
-          <img
-            src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
-            alt="Banner"
-            style={{ width: '100%', borderRadius: '8px' }}
-          />
+          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Banner" className={styles.bannerImage} />
+          <div className={styles.bannerText}>
+          <h1>{t('banner.title')}</h1>
+          <h2>{t('banner.subtitle')}</h2>
+          </div>
         </div>
 
         <div className={styles.navBar}>
           {navItems.map((item) => (
-            <QuickNavigation
-              key={item.key}
-              label={item.label}
-              icon={item.icon}
-              active={activeTab === item.key}
-              onClick={() => setActiveTab(item.key)}
-            />
+            <QuickNavigation key={item.key} label={item.label} icon={item.icon} active={activeTab === item.key} onClick={() => setActiveTab(item.key)} />
           ))}
         </div>
 
