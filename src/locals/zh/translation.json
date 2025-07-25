@@ -20,5 +20,13 @@
   "banner": {
     "title": "用 GlobeTrekker 探索世界的每一角落",
     "subtitle": "您的專屬旅遊夥伴，提供即時導覽與多語言支援，讓探索變得無比順暢。"
+  },
+  "weather": {
+    "feels_like": "體感溫度",
+    "high": "最高",
+    "low": "最低",
+    "clouds": "多雲",
+    "rain": "下雨",
+    "clear": "晴朗"
   }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { WiDaySunny, WiCloudy, WiRain } from 'react-icons/wi';
+import { useTranslation } from 'react-i18next';
 
 const Card = styled.div`
   background: #f4f4f4;
@@ -56,6 +57,7 @@ const BottomRow = styled.div`
 `;
 
 const WeatherCard: React.FC = () => {
+  const { t } = useTranslation();
   const [city, setCity] = useState('Loading...');
   const [temp, setTemp] = useState('');
   const [feelsLike, setFeelsLike] = useState('');
@@ -102,7 +104,7 @@ const WeatherCard: React.FC = () => {
       <TopRow>
         <Left>
           {icon}
-          <IconLabel>{condition}</IconLabel>
+          <IconLabel>{t(`weather.${condition}`)}</IconLabel>
         </Left>
         <Right>
           <City>{city}</City>
@@ -110,7 +112,7 @@ const WeatherCard: React.FC = () => {
         </Right>
       </TopRow>
       <BottomRow>
-        Feels like: {feelsLike} | H: {tempMax} / L: {tempMin}
+        {t('weather.feels_like')}: {feelsLike} | {t('weather.high')}: {tempMax} / {t('weather.low')}: {tempMin}
       </BottomRow>
     </Card>
   );
