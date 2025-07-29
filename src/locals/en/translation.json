@@ -42,9 +42,12 @@
     "cancel": "Cancel"
   },
   "collection": {
-    "addNewGroup": "Add New Category",
-    "typeGroupName": "Enter Category Name",
+    "addNewCategory": "Add New Category",
+    "typeCategoryName": "Enter Category Name",
     "cancel": "Cancel",
-    "done": "Done"
+    "done": "Done",
+    "editCategory": "Edit Category",
+    "deleteCategory": "Delete Category",
+    "confirmDeleteCategory": "Are you sure you want to delete the category \"{{name}}\"?"
   }
 }

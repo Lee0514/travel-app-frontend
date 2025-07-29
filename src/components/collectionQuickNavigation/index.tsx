@@ -88,6 +88,7 @@ const Plus = styled.span`
 
 const HeaderRow = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
@@ -168,6 +169,45 @@ const BackButton = styled.button`
   }
 `;
 
+const MoreButton = styled.button`
+  margin-left: auto;
+  margin-bottom: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+
+  &:hover {
+    color: #000;
+  }
+`;
+
+const Dropdown = styled.div`
+  position: absolute;
+  top: 2.5rem;
+  right: 1rem;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+`;
+
+const DropdownItem = styled.div`
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: #eee;
+  }
+`;
+
+const DropdownWrapper = styled.div`
+  position: relative;
+`;
+
 
 const CollectionsQuickNavigation = () => {
   const { t } = useTranslation();
@@ -175,6 +215,9 @@ const CollectionsQuickNavigation = () => {
   const [newCategory, setNewCategory] = useState('');
   const [collections, setCollections] = useState(mockCollections);
   const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isEditingCategory, setIsEditingCategory] = useState(false);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
 
   const handleAddCategory = () => {
     if (newCategory.trim()) {
@@ -203,7 +246,11 @@ const CollectionsQuickNavigation = () => {
               <h3>{collection.name}</h3>
             </CollectionCard>
           ))}
-          <AddCard onClick={() => setShowModal(true)}>
+          <AddCard onClick={() => {
+            setIsEditingCategory(false);
+            setNewCategory('');
+            setShowModal(true);
+          }}>
             <Plus>＋</Plus>
           </AddCard>
         </Grid>
@@ -214,6 +261,36 @@ const CollectionsQuickNavigation = () => {
               <AiOutlineArrowLeft />
             </BackButton>
             <Title>{current?.name}</Title>
+            <DropdownWrapper>
+              <MoreButton onClick={() => setShowDropdown(!showDropdown)}>⋯</MoreButton>
+              {showDropdown && (
+                <Dropdown>
+                  <DropdownItem
+                    onClick={() => {
+                      setIsEditingCategory(true);
+                      setEditingCategoryId(current?.id || null);
+                      setNewCategory(current?.name || '');
+                      setShowDropdown(false);
+                      setShowModal(true);
+                    }}
+                  >
+                    ✎ {t('Edit Category')}
+                  </DropdownItem>
+                  <DropdownItem
+                   onClick={() => {
+                    const confirmDelete = window.confirm(t('collection.confirmDeleteCategory', { name: current?.name }));
+                    if (confirmDelete && current) {
+                      setCollections((prev) => prev.filter((c) => c.id !== current.id));
+                      setSelectedCollection(null);
+                    }
+                    setShowDropdown(false);
+                  }}
+                  >
+                    🗑 {t('Delete Category')}
+                  </DropdownItem>
+                </Dropdown>
+              )}
+            </DropdownWrapper>
           </HeaderRow>
 
           <Grid>
@@ -229,16 +306,55 @@ const CollectionsQuickNavigation = () => {
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>{t('collection.addNewGroup')}</ModalTitle>
+            <ModalTitle>{isEditingCategory ? t('collection.editCategory') : t('collection.addNewCategory')}
+</ModalTitle>
             <ModalInput
               type="text"
-              placeholder={t('collection.typeGroupName')}
+              placeholder={t('collection.typeCategoryName')}
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
             />
             <ModalButtons>
-              <CancelButton onClick={() => setShowModal(false)}>{t('collection.cancel')}</CancelButton>
-              <ModalButton onClick={handleAddCategory}>{t('collection.done')}</ModalButton>
+              <CancelButton
+                onClick={() => {
+                  setShowModal(false);
+                  setIsEditingCategory(false);
+                  setEditingCategoryId(null);
+                  setNewCategory('');
+                }}
+              >
+                {t('collection.cancel')}
+              </CancelButton>
+
+              <ModalButton
+                onClick={() => {
+                  if (newCategory.trim()) {
+                    if (isEditingCategory && editingCategoryId) {
+                      setCollections((prev) =>
+                        prev.map((c) =>
+                          c.id === editingCategoryId ? { ...c, name: newCategory } : c
+                        )
+                      );
+                      if (selectedCollection === editingCategoryId) {
+                        // 如果正在查看這個分類，也更新畫面
+                        setSelectedCollection(editingCategoryId);
+                      }
+                    } else {
+                      setCollections([
+                        ...collections,
+                        { id: newCategory.toLowerCase(), name: newCategory, items: [] },
+                      ]);
+                    }
+                    setShowModal(false);
+                    setNewCategory('');
+                    setIsEditingCategory(false);
+                    setEditingCategoryId(null);
+                  }
+                }}
+              >
+                {t('collection.done')}
+              </ModalButton>
+
             </ModalButtons>
           </ModalContent>
         </ModalOverlay>

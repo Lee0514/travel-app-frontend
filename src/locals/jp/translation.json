@@ -42,9 +42,12 @@
     "cancel": "キャンセル"
   },
    "collection": {
-    "addNewGroup": "新しいカテゴリーを追加",
-    "typeGroupName": "カテゴリー名を入力",
+    "addNewCategory": "新しいカテゴリーを追加",
+    "typeCategoryName": "カテゴリー名を入力",
     "cancel": "キャンセル",
-    "done": "完了"
+    "done": "完了",
+    "editCategory": "カテゴリを編集",
+    "deleteCategory": "カテゴリを削除",
+    "confirmDeleteCategory": "「{{name}}」カテゴリを削除してもよろしいですか？"
   }
 }
