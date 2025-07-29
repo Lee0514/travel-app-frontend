@@ -40,5 +40,11 @@
     "notePlaceholder": "メモを入力してください",
     "save": "保存",
     "cancel": "キャンセル"
+  },
+   "collection": {
+    "addNewGroup": "新しいカテゴリーを追加",
+    "typeGroupName": "カテゴリー名を入力",
+    "cancel": "キャンセル",
+    "done": "完了"
   }
 }

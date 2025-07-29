@@ -40,5 +40,11 @@
     "notePlaceholder": "請輸入備註",
     "save": "儲存",
     "cancel": "取消"
+  },
+  "collection": {
+    "addNewGroup": "新增分類",
+    "typeGroupName": "輸入分類名稱",
+    "cancel": "取消",
+    "done": "確定"
   }
 }
