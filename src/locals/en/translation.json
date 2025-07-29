@@ -35,6 +35,10 @@
     "selectedDate": "Selected date",
     "noEvents": "No events for this day",
     "addEvent": "Add event",
-    "locale": "en-US"
+    "locale": "en-US",
+    "titlePlaceholder": "Enter title",
+    "notePlaceholder": "Enter note",
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }
