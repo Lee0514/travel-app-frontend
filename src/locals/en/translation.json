@@ -28,5 +28,13 @@
     "clouds": "Clouds",
     "rain": "Rain",
     "clear": "Clear"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "hasEvent": "Has event",
+    "selectedDate": "Selected date",
+    "noEvents": "No events for this day",
+    "addEvent": "Add event",
+    "locale": "en-US"
   }
 }
