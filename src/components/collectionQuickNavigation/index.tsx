@@ -274,7 +274,7 @@ const CollectionsQuickNavigation = () => {
                       setShowModal(true);
                     }}
                   >
-                    ✎ {t('Edit Category')}
+                    ✎ {t('collection.editCategory')}
                   </DropdownItem>
                   <DropdownItem
                    onClick={() => {
@@ -286,7 +286,7 @@ const CollectionsQuickNavigation = () => {
                     setShowDropdown(false);
                   }}
                   >
-                    🗑 {t('Delete Category')}
+                    🗑 {t('collection.deleteCategory')}
                   </DropdownItem>
                 </Dropdown>
               )}
