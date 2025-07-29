@@ -28,5 +28,26 @@
     "clouds": "多雲",
     "rain": "下雨",
     "clear": "晴朗"
+  },
+  "calendar": {
+    "title": "行事曆",
+    "hasEvent": "有行程",
+    "selectedDate": "選取日期",
+    "noEvents": "這天沒有任何行程",
+    "addEvent": "新增行程",
+    "locale": "zh-TW",
+    "titlePlaceholder": "請輸入標題",
+    "notePlaceholder": "請輸入備註",
+    "save": "儲存",
+    "cancel": "取消"
+  },
+  "collection": {
+    "addNewCategory": "新增分類",
+    "typeCategoryName": "輸入分類名稱",
+    "cancel": "取消",
+    "done": "確定",
+    "editCategory": "編輯分類",
+    "deleteCategory": "刪除分類",
+    "confirmDeleteCategory": "確定要刪除分類「{{name}}」嗎？"
   }
 }

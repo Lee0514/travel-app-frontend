@@ -28,5 +28,26 @@
     "clouds": "曇り",
     "rain": "雨",
     "clear": "晴れ"
+  },
+  "calendar": {
+    "title": "カレンダー",
+    "hasEvent": "予定あり",
+    "selectedDate": "選択した日付",
+    "noEvents": "この日に予定はありません",
+    "addEvent": "予定を追加",
+    "locale": "ja-JP",
+    "titlePlaceholder": "タイトルを入力してください",
+    "notePlaceholder": "メモを入力してください",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+   "collection": {
+    "addNewCategory": "新しいカテゴリーを追加",
+    "typeCategoryName": "カテゴリー名を入力",
+    "cancel": "キャンセル",
+    "done": "完了",
+    "editCategory": "カテゴリを編集",
+    "deleteCategory": "カテゴリを削除",
+    "confirmDeleteCategory": "「{{name}}」カテゴリを削除してもよろしいですか？"
   }
 }
