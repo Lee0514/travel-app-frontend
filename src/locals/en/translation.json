@@ -40,5 +40,11 @@
     "notePlaceholder": "Enter note",
     "save": "Save",
     "cancel": "Cancel"
+  },
+  "collection": {
+    "addNewGroup": "Add New Category",
+    "typeGroupName": "Enter Category Name",
+    "cancel": "Cancel",
+    "done": "Done"
   }
 }
