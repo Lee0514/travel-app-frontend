@@ -36,5 +36,11 @@
     "noEvents": "這天沒有任何行程",
     "addEvent": "新增行程",
     "locale": "zh-TW"
+  },
+  "collection": {
+    "addNewGroup": "新增分類",
+    "typeGroupName": "輸入分類名稱",
+    "cancel": "取消",
+    "done": "確定"
   }
 }

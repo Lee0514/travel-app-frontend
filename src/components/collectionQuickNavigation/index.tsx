@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components'
 import { AiOutlineArrowLeft } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
 
 // Mock data for collections
 // In a real application, this would be fetched from an API or database
@@ -169,6 +170,7 @@ const BackButton = styled.button`
 
 
 const CollectionsQuickNavigation = () => {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [collections, setCollections] = useState(mockCollections);
@@ -227,16 +229,16 @@ const CollectionsQuickNavigation = () => {
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>新增分類</ModalTitle>
+            <ModalTitle>{t('collection.addNewGroup')}</ModalTitle>
             <ModalInput
               type="text"
-              placeholder="輸入分類名稱"
+              placeholder={t('collection.typeGroupName')}
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
             />
             <ModalButtons>
-              <CancelButton onClick={() => setShowModal(false)}>取消</CancelButton>
-              <ModalButton onClick={handleAddCategory}>新增</ModalButton>
+              <CancelButton onClick={() => setShowModal(false)}>{t('collection.cancel')}</CancelButton>
+              <ModalButton onClick={handleAddCategory}>{t('collection.done')}</ModalButton>
             </ModalButtons>
           </ModalContent>
         </ModalOverlay>
