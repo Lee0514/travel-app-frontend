@@ -28,5 +28,26 @@
     "clouds": "Clouds",
     "rain": "Rain",
     "clear": "Clear"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "hasEvent": "Has event",
+    "selectedDate": "Selected date",
+    "noEvents": "No events for this day",
+    "addEvent": "Add event",
+    "locale": "en-US",
+    "titlePlaceholder": "Enter title",
+    "notePlaceholder": "Enter note",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "collection": {
+    "addNewCategory": "Add New Category",
+    "typeCategoryName": "Enter Category Name",
+    "cancel": "Cancel",
+    "done": "Done",
+    "editCategory": "Edit Category",
+    "deleteCategory": "Delete Category",
+    "confirmDeleteCategory": "Are you sure you want to delete the category \"{{name}}\"?"
   }
 }
