@@ -38,9 +38,12 @@
     "locale": "zh-TW"
   },
   "collection": {
-    "addNewGroup": "新增分類",
-    "typeGroupName": "輸入分類名稱",
+    "addNewCategory": "新增分類",
+    "typeCategoryName": "輸入分類名稱",
     "cancel": "取消",
-    "done": "確定"
+    "done": "確定",
+    "editCategory": "編輯分類",
+    "deleteCategory": "刪除分類",
+    "confirmDeleteCategory": "確定要刪除分類「{{name}}」嗎？"
   }
 }
