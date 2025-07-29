@@ -35,6 +35,10 @@
     "selectedDate": "選択した日付",
     "noEvents": "この日に予定はありません",
     "addEvent": "予定を追加",
-    "locale": "ja-JP"
+    "locale": "ja-JP",
+    "titlePlaceholder": "タイトルを入力してください",
+    "notePlaceholder": "メモを入力してください",
+    "save": "保存",
+    "cancel": "キャンセル"
   }
 }

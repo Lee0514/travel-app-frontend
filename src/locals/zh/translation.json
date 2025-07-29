@@ -35,6 +35,10 @@
     "selectedDate": "選取日期",
     "noEvents": "這天沒有任何行程",
     "addEvent": "新增行程",
-    "locale": "zh-TW"
+    "locale": "zh-TW",
+    "titlePlaceholder": "請輸入標題",
+    "notePlaceholder": "請輸入備註",
+    "save": "儲存",
+    "cancel": "取消"
   }
 }
