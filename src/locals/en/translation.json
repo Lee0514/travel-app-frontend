@@ -36,5 +36,11 @@
     "noEvents": "No events for this day",
     "addEvent": "Add event",
     "locale": "en-US"
+  },
+  "collection": {
+    "addNewGroup": "Add New Category",
+    "typeGroupName": "Enter Category Name",
+    "cancel": "Cancel",
+    "done": "Done"
   }
 }

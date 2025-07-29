@@ -36,5 +36,11 @@
     "noEvents": "この日に予定はありません",
     "addEvent": "予定を追加",
     "locale": "ja-JP"
+  },
+   "collection": {
+    "addNewGroup": "新しいカテゴリーを追加",
+    "typeGroupName": "カテゴリー名を入力",
+    "cancel": "キャンセル",
+    "done": "完了"
   }
 }
