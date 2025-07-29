@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Calendar from 'react-calendar';
 import { useTranslation } from 'react-i18next';
 import EventModal from './EventModal';
@@ -165,7 +165,24 @@ const Upcoming = () => {
     setShowModal(false);
   };
 
-  const currentEvents = selectedDate ? (events[formatDate(selectedDate)] ?? []) : [];
+  const handleDeleteEvent = (index: number) => {
+    if (!selectedDate) return;
+    const key = formatDate(selectedDate);
+    setEvents((prev) => {
+      const updatedEvents = prev[key].filter((_, idx) => idx !== index);
+      if (updatedEvents.length === 0) {
+        const { [key]: _, ...rest } = prev;
+        return rest;
+      } else {
+        return {
+          ...prev,
+          [key]: updatedEvents
+        };
+      }
+    });
+  };
+
+  const currentEvents = selectedDate ? events[formatDate(selectedDate)] ?? [] : [];
 
   return (
     <Container>
@@ -173,8 +190,11 @@ const Upcoming = () => {
       <CalendarWrapper>
         <Calendar
           onClickDay={setSelectedDate}
-          tileContent={({ date }) => (events[formatDate(date)] ? <Dot title={t('calendar.hasEvent')} /> : null)}
+          tileContent={({ date }) =>
+            events[formatDate(date)] ? <Dot title={t('calendar.hasEvent')} /> : null
+          }
           locale={t('calendar.locale', { defaultValue: 'en-US' })}
+          value={selectedDate}
         />
       </CalendarWrapper>
 
@@ -192,13 +212,7 @@ const Upcoming = () => {
                   <p>{event.note}</p>
                 </div>
                 <DeleteButton
-                  onClick={() => {
-                    const key = formatDate(selectedDate);
-                    setEvents((prev) => ({
-                      ...prev,
-                      [key]: prev[key].filter((_, idx) => idx !== i)
-                    }));
-                  }}
+                  onClick={() => handleDeleteEvent(i)}
                   aria-label={t('calendar.deleteEvent')}
                   title={t('calendar.deleteEvent')}
                 >
@@ -210,11 +224,19 @@ const Upcoming = () => {
             <p>{t('calendar.noEvents')}</p>
           )}
 
-          <AddButton onClick={() => setShowModal(true)}>＋ {t('calendar.addEvent')}</AddButton>
+          <AddButton onClick={() => setShowModal(true)}>
+            ＋ {t('calendar.addEvent')}
+          </AddButton>
         </EventList>
       )}
 
-      {showModal && selectedDate && <EventModal date={selectedDate} onClose={() => setShowModal(false)} onAdd={handleAddEvent} />}
+      {showModal && selectedDate && (
+        <EventModal
+          date={selectedDate}
+          onClose={() => setShowModal(false)}
+          onAdd={handleAddEvent}
+        />
+      )}
     </Container>
   );
 };
