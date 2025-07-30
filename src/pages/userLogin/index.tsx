@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom';
 import LoginForm from '../../components/auth/loginForm';
 import styles from './userLogin.module.css';
+import { useTranslation } from 'react-i18next';
 
 const LoginPage = () => {
+  const { t } = useTranslation();
+
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>登入</h2>
+      <h2 className={styles.title}>{t('auth.login')}</h2>
       <LoginForm />
       <p className={styles.register}>
-        還沒有帳號嗎？<Link to="/register" className={styles.link}>註冊</Link>
+        {t('auth.donnotHaveAccount')}<br />
+        <Link to="/register" className={styles.link}>{t('auth.register')}</Link>
       </p>
 
     </div>

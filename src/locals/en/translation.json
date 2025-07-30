@@ -49,5 +49,20 @@
     "editCategory": "Edit Category",
     "deleteCategory": "Delete Category",
     "confirmDeleteCategory": "Are you sure you want to delete the category \"{{name}}\"?"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "submit": "Submit",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "loginWithGoogle": "Login with Google",
+    "loginWithLine": "Login with Line",
+    "registerSuccess": "Registration successful! Please log in.",
+    "loginSuccess": "Login successful!",
+    "donnotHaveAccount": "Don't have an account?"
   }
 }
