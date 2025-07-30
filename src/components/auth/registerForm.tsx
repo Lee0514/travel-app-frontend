@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import SocialLoginButtons from './btn/socialLoginButtons';
+import { useTranslation } from 'react-i18next';
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const SubmitButton = styled.button`
 `;
 
 const LoginForm: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -71,50 +73,50 @@ const LoginForm: React.FC = () => {
         <SocialLoginButtons onGoogleClick={handleGoogleLogin} onLineClick={handleLineLogin} />
 
         <FieldWrapper>
-          <Label htmlFor="email">Email Address</Label>
+          <Label htmlFor="email">{t('auth.email')}</Label>
           <Input
             id="email"
             type="email"
-            placeholder="Email address"
+            placeholder={t('auth.email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </FieldWrapper>
 
         <FieldWrapper>
-          <Label htmlFor="username">User Name</Label>
+          <Label htmlFor="username">{t('auth.username')}</Label>
           <Input
             id="username"
             type="text"
-            placeholder="User Name"
+            placeholder={t('auth.username')}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </FieldWrapper>
 
         <FieldWrapper>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t('auth.password')}</Label>
           <Input
             id="password"
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </FieldWrapper>
 
         <FieldWrapper>
-          <Label htmlFor="passwordCheck">Confirm Password</Label>
+          <Label htmlFor="passwordCheck">{t('auth.confirmPassword')}</Label>
           <Input
             id="passwordCheck"
             type="password"
-            placeholder="Please type password again"
+            placeholder={t('auth.confirmPassword')}
             value={passwordCheck}
             onChange={(e) => setPasswordCheck(e.target.value)}
           />
         </FieldWrapper>
 
-        <SubmitButton type="submit">送出</SubmitButton>
+        <SubmitButton type="submit">{t('auth.submit')}</SubmitButton>
       </Wrapper>
     </form>
   );
