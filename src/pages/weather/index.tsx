@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Culture = () => {
+const Weather = () => {
   return <div></div>;
 };
 
-export default Culture;
+export default Weather;

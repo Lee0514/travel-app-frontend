@@ -7,10 +7,16 @@ import CollectionsQuickNavigation from '../../components/collectionQuickNavigati
 import styles from './Home.module.css';
 import { FaMapMarkerAlt, FaRegCalendarAlt, FaCloudSun, FaGlobe } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('nearby');
   const { t } = useTranslation();
+  const navigate = useNavigate(); 
+
+  const handleButtonClick = () => {
+    navigate('/nearby');
+  };
 
   const navItems = [
     { key: 'nearby', label: t('nav.nearby'), icon: <FaMapMarkerAlt /> },
@@ -25,8 +31,9 @@ const Home = () => {
         <div className={styles.bannerWrapper}>
           <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Banner" className={styles.bannerImage} />
           <div className={styles.bannerText}>
-          <h1>{t('banner.title')}</h1>
-          <h2>{t('banner.subtitle')}</h2>
+            <h1>{t('banner.title')}</h1>
+            <h2>{t('banner.subtitle')}</h2>
+            <button className={styles.ctaButton} onClick={handleButtonClick}>{t('banner.cta')}</button>
           </div>
         </div>
 
