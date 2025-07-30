@@ -10,15 +10,15 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const FieldWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const Label = styled.label`
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 4px;
+`;
+
+const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const Input = styled.input`
@@ -47,7 +47,9 @@ const SubmitButton = styled.button`
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordCheck, setPasswordCheck] = useState('');
 
   const handleGoogleLogin = () => {
     console.log('Google login clicked');
@@ -67,7 +69,7 @@ const LoginForm: React.FC = () => {
     <form onSubmit={handleSubmit}>
       <Wrapper>
         <SocialLoginButtons onGoogleClick={handleGoogleLogin} onLineClick={handleLineLogin} />
-        
+
         <FieldWrapper>
           <Label htmlFor="email">Email Address</Label>
           <Input
@@ -76,6 +78,17 @@ const LoginForm: React.FC = () => {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <Label htmlFor="username">User Name</Label>
+          <Input
+            id="username"
+            type="text"
+            placeholder="User Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </FieldWrapper>
 
@@ -90,7 +103,18 @@ const LoginForm: React.FC = () => {
           />
         </FieldWrapper>
 
-        <SubmitButton type="submit">登入</SubmitButton>
+        <FieldWrapper>
+          <Label htmlFor="passwordCheck">Confirm Password</Label>
+          <Input
+            id="passwordCheck"
+            type="password"
+            placeholder="Please type password again"
+            value={passwordCheck}
+            onChange={(e) => setPasswordCheck(e.target.value)}
+          />
+        </FieldWrapper>
+
+        <SubmitButton type="submit">送出</SubmitButton>
       </Wrapper>
     </form>
   );
