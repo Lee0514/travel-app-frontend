@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components'
 import { AiOutlineArrowLeft } from 'react-icons/ai';
+import { FiEdit, FiTrash } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
 // Mock data for collections
@@ -43,7 +44,10 @@ const Grid = styled.div`
   gap: 1rem;
 `;
 
+const CARD_HEIGHT = '5rem';
+
 const CollectionCard = styled.div`
+  height: ${CARD_HEIGHT};
   background-color: #f4f4f4;
   border-radius: 1rem;
   padding: 1.5rem 1rem;
@@ -62,17 +66,8 @@ const CollectionCard = styled.div`
 
 const ItemCard = styled(CollectionCard)``;
 
-const AddCard = styled.div`
-  background-color: #f4f4f4;
-  border-radius: 1rem;
-  padding: 1.5rem 1rem;
-  text-align: center;
-  cursor: pointer;
+const AddCard = styled(CollectionCard)`
   border: 2px dashed #ccc;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 2rem;
   color: #666;
 
@@ -198,6 +193,8 @@ const DropdownItem = styled.div`
   padding: 0.75rem 1rem;
   cursor: pointer;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background: #eee;
@@ -274,20 +271,24 @@ const CollectionsQuickNavigation = () => {
                       setShowModal(true);
                     }}
                   >
-                    ✎ {t('collection.editCategory')}
+                    <FiEdit style={{ marginRight: '0.5rem' }} />
+                    {t('collection.editCategory')}
                   </DropdownItem>
+
                   <DropdownItem
-                   onClick={() => {
-                    const confirmDelete = window.confirm(t('collection.confirmDeleteCategory', { name: current?.name }));
-                    if (confirmDelete && current) {
-                      setCollections((prev) => prev.filter((c) => c.id !== current.id));
-                      setSelectedCollection(null);
-                    }
-                    setShowDropdown(false);
-                  }}
+                    onClick={() => {
+                      const confirmDelete = window.confirm(t('collection.confirmDeleteCategory', { name: current?.name }));
+                      if (confirmDelete && current) {
+                        setCollections((prev) => prev.filter((c) => c.id !== current.id));
+                        setSelectedCollection(null);
+                      }
+                      setShowDropdown(false);
+                    }}
                   >
-                    🗑 {t('collection.deleteCategory')}
+                    <FiTrash style={{ marginRight: '0.5rem' }} />
+                    {t('collection.deleteCategory')}
                   </DropdownItem>
+
                 </Dropdown>
               )}
             </DropdownWrapper>
@@ -307,7 +308,7 @@ const CollectionsQuickNavigation = () => {
         <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalTitle>{isEditingCategory ? t('collection.editCategory') : t('collection.addNewCategory')}
-</ModalTitle>
+            </ModalTitle>
             <ModalInput
               type="text"
               placeholder={t('collection.typeCategoryName')}
