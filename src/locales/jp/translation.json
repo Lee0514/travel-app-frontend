@@ -50,5 +50,20 @@
     "editCategory": "カテゴリを編集",
     "deleteCategory": "カテゴリを削除",
     "confirmDeleteCategory": "「{{name}}」カテゴリを削除してもよろしいですか？"
+  },
+  "auth": {
+    "login": "ログイン",
+    "register": "新規登録",
+    "submit": "送信",
+    "username": "ユーザー名",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "confirmPassword": "パスワード確認",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "loginWithGoogle": "Googleでログイン",
+    "loginWithLine": "LINEでログイン",
+    "registerSuccess": "登録が完了しました！ログインしてください。",
+    "loginSuccess": "ログイン成功！",
+    "donnotHaveAccount": "アカウントをお持ちでない方はこちら"
   }
 }

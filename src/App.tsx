@@ -8,6 +8,8 @@ import Guided from './pages/guided/index';
 import Weather from './pages/weather/index';
 import Nearby from './pages/nearby/index';
 import Collection from './pages/collection/index';
+import LoginPage from './pages/userLogin/index';
+import RegisterPage from './pages/userRegister/index';
 import './i18n';
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
           <Route path="/weather" element={<Weather />} />
           <Route path="/nearby" element={<Nearby />} />
           <Route path="/collection" element={<Collection />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </BrowserRouter>
     </>

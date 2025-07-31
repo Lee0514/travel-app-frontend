@@ -50,5 +50,20 @@
     "editCategory": "編輯分類",
     "deleteCategory": "刪除分類",
     "confirmDeleteCategory": "確定要刪除分類「{{name}}」嗎？"
+  },
+  "auth": {
+    "login": "登入",
+    "register": "註冊",
+    "submit": "送出",
+    "username": "使用者名稱",
+    "email": "電子郵件",
+    "password": "密碼",
+    "confirmPassword": "確認密碼",
+    "forgotPassword": "忘記密碼？",
+    "loginWithGoogle": "使用 Google 登入",
+    "loginWithLine": "使用 Line 登入",
+    "registerSuccess": "註冊成功！請登入。",
+    "loginSuccess": "登入成功！",
+    "donnotHaveAccount": "還沒有帳號？"
   }
 }
