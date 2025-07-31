@@ -21,6 +21,7 @@ import {
 } from './Header.styles';
 import { FaGlobe, FaSearch, FaUserCircle } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import UserMenu from './userMenu';
 
 const Header: React.FC = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -103,10 +104,10 @@ const Header: React.FC = memo(() => {
         </LanguageSwitcher>
 
         {/* 手機版多語系圖示 */}
-        <IconGroup>
-          <LanguageIconWrapper onClick={() => setLangMenuOpen(!langMenuOpen)} style={{ cursor: 'pointer' }}>
-            <FaGlobe size={24} />
-          </LanguageIconWrapper>
+       <IconGroup>
+        <LanguageIconWrapper onClick={() => setLangMenuOpen(!langMenuOpen)} style={{ cursor: 'pointer' }}>
+          <FaGlobe size={24} />
+        </LanguageIconWrapper>
 
           <UserAvatar as={Link} to="/user">
             <FaUserCircle size={28} />
