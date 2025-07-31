@@ -109,7 +109,7 @@ const Header: React.FC = memo(() => {
           <FaGlobe size={24} />
         </LanguageIconWrapper>
 
-          <UserAvatar as={Link} to="/user">
+          <UserAvatar as={Link} to="/userLogin">
             <FaUserCircle size={28} />
           </UserAvatar>
         </IconGroup>
