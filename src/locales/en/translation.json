@@ -19,7 +19,8 @@
   },
   "banner": {
     "title": "Discover the World with GlobeTrekker",
-    "subtitle": "Your personal travel companion, providing real-time guidance and multilingual support for seamless exploration."
+    "subtitle": "Your personal travel companion, providing real-time guidance and multilingual support for seamless exploration.",
+    "cta": "Start Exploring"
   },
   "weather": {
     "feels_like": "Feels like",

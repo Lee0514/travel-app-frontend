@@ -140,8 +140,14 @@ export const SearchIcon = styled.div`
 export const UserAvatar = styled.div`
   width: 32px;
   height: 30px;
+  color: #333;
   border-radius: 50%;
   margin-left: 1rem;
+
+  &:hover {
+    background-color: transparent;
+    color: #333;
+  }
 `;
 
 export const Hamburger = styled.div`
