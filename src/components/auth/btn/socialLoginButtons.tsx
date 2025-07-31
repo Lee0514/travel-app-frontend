@@ -9,7 +9,7 @@ const ButtonRow = styled.div`
   gap: 12px;
 `;
 
-const LoginButton = styled.button<{ bgColor?: string; color?: string }>`
+const LoginButton = styled.button<{ $bgColor?: string; $color?: string }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -21,8 +21,8 @@ const LoginButton = styled.button<{ bgColor?: string; color?: string }>`
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: ${(props) => props.bgColor || '#f5f5f5'};
-  color: ${(props) => props.color || '#000'};
+  background-color: ${({ $bgColor }) => $bgColor|| '#f5f5f5'};
+  color: ${({ $color }) => $color|| '#000'};
   transition: background-color 0.2s;
 
   &:hover {
@@ -38,11 +38,11 @@ type Props = {
 const SocialLoginButtons: React.FC<Props> = ({ onGoogleClick, onLineClick }) => {
   return (
     <ButtonRow>
-      <LoginButton onClick={onGoogleClick} bgColor="#000" color="#fff">
+      <LoginButton onClick={onGoogleClick} $bgColor="#000" $color="#fff">
         <FcGoogle size={20} />
         Google
       </LoginButton>
-      <LoginButton onClick={onLineClick} bgColor="#00C300" color="#fff">
+      <LoginButton onClick={onLineClick} $bgColor="#00C300" $color="#fff">
         <SiLine size={20} />
         LINE
       </LoginButton>
