@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   HeaderContainer,
   LeftSection,
@@ -22,16 +23,33 @@ import { FaGlobe, FaSearch, FaUserCircle } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import UserMenu from './userMenu';
 
-const Header: React.FC = () => {
+const Header: React.FC = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
+  interface NavItem {
+    to: string;
+    label: string;
+  }
 
-  const changeLanguage = (lng: string) => {
+  const navItems: NavItem[] = useMemo(() => [
+    { to: '/', label: t('nav.home') },
+    { to: '/collection', label: t('nav.collection') },
+    { to: '/culture', label: t('nav.culture') },
+    { to: '/guided', label: t('nav.guided') },
+    { to: '/nearby', label: t('nav.nearby') },
+    { to: '/weather', label: t('nav.weather') }
+  ], [i18n.language]);
+
+  const changeLanguage = useCallback((lng: string) => {
     i18n.changeLanguage(lng);
     setLangMenuOpen(false);
-  };
+  }, [i18n]);
+
+  const handleNavItemClick = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
 
   return (
     <HeaderContainer>
@@ -46,15 +64,14 @@ const Header: React.FC = () => {
           <FaGlobe size={28} style={{ marginRight: '8px' }} />
           <WebsiteName>GlobeTrekker</WebsiteName>
         </LogoContainer>
-      
+
         {/* 桌面版 Nav 與 Search */}
         <Nav>
-          <NavItem href="#">{t('nav.home')}</NavItem>
-          <NavItem href="#">{t('nav.collection')}</NavItem>
-          <NavItem href="#">{t('nav.culture')}</NavItem>
-          <NavItem href="#">{t('nav.guided')}</NavItem>
-          <NavItem href="#">{t('nav.nearby')}</NavItem>
-          <NavItem href="#">{t('nav.weather')}</NavItem>
+          {navItems.map(({ to, label }) => (
+            <NavItem key={to} as={Link} to={to}>
+              {label}
+            </NavItem>
+          ))}
         </Nav>
       </LeftSection>
 
@@ -92,8 +109,10 @@ const Header: React.FC = () => {
           <FaGlobe size={24} />
         </LanguageIconWrapper>
 
-        <UserMenu />
-      </IconGroup>
+          <UserAvatar as={Link} to="/user">
+            <FaUserCircle size={28} />
+          </UserAvatar>
+        </IconGroup>
 
         {/* 手機版彈出語言選擇 */}
         <MobileLangMenu $visible={langMenuOpen}>
@@ -110,15 +129,14 @@ const Header: React.FC = () => {
       </RightSection>
 
       <MobileMenu $isOpen={isMenuOpen}>
-        <NavItem href="#">{t('nav.home')}</NavItem>
-        <NavItem href="#">{t('nav.collection')}</NavItem>
-        <NavItem href="#">{t('nav.culture')}</NavItem>
-        <NavItem href="#">{t('nav.guided')}</NavItem>
-        <NavItem href="#">{t('nav.nearby')}</NavItem>
-        <NavItem href="#">{t('nav.weather')}</NavItem>
+        {navItems.map(({ to, label }) => (
+          <NavItem key={to} as={Link} to={to} onClick={handleNavItemClick}>
+            {label}
+          </NavItem>
+        ))}
       </MobileMenu>
     </HeaderContainer>
   );
-};
+});
 
 export default Header;

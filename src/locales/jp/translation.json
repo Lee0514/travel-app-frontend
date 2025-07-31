@@ -19,7 +19,8 @@
   },
   "banner": {
     "title": "GlobeTrekker で世界を旅しよう",
-    "subtitle": "あなたの旅をサポートする専属コンパニオン。リアルタイム案内と多言語対応で、快適な冒険を。"
+    "subtitle": "あなたの旅をサポートする専属コンパニオン。リアルタイム案内と多言語対応で、快適な冒険を。",
+    "cta": "探検を始める"
   },
   "weather": {
     "feels_like": "体感温度",
@@ -41,7 +42,7 @@
     "save": "保存",
     "cancel": "キャンセル"
   },
-   "collection": {
+  "collection": {
     "addNewCategory": "新しいカテゴリーを追加",
     "typeCategoryName": "カテゴリー名を入力",
     "cancel": "キャンセル",
