@@ -43,7 +43,7 @@ const UserMenu = () => {
               </DropdownItem>
             </>
           ) : (
-            <DropdownItem onClick={() => { navigate('/login'); setShowMenu(false); }}>
+            <DropdownItem onClick={() => { navigate('/userLogin'); setShowMenu(false); }}>
               {t(`auth.login`)} / {t(`auth.register`)}
             </DropdownItem>
           )}
