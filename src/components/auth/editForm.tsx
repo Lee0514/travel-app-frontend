@@ -118,6 +118,7 @@ const EditForm: React.FC = () => {
           <Input
             type="text"
             value={username}
+            autoComplete="enterNewUsername"
             onChange={(e) => setUsername(e.target.value)}
             placeholder={t(`auth.enterNewUsername`)}
           />
@@ -128,6 +129,7 @@ const EditForm: React.FC = () => {
           <Input
             type="password"
             value={oldPassword}
+            autoComplete="enterCurrentPassword"
             onChange={(e) => setOldPassword(e.target.value)}
             placeholder={t(`auth.enterCurrentPassword`)}
           />
@@ -138,6 +140,7 @@ const EditForm: React.FC = () => {
           <Input
             type="password"
             value={newPassword}
+            autoComplete="enterNewPassword"
             onChange={(e) => setNewPassword(e.target.value)}
             placeholder={t(`auth.enterNewPassword`)}
           />
@@ -148,6 +151,7 @@ const EditForm: React.FC = () => {
           <Input
             type="password"
             value={confirmPassword}
+            autoComplete="reenterNewPassword"
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder={t(`auth.reenterNewPassword`)}
           />
