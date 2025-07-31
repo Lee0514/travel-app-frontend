@@ -1,16 +1,33 @@
-import Home from './pages/home/index'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/home/index';
+import Translate from './pages/translate/index';
+import User from './pages/user/index';
 import Header from './components/layouts/headers/Header';
+import Culture from './pages/culture/index';
+import Guided from './pages/guided/index';
+import Weather from './pages/weather/index';
+import Nearby from './pages/nearby/index';
+import Collection from './pages/collection/index';
 import './i18n';
 
-
 function App() {
-
   return (
     <>
-      <Header />
-      <Home />
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/translate" element={<Translate />} />
+          <Route path="/user" element={<User />} />
+          <Route path="/culture" element={<Culture />} />
+          <Route path="/guided" element={<Guided />} />
+          <Route path="/weather" element={<Weather />} />
+          <Route path="/nearby" element={<Nearby />} />
+          <Route path="/collection" element={<Collection />} />
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
