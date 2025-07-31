@@ -53,6 +53,7 @@
   },
   "auth": {
     "login": "Login",
+    "logout": "Logout",
     "register": "Register",
     "submit": "Submit",
     "username": "Username",
@@ -64,6 +65,19 @@
     "loginWithLine": "Login with Line",
     "registerSuccess": "Registration successful! Please log in.",
     "loginSuccess": "Login successful!",
-    "donnotHaveAccount": "Don't have an account?"
+    "donnotHaveAccount": "Don't have an account?",
+    "editUser": "Edit User Profile",
+    "edit": "Edit",
+    "updateSuccess": "Update successful!",
+    "updateFailed": "Update failed. Please try again later.",
+    "userAvatar": "User Avatar",
+    "enterNewUsername": "Enter new username",
+    "currentPassword": "Current Password",
+    "enterCurrentPassword": "Enter current password",
+    "newPassword": "New Password",
+    "enterNewPassword": "Enter new password",
+    "confirmNewPassword": "Confirm New Password",
+    "reenterNewPassword": "Re-enter new password",
+    "saveChanges": "Save Changes"
   }
 }

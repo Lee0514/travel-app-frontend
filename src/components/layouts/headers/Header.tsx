@@ -102,16 +102,14 @@ const Header: React.FC = memo(() => {
             JP
           </LangButton>
         </LanguageSwitcher>
+        
+        <IconGroup>
+          {/* 手機版多語系圖示 */}
+          <LanguageIconWrapper onClick={() => setLangMenuOpen(!langMenuOpen)} style={{ cursor: 'pointer' }}>
+            <FaGlobe size={24} />
+          </LanguageIconWrapper>
 
-        {/* 手機版多語系圖示 */}
-       <IconGroup>
-        <LanguageIconWrapper onClick={() => setLangMenuOpen(!langMenuOpen)} style={{ cursor: 'pointer' }}>
-          <FaGlobe size={24} />
-        </LanguageIconWrapper>
-
-          <UserAvatar as={Link} to="/userLogin">
-            <FaUserCircle size={28} />
-          </UserAvatar>
+          <UserMenu />
         </IconGroup>
 
         {/* 手機版彈出語言選擇 */}
