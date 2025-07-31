@@ -50,6 +50,12 @@ const SubmitButton = styled.button`
   }
 `;
 
+const ErrorText = styled.span`
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+`;
+
 const EditForm: React.FC = () => {
   const { t } = useTranslation();
   const [avatar, setAvatar] = useState<File | null>(null);
@@ -58,6 +64,7 @@ const EditForm: React.FC = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -69,12 +76,32 @@ const EditForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
+    const isChangingPassword = oldPassword || newPassword || confirmPassword;
+
+    if (isChangingPassword) {
+      if (!oldPassword || !newPassword || !confirmPassword) {
+        setError('若要更改密碼，請完整填寫所有密碼欄位。');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        setError('新密碼與確認密碼不一致。');
+        return;
+      }
+
+      // 🚨 通常舊密碼正確與否會由後端判斷
+      // 可以在 API 回傳錯誤時提示使用者
+    }
+
+    console.log('表單送出');
     console.log('Username:', username);
-    console.log('Avatar File:', avatar);
+    console.log('Avatar:', avatar);
     console.log('Old Password:', oldPassword);
     console.log('New Password:', newPassword);
-    console.log('Confirm Password:', confirmPassword);
-    // 處理 API 送出等...
+
+    // 送出 API...
   };
 
   return (
@@ -126,6 +153,8 @@ const EditForm: React.FC = () => {
           />
         </FieldWrapper>
 
+        {error && <ErrorText>{error}</ErrorText>}
+        
         <SubmitButton type="submit">{t(`auth.saveChanges`)}</SubmitButton>
       </Wrapper>
     </form>
