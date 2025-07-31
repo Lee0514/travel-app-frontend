@@ -9,6 +9,7 @@ import Nearby from './pages/nearby/index';
 import Collection from './pages/collection/index';
 import UserLogin from './pages/userLogin/index';
 import UserRegister from './pages/userRegister/index';
+import UserEdit from './pages/userEdit/index';
 import './i18n';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/collection" element={<Collection />} />
           <Route path="/userLogin" element={<UserLogin />} />
           <Route path="/userRegister" element={<UserRegister />} />
+          <Route path="/userEdit" element={<UserEdit />} />
         </Routes>
       </BrowserRouter>
     </>

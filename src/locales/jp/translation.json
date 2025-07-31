@@ -53,6 +53,7 @@
   },
   "auth": {
     "login": "ログイン",
+    "logout": "ログアウト",
     "register": "新規登録",
     "submit": "送信",
     "username": "ユーザー名",
@@ -64,6 +65,19 @@
     "loginWithLine": "LINEでログイン",
     "registerSuccess": "登録が完了しました！ログインしてください。",
     "loginSuccess": "ログイン成功！",
-    "donnotHaveAccount": "アカウントをお持ちでない方はこちら"
+    "donnotHaveAccount": "アカウントをお持ちでない方はこちら",
+    "editUser": "ユーザー情報の編集",
+    "edit": "編集",
+    "updateSuccess": "更新が成功しました！",
+    "updateFailed": "更新に失敗しました。しばらくしてからもう一度お試しください。",
+    "userAvatar": "アバター",
+    "enterNewUsername": "新しいユーザー名を入力してください",
+    "currentPassword": "現在のパスワード",
+    "enterCurrentPassword": "現在のパスワードを入力してください",
+    "newPassword": "新しいパスワード",
+    "enterNewPassword": "新しいパスワードを入力してください",
+    "confirmNewPassword": "新しいパスワードの確認",
+    "reenterNewPassword": "新しいパスワードをもう一度入力してください",
+    "saveChanges": "変更を保存"
   }
 }
