@@ -12,7 +12,7 @@ const LoginPage = () => {
       <LoginForm />
       <p className={styles.register}>
         {t('auth.donnotHaveAccount')}<br />
-        <Link to="/register" className={styles.link}>{t('auth.register')}</Link>
+        <Link to="/userRegister" className={styles.link}>{t('auth.register')}</Link>
       </p>
 
     </div>
