@@ -11,7 +11,7 @@ const RegisterPage = () => {
       <h2 className={styles.title}>{t('auth.register')}</h2>
       <RegisterForm />
       <p className={styles.register}>
-        <Link to="/login" className={styles.link}>{t('auth.login')}</Link>
+        <Link to="/userLogin" className={styles.link}>{t('auth.login')}</Link>
       </p>
 
     </div>
