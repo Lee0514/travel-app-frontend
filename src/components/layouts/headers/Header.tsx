@@ -35,6 +35,7 @@ const Header: React.FC = memo(() => {
 
   const navItems: NavItem[] = useMemo(() => [
     { to: '/', label: t('nav.home') },
+    { to: '/translate', label: t('nav.translate') },
     { to: '/collection', label: t('nav.collection') },
     { to: '/culture', label: t('nav.culture') },
     { to: '/guided', label: t('nav.guided') },
