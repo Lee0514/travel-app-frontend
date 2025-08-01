@@ -249,8 +249,8 @@ export const MobileLangMenu = styled.div<{ $visible: boolean }>`
   display: ${({ $visible }) => ($visible ? 'flex' : 'none')};
   flex-direction: column;
   position: absolute;
-  top: 3.5rem;
-  right: 3.5rem;
+  top: 4rem;
+  right: 4.6rem;
   background: white;
   border: 1px solid #ccc;
   border-radius: 6px;

@@ -1,12 +1,13 @@
 {
   "category": {
+    "all": "すべて",
     "attraction": "観光地",
     "restaurant": "レストラン",
     "hotel": "ホテル",
     "store": "お店",
     "transport": "交通"
   },
-  "distanceWithValue": "{{value}} 離れています",
+  "distanceWithValue": "{{value}}km 離れています",
   "nav": {
     "home": "ホーム",
     "collection": "コレクション",

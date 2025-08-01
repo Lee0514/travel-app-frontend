@@ -10,19 +10,19 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('nearby');
+  const [activeTab, setActiveTab] = useState('nearbyQuickNavigation');
   const { t } = useTranslation();
   const navigate = useNavigate(); 
 
   const handleButtonClick = () => {
-    navigate('/nearby');
+    navigate('/nearbyQuickNavigation');
   };
 
   const navItems = [
-    { key: 'nearby', label: t('nav.nearby'), icon: <FaMapMarkerAlt /> },
-    { key: 'upcoming', label: t('nav.upcoming'), icon: <FaRegCalendarAlt /> },
-    { key: 'weather', label: t('nav.weather'), icon: <FaCloudSun /> },
-    { key: 'collections', label: t('nav.collections'), icon: <FaGlobe /> }
+    { key: 'nearbyQuickNavigation', label: t('nav.nearby'), icon: <FaMapMarkerAlt /> },
+    { key: 'upcomingQuickNavigation', label: t('nav.upcoming'), icon: <FaRegCalendarAlt /> },
+    { key: 'weatherQuickNavigation', label: t('nav.weather'), icon: <FaCloudSun /> },
+    { key: 'collectionsQuickNavigation', label: t('nav.collections'), icon: <FaGlobe /> }
   ];
 
   return (
@@ -44,10 +44,10 @@ const Home = () => {
         </div>
 
         <div className={styles.content}>
-          {activeTab === 'nearby' && <NearbyQuickNavigation />}
-          {activeTab === 'upcoming' && <UpcomingQuickNavigation />}
-          {activeTab === 'weather' && <WeatherQuickNavigation />}
-          {activeTab === 'collections' && <CollectionsQuickNavigation />}
+          {activeTab === 'nearbyQuickNavigation' && <NearbyQuickNavigation/>}
+          {activeTab === 'upcomingQuickNavigation' && <UpcomingQuickNavigation />}
+          {activeTab === 'weatherQuickNavigation' && <WeatherQuickNavigation />}
+          {activeTab === 'collectionsQuickNavigation' && <CollectionsQuickNavigation />}
         </div>
       </div>
     </div>
