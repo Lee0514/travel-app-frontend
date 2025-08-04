@@ -80,5 +80,14 @@
     "confirmNewPassword": "確認新密碼",
     "reenterNewPassword": "再次輸入新密碼",
     "saveChanges": "儲存變更"
+  },
+  "weekday": {
+    "sunday": "星期日",
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六"
   }
 }

@@ -80,5 +80,14 @@
     "confirmNewPassword": "Confirm New Password",
     "reenterNewPassword": "Re-enter new password",
     "saveChanges": "Save Changes"
+  },
+  "weekday": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   }
 }
