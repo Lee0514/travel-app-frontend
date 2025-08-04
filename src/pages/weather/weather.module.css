@@ -1,0 +1,71 @@
+.wrapper {
+  padding: 20px;
+  font-family: sans-serif;
+  margin-top: 90px;
+}
+
+.currentWeather {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #f3f3f3;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.temp {
+  font-size: 48px;
+  margin: 0;
+}
+
+.condition {
+  font-size: 18px;
+  margin: 4px 0;
+}
+
+.small {
+  color: gray;
+}
+
+.sectionTitle {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.hourlyWrapper {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.hourCard {
+  padding: 10px;
+  border-radius: 12px;
+  min-width: 80px;
+  text-align: center;
+}
+
+.hourCardRain {
+  background: #d0e6ff;
+}
+
+.hourCardClear {
+  background: #ffeaa7;
+}
+
+.dailyWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.dayCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f8f8;
+  padding: 12px;
+  border-radius: 12px;
+}
