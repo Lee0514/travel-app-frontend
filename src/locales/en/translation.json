@@ -82,12 +82,15 @@
     "saveChanges": "Save Changes"
   },
   "weekday": {
-    "sunday": "Sunday",
-    "monday": "Monday",
-    "tuesday": "Tuesday",
-    "wednesday": "Wednesday",
-    "thursday": "Thursday",
-    "friday": "Friday",
-    "saturday": "Saturday"
+    "sunday": "Sun.",
+    "monday": "Mon.",
+    "tuesday": "Tues.",
+    "wednesday": "Wed.",
+    "thursday": "Thur.",
+    "friday": "Fri.",
+    "saturday": "Sat."
+  },
+  "time": {
+    "hourLabel": "{{hour}}:00"
   }
 }

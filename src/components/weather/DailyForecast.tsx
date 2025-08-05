@@ -8,6 +8,12 @@ interface Props {
   days: DayData[];
 }
 
+const breakpoints = {
+  sm: '600px',
+  md: '900px',
+  lg: '1200px'
+};
+
 const List = styled.ul`
   list-style: none;
   padding: 0;
@@ -18,7 +24,7 @@ const Item = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f1f8e9;
+  background: #EFE2BA;
   margin-bottom: 12px;
   border-radius: 12px;
   padding: 12px 16px;
@@ -26,20 +32,36 @@ const Item = styled.li`
 
 const DateBlock = styled.div`
   width: 5rem;
+  display: flex;
+  flex-direction: column;
+  margin-right: 1rem;
+  align-items: center;
   font-weight: 600;
+`;
+
+const DateText = styled.div`
+  font-size: 12px;
+  color: #666;
 `;
 
 const WeatherBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 4rem;
+  margin-right: 1rem;
 `;
 
-const Rain = styled.div`
+const WeatherIcon = styled.img`
+  width: 3.5rem;
+  @media (max-width: ${breakpoints.sm}) {
+     width: 3rem;
+  }
+`;
+
+const RainPercentage = styled.div`
   font-size: 12px;
   color: #555;
-  margin-top: 4px;
+  padding-bottom: 4px;
 `;
 
 const TempBlock = styled.div`
@@ -51,16 +73,20 @@ const TempBlock = styled.div`
 
 const TempBarWrapper = styled.div`
   position: relative;
-  width: 100px;
+  width: 7rem;
   height: 6px;
-  background: #c8e6c9;
+  background: #EAD8B7;
   border-radius: 6px;
+
+  @media (max-width: ${breakpoints.sm}) {
+    width: 6rem;
+  }
 `;
 
 const TempBar = styled.div<{ $percent: number }>`
   position: absolute;
   height: 6px;
-  background: #43a047;
+  background: #D8C690;
   border-radius: 6px;
   left: 0;
   width: ${({ $percent }) => $percent}%;
@@ -106,12 +132,16 @@ const DailyForecast: React.FC<Props> = ({ days }) => {
         return (
           <Item key={day.date}>
             {/* 左：星期幾 */}
-            <DateBlock>{dayText}</DateBlock>
+            <DateBlock>
+              {dayText}
+              <DateText>{day.date.slice(5)}</DateText>
+            </DateBlock>
+
 
             {/* 中：天氣 + icon + 降雨機率 */}
             <WeatherBlock>
-              <img src={day.day.condition.icon} alt={day.day.condition.text} />
-              <Rain>{day.day.daily_chance_of_rain}%</Rain>
+              <WeatherIcon src={day.day.condition.icon} alt={day.day.condition.text} />
+              <RainPercentage>{day.day.daily_chance_of_rain}%</RainPercentage>
             </WeatherBlock>
 
             {/* 右：溫度條 */}
