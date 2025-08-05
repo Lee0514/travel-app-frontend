@@ -25,6 +25,11 @@ const CalendarWrapper = styled.div`
     border-radius: 50%;
     transition: background-color 0.2s ease;
   }
+
+  .react-calendar__tile:not(.react-calendar__month-view__days__day--weekend) {
+    color: #333;
+  }
+
   .react-calendar__tile:hover {
     background: #f0f0f0;
     color: #888;
@@ -149,7 +154,7 @@ const formatDate = (date: Date) => {
   return `${y}-${m}-${d}`;
 };
 
-const Upcoming = () => {
+const UpcomingQuickNavigation = () => {
   const { t } = useTranslation();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState(mockEvents);
@@ -182,7 +187,7 @@ const Upcoming = () => {
     });
   };
 
-  const currentEvents = selectedDate ? events[formatDate(selectedDate)] ?? [] : [];
+  const currentEvents = selectedDate ? (events[formatDate(selectedDate)] ?? []) : [];
 
   return (
     <Container>
@@ -190,9 +195,7 @@ const Upcoming = () => {
       <CalendarWrapper>
         <Calendar
           onClickDay={setSelectedDate}
-          tileContent={({ date }) =>
-            events[formatDate(date)] ? <Dot title={t('calendar.hasEvent')} /> : null
-          }
+          tileContent={({ date }) => (events[formatDate(date)] ? <Dot title={t('calendar.hasEvent')} /> : null)}
           locale={t('calendar.locale', { defaultValue: 'en-US' })}
           value={selectedDate}
         />
@@ -211,11 +214,7 @@ const Upcoming = () => {
                   <strong>{event.title}</strong>
                   <p>{event.note}</p>
                 </div>
-                <DeleteButton
-                  onClick={() => handleDeleteEvent(i)}
-                  aria-label={t('calendar.deleteEvent')}
-                  title={t('calendar.deleteEvent')}
-                >
+                <DeleteButton onClick={() => handleDeleteEvent(i)} aria-label={t('calendar.deleteEvent')} title={t('calendar.deleteEvent')}>
                   ✕
                 </DeleteButton>
               </EventItem>
@@ -224,21 +223,13 @@ const Upcoming = () => {
             <p>{t('calendar.noEvents')}</p>
           )}
 
-          <AddButton onClick={() => setShowModal(true)}>
-            ＋ {t('calendar.addEvent')}
-          </AddButton>
+          <AddButton onClick={() => setShowModal(true)}>＋ {t('calendar.addEvent')}</AddButton>
         </EventList>
       )}
 
-      {showModal && selectedDate && (
-        <EventModal
-          date={selectedDate}
-          onClose={() => setShowModal(false)}
-          onAdd={handleAddEvent}
-        />
-      )}
+      {showModal && selectedDate && <EventModal date={selectedDate} onClose={() => setShowModal(false)} onAdd={handleAddEvent} />}
     </Container>
   );
 };
 
-export default Upcoming;
+export default UpcomingQuickNavigation;
