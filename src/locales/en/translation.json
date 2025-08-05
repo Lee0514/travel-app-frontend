@@ -82,5 +82,17 @@
     "reenterNewPassword": "Re-enter new password",
     "saveChanges": "Save Changes"
   },
-   "relocate": "Relocate"
+  "relocate": "Relocate",
+  "weekday": {
+    "sunday": "Sun.",
+    "monday": "Mon.",
+    "tuesday": "Tues.",
+    "wednesday": "Wed.",
+    "thursday": "Thur.",
+    "friday": "Fri.",
+    "saturday": "Sat."
+  },
+  "time": {
+    "hourLabel": "{{hour}}:00"
+  }
 }
