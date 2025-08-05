@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 import { UserAvatar, UserDropdownMenu, DropdownItem } from './userMenu.styles';
+import { useTranslation } from 'react-i18next';
 
 const UserMenu = () => {
+  const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -33,16 +35,16 @@ const UserMenu = () => {
         <UserDropdownMenu ref={menuRef}>
           {isLoggedIn ? (
             <>
-              <DropdownItem onClick={() => { navigate('/profile'); setShowMenu(false); }}>
-                編輯使用者資料
+              <DropdownItem onClick={() => { navigate('/userEdit'); setShowMenu(false); }}>
+                {t(`auth.editUser`)}
               </DropdownItem>
               <DropdownItem onClick={() => { alert('登出功能待串接'); setShowMenu(false); }}>
-                登出
+                {t(`auth.logout`)}
               </DropdownItem>
             </>
           ) : (
-            <DropdownItem onClick={() => { navigate('/login'); setShowMenu(false); }}>
-              登入 / 註冊
+            <DropdownItem onClick={() => { navigate('/userLogin'); setShowMenu(false); }}>
+              {t(`auth.login`)} / {t(`auth.register`)}
             </DropdownItem>
           )}
         </UserDropdownMenu>

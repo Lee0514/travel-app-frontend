@@ -77,6 +77,7 @@ const LoginForm: React.FC = () => {
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             placeholder={t('auth.email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -88,6 +89,7 @@ const LoginForm: React.FC = () => {
           <Input
             id="username"
             type="text"
+            autoComplete="username"
             placeholder={t('auth.username')}
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -99,6 +101,7 @@ const LoginForm: React.FC = () => {
           <Input
             id="password"
             type="password"
+            autoComplete="password"
             placeholder={t('auth.password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -110,6 +113,7 @@ const LoginForm: React.FC = () => {
           <Input
             id="passwordCheck"
             type="password"
+            autoComplete="confirmPassword"
             placeholder={t('auth.confirmPassword')}
             value={passwordCheck}
             onChange={(e) => setPasswordCheck(e.target.value)}
