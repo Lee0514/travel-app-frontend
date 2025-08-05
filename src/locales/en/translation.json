@@ -80,5 +80,6 @@
     "confirmNewPassword": "Confirm New Password",
     "reenterNewPassword": "Re-enter new password",
     "saveChanges": "Save Changes"
-  }
+  },
+   "relocate": "Relocate"
 }
