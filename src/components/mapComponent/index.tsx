@@ -4,7 +4,7 @@ import { GoogleMap } from '@react-google-maps/api';
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
   height: '50vh',
-  borderRadius: '3%'
+  borderRadius: '20px'
 };
 
 interface MapComponentProps {

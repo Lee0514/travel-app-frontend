@@ -157,7 +157,6 @@ const ErrorMessage = styled.div`
   color: #c33;
 `;
 
-// 將分類移到組件外部，避免重複創建
 const categories: Record<string, string[]> = {
   Attraction: ['tourist_attraction', 'museum', 'park'],
   Hotel: ['lodging'],
@@ -168,13 +167,10 @@ const categories: Record<string, string[]> = {
 
 const categoryOrder = Object.keys(categories);
 
-// 輕量化預設圖片
 const defaultImage = 'data:image/svg+xml,%3Csvg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="64" height="64" fill="%23e0e0e0"/%3E%3Ctext x="32" y="36" font-family="Arial" font-size="10" fill="%23666" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
 
-// 優化的等待函數
 const waitForGoogleMaps = (): Promise<void> => {
   return new Promise((resolve, reject) => {
-    // 檢查所有必要的 API 是否載入
     if (window.google?.maps?.places && window.google?.maps?.geometry) {
       resolve();
       return;
@@ -197,9 +193,8 @@ const waitForGoogleMaps = (): Promise<void> => {
   });
 };
 
-// 優化的距離計算
 const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-  const R = 6371; // 地球半徑（公里）
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLng = (lng2 - lng1) * Math.PI / 180;
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
@@ -230,16 +225,14 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
       
       const resultsByCategory: Record<string, PlaceResult[]> = {};
       
-      // 序列化處理每個分類，避免併發限制
       for (const [category, types] of Object.entries(categories)) {
         const categoryResults: google.maps.places.PlaceResult[] = [];
         
-        // 對每個類型進行搜尋
         for (const type of types) {
           await new Promise<void>((resolve) => {
             const request: google.maps.places.PlaceSearchRequest = {
               location: new google.maps.LatLng(location.lat, location.lng),
-              radius: 2000, // 2km 搜尋範圍
+              radius: 2000,
               type: type as any
             };
 
@@ -249,13 +242,11 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
               } else if (status !== window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
                 console.warn(`搜尋 ${type} 時狀態: ${status}`);
               }
-              // 增加延遲避免 API 請求限制
               setTimeout(resolve, 100);
             });
           });
         }
         
-        // 去重並過濾距離，按距離排序
         const uniqueResults = Array.from(
           new Map(categoryResults.map(place => [place.place_id, place])).values()
         )
@@ -269,7 +260,7 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
             place.geometry.location.lng()
           );
           
-          return distance <= 2; // 只顯示 2km 內的結果
+          return distance <= 2;
         })
         .sort((a, b) => {
           const distA = calculateDistance(
@@ -300,14 +291,13 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
   useEffect(() => {
     if (!currentLocation) return;
     
-    // 只有移動超過 100 米才重新搜尋
     const shouldFetch = !lastFetchLocation.current || 
       calculateDistance(
         lastFetchLocation.current.lat, 
         lastFetchLocation.current.lng, 
         currentLocation.lat, 
         currentLocation.lng
-      ) > 0.1; // 0.1km = 100m
+      ) > 0.1;
     
     if (shouldFetch) {
       fetchAllNearbyPlaces(currentLocation);

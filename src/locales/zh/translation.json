@@ -80,5 +80,6 @@
     "confirmNewPassword": "確認新密碼",
     "reenterNewPassword": "再次輸入新密碼",
     "saveChanges": "儲存變更"
-  }
+  },
+   "relocate": "重新定位"
 }
