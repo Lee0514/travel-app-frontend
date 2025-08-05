@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Card = styled.div`
-  background: #e0f7fa;
+  background: #D6CFC7;
   border-radius: 16px;
   padding: 24px;
   text-align: center;
@@ -30,6 +30,7 @@ const Condition = styled.div`
 `;
 
 const Range = styled.div`
+  margin-top: 1rem;
   font-size: 16px;
   color: #666;
 `;

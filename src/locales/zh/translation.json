@@ -89,5 +89,8 @@
     "thursday": "星期四",
     "friday": "星期五",
     "saturday": "星期六"
+  },
+   "time": {
+    "hourLabel": "{{hour}}時"
   }
 }
