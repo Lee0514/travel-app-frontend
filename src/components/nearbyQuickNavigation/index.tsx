@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { GrMapLocation } from 'react-icons/gr';
@@ -15,88 +15,6 @@ type Place = {
 };
 
 const categoryOrder: CategoryKey[] = ['Attraction', 'Restaurant', 'Hotel', 'Store', 'Transport'];
-
-const nearbyPlaces: Place[] = [
-  {
-    id: 1,
-    name: 'Taipei 101',
-    type: 'Landmark',
-    distance: '1.2 km',
-    image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 2,
-    name: 'Din Tai Fung',
-    type: 'Restaurant',
-    distance: '500 m',
-    image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 3,
-    name: 'Elephant Mountain Trail',
-    type: 'Hiking Trail',
-    distance: '2.1 km',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 4,
-    name: 'Taipei Fine Arts Museum',
-    type: 'Museum',
-    distance: '3.4 km',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 5,
-    name: 'Hotel Royal-Nikko Taipei',
-    type: 'Hotel',
-    distance: '2.0 km',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 6,
-    name: '7-Eleven Xinyi Store',
-    type: 'Convenience Store',
-    distance: '300 m',
-    image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 7,
-    name: 'Taipei MRT City Hall Station',
-    type: 'MRT',
-    distance: '400 m',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 8,
-    name: 'Watsons Pharmacy',
-    type: 'Drugstore',
-    distance: '600 m',
-    image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80'
-  }
-];
-
-const categorizedPlaces: Record<CategoryKey, Place[]> = {
-  Attraction: [],
-  Restaurant: [],
-  Hotel: [],
-  Store: [],
-  Transport: []
-};
-
-nearbyPlaces.forEach(place => {
-  const { type } = place;
-  if (type === 'Restaurant') {
-    categorizedPlaces.Restaurant.push(place);
-  } else if (type === 'Hotel') {
-    categorizedPlaces.Hotel.push(place);
-  } else if (['Convenience Store', 'Department Store', 'Drugstore'].includes(type)) {
-    categorizedPlaces.Store.push(place);
-  } else if (['MRT', 'Bus'].includes(type)) {
-    categorizedPlaces.Transport.push(place);
-  } else if (['Landmark', 'Museum', 'Hiking Trail'].includes(type)) {
-    categorizedPlaces.Attraction.push(place);
-  }
-});
 
 const NearbyContainer = styled.div`
   padding: 1rem;
@@ -182,8 +100,77 @@ const PlaceImage = styled.img`
   border-radius: 50%;
 `;
 
-const Nearby = () => {
+const NearbyQuickNavigation = () => {
   const { t } = useTranslation();
+  const [categorizedPlaces, setCategorizedPlaces] = useState<Record<CategoryKey, Place[]>>({
+    Attraction: [],
+    Restaurant: [],
+    Hotel: [],
+    Store: [],
+    Transport: []
+  });
+
+  useEffect(() => {
+    const fakeData: Place[] = [
+      { id: 1, name: 'Central Park', type: 'Landmark', distance: '500m', image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80' },
+      { id: 2, name: "Joe's Diner", type: 'Restaurant', distance: '300m', image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80' },
+      { id: 3, name: 'Holiday Hotel', type: 'Hotel', distance: '1.2km', image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80' },
+      { id: 4, name: '7-Eleven', type: 'Convenience Store', distance: '100m', image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80' },
+      { id: 5, name: 'City Bus Stop', type: 'Bus', distance: '150m', image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80' }
+    ];    
+
+    setTimeout(() => {
+      const grouped: Record<CategoryKey, Place[]> = {
+        Attraction: [],
+        Restaurant: [],
+        Hotel: [],
+        Store: [],
+        Transport: []
+      };
+
+      fakeData.forEach(place => {
+        const { type } = place;
+        if (type === 'Restaurant') {
+          grouped.Restaurant.push(place);
+        } else if (type === 'Hotel') {
+          grouped.Hotel.push(place);
+        } else if (['Convenience Store', 'Department Store', 'Drugstore'].includes(type)) {
+          grouped.Store.push(place);
+        } else if (['MRT', 'Bus'].includes(type)) {
+          grouped.Transport.push(place);
+        } else if (['Landmark', 'Museum', 'Hiking Trail'].includes(type)) {
+          grouped.Attraction.push(place);
+        }
+      });
+
+      setCategorizedPlaces(grouped);
+    }, 500);
+
+    // 後端 API：
+    /*
+    fetch('https://你的後端api/nearby')
+      .then(res => res.json())
+      .then((data: Place[]) => {
+        const grouped: Record<CategoryKey, Place[]> = {
+          Attraction: [],
+          Restaurant: [],
+          Hotel: [],
+          Store: [],
+          Transport: []
+        };
+
+        data.forEach(place => {
+          // 同上分類邏輯
+        });
+
+        setCategorizedPlaces(grouped);
+      })
+      .catch(err => {
+        console.error('Failed to fetch nearby places:', err);
+      });
+    */
+  }, []);
+
   return (
     <NearbyContainer>
       {categoryOrder.map(category =>
@@ -219,4 +206,4 @@ const Nearby = () => {
   );
 };
 
-export default Nearby;
+export default NearbyQuickNavigation;

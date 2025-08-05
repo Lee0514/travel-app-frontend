@@ -1,12 +1,13 @@
 {
   "category": {
+    "all": "全部",
     "attraction": "景點",
     "restaurant": "餐廳",
     "hotel": "住宿",
     "store": "商店",
     "transport": "交通"
   },
-  "distanceWithValue": "距離 {{value}}",
+  "distanceWithValue": "距離 {{value}}公里",
   "nav": {
     "home": "首頁",
     "collection": "收藏",
@@ -80,5 +81,6 @@
     "confirmNewPassword": "確認新密碼",
     "reenterNewPassword": "再次輸入新密碼",
     "saveChanges": "儲存變更"
-  }
+  },
+   "relocate": "重新定位"
 }
