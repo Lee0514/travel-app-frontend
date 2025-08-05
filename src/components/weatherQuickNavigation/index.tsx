@@ -55,7 +55,7 @@ const BottomRow = styled.div`
   text-align: center;
 `;
 
-const WeatherCard: React.FC = () => {
+const WeatherQuickNavigation: React.FC = () => {
   const { t } = useTranslation();
   const [city, setCity] = useState('Loading...');
   const [temp, setTemp] = useState('');
@@ -117,4 +117,4 @@ const WeatherCard: React.FC = () => {
   );
 };
 
-export default WeatherCard;
+export default WeatherQuickNavigation;
