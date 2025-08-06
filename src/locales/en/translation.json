@@ -94,5 +94,19 @@
   },
   "time": {
     "hourLabel": "{{hour}}:00"
-  }
+  },
+  "retry": "Retry",
+  "loading": "Loading...",
+  "explore": {
+    "openingHours": "Opening Hours",
+    "reviews": "Reviews",
+    "navigate": "Open in Google Maps",
+    "playDescription": "Play Description"
+  },
+  "wikipedia": {
+    "noWikiExtract": "No Wikipedia introduction found.",
+    "intro": "Wikipedia Introduction"
+  },
+  "openNow": "Open Now",
+  "closedNow": "Closed Now"
 }

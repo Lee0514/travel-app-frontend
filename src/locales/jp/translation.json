@@ -94,5 +94,19 @@
   },
   "time": {
     "hourLabel": "{{hour}}時"
-  }
+  },
+  "retry": "再試行",
+  "loading": "読み込み中...",
+  "explore": {
+    "openingHours": "営業時間",
+    "reviews": "レビュー",
+    "navigate": "Googleマップで開く",
+    "playDescription": "説明を再生"
+  },
+  "wikipedia" : {
+    "noWikiExtract": "ウィキペディアに紹介が見つかりませんでした。",
+    "intro": "ウィキペディアの紹介"
+  },
+  "openNow": "営業中",
+  "closedNow": "閉店中"
 }

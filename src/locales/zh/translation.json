@@ -92,7 +92,25 @@
     "friday": "星期五",
     "saturday": "星期六"
   },
-   "time": {
+  "time": {
     "hourLabel": "{{hour}}時"
-  }
+  },
+  "error": {
+    "unknown": "載入附近地點時發生未知錯誤",
+    "googleMapsTimeout": "Google Maps API 載入超時。請檢查網路連線和 API key。"
+  },
+  "retry": "重試",
+  "loading": "正在載入附近地點...",
+  "explore": {
+    "openingHours": "營業時間",
+    "reviews": "評論",
+    "navigate": "前往 Google 地圖",
+    "playDescription": "播放介紹"
+  },
+  "wikipedia": {
+    "noWikiExtract": "在維基百科上找不到相關介紹。",
+    "intro": "維基百科介紹"
+  },
+  "openNow": "營業中",
+  "closedNow": "休息中"
 }
