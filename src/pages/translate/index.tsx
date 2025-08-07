@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React,  { useRef, useState, useEffect}  from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { FiMic } from 'react-icons/fi';
+import RecordingOverlay from "../../components/translation/RecordingOverlay";
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -89,12 +91,34 @@ const PlayButton = styled.button`
   cursor: pointer;
 `;
 
+const MicButton = styled.button<{ $listening: boolean }>`
+  border-radius: 50%;
+  border: none;
+  background-color: ${({ $listening }) => ($listening ? '#ff4d4f' : '#007bff')};
+  color: white;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${({ listening }) => (listening ? '#ff7875' : '#0056b3')};
+  }
+`;
+
 const TranslationPage = () => {
+  const recognitionRef = useRef<any>(null);
   const [fromLang, setFromLang] = useState('en'); // 來源語言
   const [toLang, setToLang] = useState('ja'); // 目標語言
   const [inputText, setInputText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [hasSpokenOnce, setHasSpokenOnce] = useState(false); // 是否已經辨識過一次
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const handleTranslate = async () => {
     if (!inputText) return; // 如果輸入是空的就不翻譯
@@ -116,6 +140,69 @@ const TranslationPage = () => {
     }
   };
 
+  const handleSpeechInput = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert('您的瀏覽器不支援語音辨識。');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = fromLang;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setListening(true);
+      setShowOverlay(true); // 顯示遮罩
+      if (hasSpokenOnce) {
+        setInputText('');
+      }
+    };
+
+    recognition.onresult = (event: any) => {
+      const speechResult = event.results[0][0].transcript;
+      setInputText(speechResult);
+      setHasSpokenOnce(true);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('語音辨識錯誤:', event.error);
+      setListening(false);
+      setShowOverlay(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  const handleStopRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setShowOverlay(false);
+      setListening(false);
+      handleTranslate(); // 說完話直接翻譯
+    }
+  };
+
+  const handleSpeak = (text: string, lang: string) => {
+    if (!window.speechSynthesis) {
+      alert('此瀏覽器不支援語音播放。');
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+
   return (
     <Wrapper>
       <SelectorRow>
@@ -131,6 +218,10 @@ const TranslationPage = () => {
         </select>
       </SelectorRow>
 
+      <MicButton onClick={handleSpeechInput} $listening={listening}>
+        <FiMic />
+      </MicButton>
+
       <InputArea
         placeholder="Type or speak something..."
         value={inputText}
@@ -143,6 +234,11 @@ const TranslationPage = () => {
       
       <OutputArea>
         {translatedText}
+        {translatedText && (
+          <PlayButton onClick={() => handleSpeak(translatedText, toLang)}>
+            ▶
+          </PlayButton>
+        )}
       </OutputArea>
 
       <PhraseList>
@@ -159,6 +255,8 @@ const TranslationPage = () => {
           </PhraseItem>
         ))}
       </PhraseList>
+
+      {showOverlay && <RecordingOverlay onStop={handleStopRecording} />}
     </Wrapper>
   );
 };
