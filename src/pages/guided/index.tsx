@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { fetchNearbyPlaces } from '../../utils/googleMapsUtils';
+import { fetchNearbyPlaces, ensureGoogleMapsLoaded } from '../../utils/googleMapsUtils';
 
 const ExploreContainer = styled.div`
   max-width: 800px;
@@ -94,13 +94,14 @@ const Guided: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!currentLocation) return;
+    if (!currentLocation?.lat || !currentLocation?.lng) return;
 
     const fetchNearbyAndDetails = async () => {
       setLoading(true);
       setError(null);
 
       try {
+        await ensureGoogleMapsLoaded();
         const results = await fetchNearbyPlaces(
           currentLocation,
           'tourist_attraction',
@@ -115,10 +116,8 @@ const Guided: React.FC = () => {
           return;
         }
 
-        // 先暫存簡單資料，避免空白
         setPlace(results[0]);
 
-        // 用 PlacesService.getDetails 取詳細資料（包含 isOpen() 及 weekday_text）
         const service = new window.google.maps.places.PlacesService(
           document.createElement('div')
         );
@@ -132,7 +131,6 @@ const Guided: React.FC = () => {
             ) {
               setPlace(detailedPlace);
             } else {
-              // 失敗就用原先資料
               console.warn('getDetails failed:', status);
             }
             setLoading(false);
@@ -276,13 +274,11 @@ const Guided: React.FC = () => {
       <Image src={imageUrl} alt={place.name || ''} />
       <InfoSection>
         <Title>{place.name}</Title>
-        {/* 營業時間列表（weekday_text） */}
         {place.opening_hours?.weekday_text ? (
           place.opening_hours.weekday_text.map((line, i) => <Text key={i}>{line}</Text>)
         ) : (
           <Text>{t('noOpeningHoursInfo')}</Text>
         )}
-        {/* 顯示是否營業多語系 */}
         <Text>{isOpenNow ? t('openNow') : t('closedNow')}</Text>
 
         <Text>
