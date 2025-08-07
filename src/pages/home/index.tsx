@@ -15,7 +15,7 @@ const Home = () => {
   const navigate = useNavigate(); 
 
   const handleButtonClick = () => {
-    navigate('/nearbyQuickNavigation');
+    navigate('/nearby');
   };
 
   const navItems = [
