@@ -1,0 +1,129 @@
+.wrapper {
+  padding: 2rem;
+  max-width: 37.5rem;
+  margin-top: 5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selectorRow {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.inputArea {
+  width: 100%;
+  height: 7.5rem;
+  padding: 0.625rem;
+  font-size: 1rem;
+  resize: none;
+  margin-bottom: 0.75rem;
+  background-color: #f0ede9;
+  color: #4a4a4a;
+}
+
+.translateButton {
+  padding: 0.5rem 1rem;
+  background-color: #a3b18a;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+}
+
+.translateButton:disabled {
+  background-color: #bcb8b1;
+  cursor: not-allowed;
+}
+
+.outputArea {
+  padding: 0.625rem;
+  background-color: #e9e5df;
+  font-size: 1.1rem;
+  border-radius: 0.25rem;
+  white-space: pre-wrap;
+  width: 100%;
+  height: 7.5rem;
+  margin-bottom: 0.75rem;
+  color: #4a4a4a;
+}
+
+.phraseList {
+  margin-top: 1.25rem;
+}
+
+.phraseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.phraseText {
+  font-weight: 500;
+  color: #6b705c;
+}
+
+.translatedText {
+  color: #8d8d8d;
+  font-size: 0.875rem;
+}
+
+.playButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.micButton {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: background-color 0.3s;
+  color: white;
+}
+
+.micButton.listening {
+  background-color: #d88c9a;
+}
+
+.micButton:not(.listening) {
+  background-color: #a3b18a;
+}
+
+.micButton:hover.listening {
+  background-color: #e0a3ad;
+}
+
+.micButton:hover:not(.listening) {
+  background-color: #87986a;
+}
+
+@media (max-width: 600px) {
+  .wrapper {
+    padding: 1rem;
+    margin-top: 6rem;
+  }
+
+  .inputArea,
+  .outputArea {
+    height: 6rem;
+  }
+
+  .translateButton {
+    width: 100%;
+  }
+}

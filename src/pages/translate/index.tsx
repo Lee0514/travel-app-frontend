@@ -1,5 +1,5 @@
 import React,  { useRef, useState, useEffect}  from 'react';
-import styled from 'styled-components';
+import styles from './translate.module.css';
 import axios from 'axios';
 import { FiMic } from 'react-icons/fi';
 import RecordingOverlay from "../../components/translation/RecordingOverlay";
@@ -13,101 +13,101 @@ const LANGUAGES = [
   { code: 'es', name: 'Spanish' },
 ];
 
-const Wrapper = styled.div`
-  padding: 20px;
-  max-width: 600px;
-  margin-top: 5rem;
-`;
+// const Wrapper = styled.div`
+//   padding: 20px;
+//   max-width: 600px;
+//   margin-top: 5rem;
+// `;
 
-const SelectorRow = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-`;
+// const SelectorRow = styled.div`
+//   display: flex;
+//   gap: 12px;
+//   margin-bottom: 12px;
+// `;
 
-const InputArea = styled.textarea`
-  width: 100%;
-  height: 120px;
-  padding: 10px;
-  font-size: 1rem;
-  resize: none;
-  margin-bottom: 12px;
-`;
+// const InputArea = styled.textarea`
+//   width: 100%;
+//   height: 120px;
+//   padding: 10px;
+//   font-size: 1rem;
+//   resize: none;
+//   margin-bottom: 12px;
+// `;
 
-const TranslateButton = styled.button`
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 16px;
+// const TranslateButton = styled.button`
+//   padding: 8px 16px;
+//   background-color: #007bff;
+//   color: white;
+//   border: none;
+//   font-size: 1rem;
+//   cursor: pointer;
+//   margin-bottom: 16px;
 
-  &:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-  }
-`;
+//   &:disabled {
+//     background-color: #999;
+//     cursor: not-allowed;
+//   }
+// `;
 
-const OutputArea = styled.div`
-  padding: 10px;
-  background-color: #f4f4f4;
-  font-size: 1.1rem;
-  border-radius: 4px;
-  white-space: pre-wrap;
+// const OutputArea = styled.div`
+//   padding: 10px;
+//   background-color: #f4f4f4;
+//   font-size: 1.1rem;
+//   border-radius: 4px;
+//   white-space: pre-wrap;
 
-  width: 100%;
-  height: 120px;
-  padding: 10px;
-  font-size: 1rem;
-  resize: none;
-  margin-bottom: 12px;
-`;
+//   width: 100%;
+//   height: 120px;
+//   padding: 10px;
+//   font-size: 1rem;
+//   resize: none;
+//   margin-bottom: 12px;
+// `;
 
-const PhraseList = styled.div`
-  margin-top: 20px;
-`;
+// const PhraseList = styled.div`
+//   margin-top: 20px;
+// `;
 
-const PhraseItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-`;
+// const PhraseItem = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   margin-bottom: 16px;
+// `;
 
-const PhraseText = styled.div`
-  font-weight: 500;
-`;
+// const PhraseText = styled.div`
+//   font-weight: 500;
+// `;
 
-const TranslatedText = styled.div`
-  color: gray;
-  font-size: 14px;
-`;
+// const TranslatedText = styled.div`
+//   color: gray;
+//   font-size: 14px;
+// `;
 
-const PlayButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-`;
+// const PlayButton = styled.button`
+//   background: none;
+//   border: none;
+//   font-size: 20px;
+//   cursor: pointer;
+// `;
 
-const MicButton = styled.button<{ $listening: boolean }>`
-  border-radius: 50%;
-  border: none;
-  background-color: ${({ $listening }) => ($listening ? '#ff4d4f' : '#007bff')};
-  color: white;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-bottom: 12px;
-  transition: background-color 0.3s;
+// const MicButton = styled.button<{ $listening: boolean }>`
+//   border-radius: 50%;
+//   border: none;
+//   background-color: ${({ $listening }) => ($listening ? '#ff4d4f' : '#007bff')};
+//   color: white;
+//   font-size: 24px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   margin-bottom: 12px;
+//   transition: background-color 0.3s;
 
-  &:hover {
-    background-color: ${({ listening }) => (listening ? '#ff7875' : '#0056b3')};
-  }
-`;
+//   &:hover {
+//     background-color: ${({ listening }) => (listening ? '#ff7875' : '#0056b3')};
+//   }
+// `;
 
 const TranslationPage = () => {
   const recognitionRef = useRef<any>(null);
@@ -155,7 +155,7 @@ const TranslationPage = () => {
 
     recognition.onstart = () => {
       setListening(true);
-      setShowOverlay(true); // 顯示遮罩
+      setShowOverlay(true);
       if (hasSpokenOnce) {
         setInputText('');
       }
@@ -175,6 +175,10 @@ const TranslationPage = () => {
 
     recognition.onend = () => {
       setListening(false);
+      setShowOverlay(false); // 自動關閉遮罩
+      if (hasSpokenOnce) {
+        handleTranslate();   // 說完就直接翻譯
+      }
     };
 
     recognitionRef.current = recognition;
@@ -186,7 +190,7 @@ const TranslationPage = () => {
       recognitionRef.current.stop();
       setShowOverlay(false);
       setListening(false);
-      handleTranslate(); // 說完話直接翻譯
+      handleTranslate();
     }
   };
 
@@ -204,8 +208,8 @@ const TranslationPage = () => {
 
 
   return (
-    <Wrapper>
-      <SelectorRow>
+    <div className={styles.wrapper}>
+      <div className={styles.selectorRow}>
         <select value={fromLang} onChange={(e) => setFromLang(e.target.value)}>
           {LANGUAGES.map((lang) => (
             <option key={lang.code} value={lang.code}>{lang.name}</option>
@@ -216,48 +220,59 @@ const TranslationPage = () => {
             <option key={lang.code} value={lang.code}>{lang.name}</option>
           ))}
         </select>
-      </SelectorRow>
+      </div>
 
-      <MicButton onClick={handleSpeechInput} $listening={listening}>
+      <button
+        onClick={handleSpeechInput}
+        className={`${styles.micButton} ${listening ? styles.listening : ''}`}
+      >
         <FiMic />
-      </MicButton>
+      </button>
 
-      <InputArea
+      <textarea
+        className={styles.inputArea}
         placeholder="Type or speak something..."
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
       />
 
-      <TranslateButton onClick={handleTranslate} disabled={loading}>
+      <button
+        className={styles.translateButton}
+        onClick={handleTranslate}
+        disabled={loading}
+      >
         {loading ? 'Translating...' : 'Translate'}
-      </TranslateButton>
-      
-      <OutputArea>
+      </button>
+
+      <div className={styles.outputArea}>
         {translatedText}
         {translatedText && (
-          <PlayButton onClick={() => handleSpeak(translatedText, toLang)}>
+          <button
+            className={styles.playButton}
+            onClick={() => handleSpeak(translatedText, toLang)}
+          >
             ▶
-          </PlayButton>
+          </button>
         )}
-      </OutputArea>
+      </div>
 
-      <PhraseList>
+      <div className={styles.phraseList}>
         {[
           { en: 'Hello', es: 'Hola' },
           { en: 'Thank you', es: 'Gracias' },
         ].map((phrase, index) => (
-          <PhraseItem key={index}>
+          <div key={index} className={styles.phraseItem}>
             <div>
-              <PhraseText>{phrase.en}</PhraseText>
-              <TranslatedText>{phrase.es}</TranslatedText>
+              <div className={styles.phraseText}>{phrase.en}</div>
+              <div className={styles.translatedText}>{phrase.es}</div>
             </div>
-            <PlayButton>▶</PlayButton>
-          </PhraseItem>
+            <button className={styles.playButton}>▶</button>
+          </div>
         ))}
-      </PhraseList>
+      </div>
 
       {showOverlay && <RecordingOverlay onStop={handleStopRecording} />}
-    </Wrapper>
+    </div>
   );
 };
 
