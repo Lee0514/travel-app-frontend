@@ -108,5 +108,7 @@
     "intro": "ウィキペディアの紹介"
   },
   "openNow": "営業中",
-  "closedNow": "閉店中"
+  "closedNow": "閉店中",
+  "status": "ステータス",
+  "reviews": "レビュー"
 }

@@ -108,5 +108,7 @@
     "intro": "Wikipedia Introduction"
   },
   "openNow": "Open Now",
-  "closedNow": "Closed Now"
+  "closedNow": "Closed Now",
+  "status": "Status",
+  "reviews": "Reviews"
 }

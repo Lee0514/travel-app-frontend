@@ -112,5 +112,7 @@
     "intro": "維基百科介紹"
   },
   "openNow": "營業中",
-  "closedNow": "休息中"
+  "closedNow": "休息中",
+  "status": "狀態",
+  "reviews": "評論"
 }

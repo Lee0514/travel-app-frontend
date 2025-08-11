@@ -30,7 +30,7 @@ const Text = styled.p`
 const Button = styled.button`
   margin-top: 1rem;
   border: none;
-  background-color: #007bff;
+  background-color: #6b4c3b;
   color: white;
   border-radius: 8px;
   cursor: pointer;
@@ -52,7 +52,31 @@ const WikiExtract = styled.p`
   color: #555;
 `;
 
+const StatusText = styled.span<{ isOpen: boolean }>`
+  color: ${({ isOpen }) => (isOpen ? 'green' : 'red')};
+  font-weight: bold;
+`;
+
+const Select = styled.select`
+  margin-top: 0.5rem;
+  padding: 0.3rem;
+  border-radius: 0.3rem;
+`;
+
 const centerDefault = { lat: 25.033964, lng: 121.564468 };
+
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371e3;
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a = Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
 
 const Guided: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -77,7 +101,7 @@ const Guided: React.FC = () => {
       (position) => {
         setCurrentLocation({
           lat: position.coords.latitude,
-          lng: position.coords.longitude,
+          lng: position.coords.longitude
         });
         setError(null);
       },
@@ -102,12 +126,7 @@ const Guided: React.FC = () => {
 
       try {
         await ensureGoogleMapsLoaded();
-        const results = await fetchNearbyPlaces(
-          currentLocation,
-          'tourist_attraction',
-          2000,
-          window.google.maps.places.RankBy.PROMINENCE
-        );
+        const results = await fetchNearbyPlaces(currentLocation, 'tourist_attraction', 2000, window.google.maps.places.RankBy.PROMINENCE);
 
         if (results.length === 0) {
           setError(t('noData'));
@@ -118,24 +137,16 @@ const Guided: React.FC = () => {
 
         setPlace(results[0]);
 
-        const service = new window.google.maps.places.PlacesService(
-          document.createElement('div')
-        );
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
 
-        service.getDetails(
-          { placeId: results[0].place_id! },
-          (detailedPlace, status) => {
-            if (
-              status === window.google.maps.places.PlacesServiceStatus.OK &&
-              detailedPlace
-            ) {
-              setPlace(detailedPlace);
-            } else {
-              console.warn('getDetails failed:', status);
-            }
-            setLoading(false);
+        service.getDetails({ placeId: results[0].place_id! }, (detailedPlace, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && detailedPlace) {
+            setPlace(detailedPlace);
+          } else {
+            console.warn('getDetails failed:', status);
           }
-        );
+          setLoading(false);
+        });
       } catch (e) {
         setError(e instanceof Error ? e.message : t('loadError'));
         setPlace(null);
@@ -146,12 +157,9 @@ const Guided: React.FC = () => {
     fetchNearbyAndDetails();
   }, [currentLocation, t]);
 
-  // 以下維持你原本抓 wiki 的部分
   async function fetchWikiTitleBySearch(keyword: string, lang: string): Promise<string | null> {
     const apiLang = lang === 'jp' ? 'ja' : lang.startsWith('zh') ? 'zh' : 'en';
-    const searchUrl = `https://${apiLang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
-      keyword
-    )}&format=json&origin=*`;
+    const searchUrl = `https://${apiLang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(keyword)}&format=json&origin=*`;
 
     const res = await fetch(searchUrl);
     if (!res.ok) throw new Error('Failed to fetch Wikipedia search');
@@ -163,15 +171,21 @@ const Guided: React.FC = () => {
     return null;
   }
 
-  async function fetchWikiExtractByTitle(title: string, lang: string): Promise<string> {
+  async function fetchWikiExtractByTitle(title: string, lang: string, placeLocation?: google.maps.LatLngLiteral): Promise<string> {
     const apiLang = lang === 'jp' ? 'ja' : lang.startsWith('zh') ? 'zh' : 'en';
-    const url = `https://${apiLang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
-      title
-    )}`;
+    const url = `https://${apiLang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
 
     const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch Wikipedia extract');
     const data = await res.json();
+
+    if (placeLocation && data.coordinates) {
+      const dist = getDistance(placeLocation.lat, placeLocation.lng, data.coordinates.lat, data.coordinates.lon);
+      if (dist > 1000) {
+        return '';
+      }
+    }
+
     return data.extract || '';
   }
 
@@ -186,12 +200,19 @@ const Guided: React.FC = () => {
       try {
         const title = await fetchWikiTitleBySearch(place.name!, lang);
         if (title) {
-          const extract = await fetchWikiExtractByTitle(title, lang);
-          setWikiExtract(extract || t('wikipedia.noWikiExtract'));
+          const extract = await fetchWikiExtractByTitle(title, lang, {
+            lat: place.geometry?.location?.lat() ?? 0,
+            lng: place.geometry?.location?.lng() ?? 0
+          });
+          if (extract) {
+            setWikiExtract(extract);
+          } else {
+            setWikiExtract(t('wikipedia.noWikiExtract'));
+          }
         } else {
           setWikiExtract(t('wikipedia.noWikiExtract'));
         }
-      } catch (error) {
+      } catch {
         setWikiExtract(t('wikipedia.noWikiExtract'));
       } finally {
         setWikiLoading(false);
@@ -261,11 +282,13 @@ const Guided: React.FC = () => {
       </ExploreContainer>
     );
 
-  const imageUrl = place.photos?.length
-    ? place.photos[0].getUrl({ maxWidth: 800 })
-    : 'https://via.placeholder.com/800x400?text=No+Image';
+  const imageUrl = place.photos?.length ? place.photos[0].getUrl({ maxWidth: 800 }) : 'https://via.placeholder.com/800x400?text=No+Image';
 
   const isOpenNow = place.opening_hours?.isOpen ? place.opening_hours.isOpen() : false;
+
+  const weekdayText = place.opening_hours?.weekday_text || [];
+  const todayIndex = new Date().getDay();
+  const todayText = weekdayText.length ? weekdayText[(todayIndex + 6) % 7] : null;
 
   return (
     <ExploreContainer>
@@ -274,12 +297,21 @@ const Guided: React.FC = () => {
       <Image src={imageUrl} alt={place.name || ''} />
       <InfoSection>
         <Title>{place.name}</Title>
-        {place.opening_hours?.weekday_text ? (
-          place.opening_hours.weekday_text.map((line, i) => <Text key={i}>{line}</Text>)
-        ) : (
-          <Text>{t('noOpeningHoursInfo')}</Text>
+
+        {/* 營業時間與狀態 */}
+        {todayText && <Text>{todayText}</Text>}
+        {weekdayText.length > 1 && (
+          <Select>
+            {weekdayText.map((line, i) => (
+              <option key={i} value={line}>
+                {line}
+              </option>
+            ))}
+          </Select>
         )}
-        <Text>{isOpenNow ? t('openNow') : t('closedNow')}</Text>
+        <Text>
+          {t('status')}: <StatusText isOpen={!!isOpenNow}>{isOpenNow ? t('openNow') : t('closedNow')}</StatusText>
+        </Text>
 
         <Text>
           {t('reviews')}: ⭐ {place.rating ?? '-'} ({place.user_ratings_total ?? '-'})
@@ -287,11 +319,12 @@ const Guided: React.FC = () => {
         <Text>{place.vicinity || place.formatted_address || ''}</Text>
         <Button onClick={openInGoogleMaps}>{t('explore.navigate')}</Button>
       </InfoSection>
+
       <InfoSection>
         <h3>{t('wikipedia.intro')}</h3>
         {wikiLoading ? <p>{t('loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
       </InfoSection>
-      <Button onClick={speakText} style={{ backgroundColor: '#007bff' }}>
+      <Button onClick={speakText} style={{ backgroundColor: '#6b4c3b' }}>
         {t('explore.playDescription')}
       </Button>
     </ExploreContainer>
