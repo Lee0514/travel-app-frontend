@@ -3,6 +3,7 @@ import styles from './translate.module.css';
 import axios from 'axios';
 import { FiMic } from 'react-icons/fi';
 import RecordingOverlay from "../../components/translation/RecordingOverlay";
+import CommonPhrases from '../../components/translation/CommonPhrases';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -159,20 +160,7 @@ const TranslationPage = () => {
         )}
       </div>
 
-      <div className={styles.phraseList}>
-        {[
-          { en: 'Hello', es: 'Hola' },
-          { en: 'Thank you', es: 'Gracias' },
-        ].map((phrase, index) => (
-          <div key={index} className={styles.phraseItem}>
-            <div>
-              <div className={styles.phraseText}>{phrase.en}</div>
-              <div className={styles.translatedText}>{phrase.es}</div>
-            </div>
-            <button className={styles.playButton}>▶</button>
-          </div>
-        ))}
-      </div>
+      <CommonPhrases lang={toLang} />
 
       {showOverlay && <RecordingOverlay onStop={handleStopRecording} />}
     </div>
