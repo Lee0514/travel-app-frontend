@@ -4,6 +4,7 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import { GrMapLocation } from 'react-icons/gr';
 import { useTranslation } from 'react-i18next';
 import NearbyListFilter from '../nearbyListFilter';
+import { waitForGoogleMaps, calculateDistance, fetchNearbyPlaces } from '../../utils/googleMapsUtils';
 
 interface PlaceResult extends google.maps.places.PlaceResult {
   geometry: {
@@ -51,7 +52,7 @@ const PlaceCard = styled.div`
 
 const PlaceInfo = styled.div`
   flex: 1;
-  min-width: 0; /* 重要！讓 flex 子元素能夠縮小 */
+  min-width: 0;
 `;
 
 const PlaceName = styled.h3`
@@ -90,9 +91,9 @@ const PlaceDistance = styled.p`
   margin: 0;
   font-size: 0.8rem;
   color: #555;
-  
-  small { 
-    color: #444; 
+
+  small {
+    color: #444;
     display: block;
   }
 
@@ -145,7 +146,7 @@ const MarkerIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* 防止圖標被壓縮 */
+  flex-shrink: 0;
 `;
 
 const ErrorMessage = styled.div`
@@ -167,41 +168,8 @@ const categories: Record<string, string[]> = {
 
 const categoryOrder = Object.keys(categories);
 
-const defaultImage = 'data:image/svg+xml,%3Csvg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="64" height="64" fill="%23e0e0e0"/%3E%3Ctext x="32" y="36" font-family="Arial" font-size="10" fill="%23666" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
-
-const waitForGoogleMaps = (): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if (window.google?.maps?.places && window.google?.maps?.geometry) {
-      resolve();
-      return;
-    }
-    
-    let attempts = 0;
-    const maxAttempts = 50;
-    
-    const check = setInterval(() => {
-      attempts++;
-      
-      if (window.google?.maps?.places && window.google?.maps?.geometry) {
-        clearInterval(check);
-        resolve();
-      } else if (attempts >= maxAttempts) {
-        clearInterval(check);
-        reject(new Error('Google Maps API 載入超時。請檢查網路連線和 API key。'));
-      }
-    }, 100);
-  });
-};
-
-const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-            Math.sin(dLng/2) * Math.sin(dLng/2);
-  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-};
+const defaultImage =
+  'data:image/svg+xml,%3Csvg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="64" height="64" fill="%23e0e0e0"/%3E%3Ctext x="32" y="36" font-family="Arial" font-size="10" fill="%23666" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
 
 const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocation }) => {
   const [placesByCategory, setPlacesByCategory] = useState<Record<string, PlaceResult[]>>({});
@@ -217,68 +185,38 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
     try {
       setIsLoading(true);
       setError(null);
-      
       await waitForGoogleMaps();
-      
-      const map = new window.google.maps.Map(document.createElement('div'));
-      const service = new window.google.maps.places.PlacesService(map);
-      
-      const resultsByCategory: Record<string, PlaceResult[]> = {};
-      
-      for (const [category, types] of Object.entries(categories)) {
-        const categoryResults: google.maps.places.PlaceResult[] = [];
-        
-        for (const type of types) {
-          await new Promise<void>((resolve) => {
-            const request: google.maps.places.PlaceSearchRequest = {
-              location: new google.maps.LatLng(location.lat, location.lng),
-              radius: 2000,
-              type: type as any
-            };
 
-            service.nearbySearch(request, (results, status) => {
-              if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-                categoryResults.push(...results);
-              } else if (status !== window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-                console.warn(`搜尋 ${type} 時狀態: ${status}`);
-              }
-              setTimeout(resolve, 100);
-            });
-          });
+      const resultsByCategory: Record<string, PlaceResult[]> = {};
+
+      for (const [category, types] of Object.entries(categories)) {
+        const allResults: PlaceResult[] = [];
+
+        for (const type of types) {
+          try {
+            const results = await fetchNearbyPlaces(location, type, 2000);
+            const filtered = results.filter((place): place is PlaceResult => !!place.geometry?.location);
+            allResults.push(...filtered);
+          } catch (e) {
+            console.warn(`fetchNearbyPlaces ${type} error:`, e);
+          }
         }
-        
-        const uniqueResults = Array.from(
-          new Map(categoryResults.map(place => [place.place_id, place])).values()
-        )
-        .filter((place): place is PlaceResult => {
-          if (!place.geometry?.location) return false;
-          
-          const distance = calculateDistance(
-            location.lat, 
-            location.lng, 
-            place.geometry.location.lat(), 
-            place.geometry.location.lng()
-          );
-          
-          return distance <= 2;
-        })
-        .sort((a, b) => {
-          const distA = calculateDistance(
-            location.lat, location.lng, 
-            a.geometry.location.lat(), 
-            a.geometry.location.lng()
-          );
-          const distB = calculateDistance(
-            location.lat, location.lng, 
-            b.geometry.location.lat(), 
-            b.geometry.location.lng()
-          );
-          return distA - distB;
-        });
-        
+
+        const uniqueResults = Array.from(new Map(allResults.map((place) => [place.place_id, place])).values())
+          .filter((place): place is PlaceResult => {
+            if (!place.geometry?.location) return false;
+            const distance = calculateDistance(location.lat, location.lng, place.geometry.location.lat(), place.geometry.location.lng());
+            return distance <= 2;
+          })
+          .sort((a, b) => {
+            const distA = calculateDistance(location.lat, location.lng, a.geometry.location.lat(), a.geometry.location.lng());
+            const distB = calculateDistance(location.lat, location.lng, b.geometry.location.lat(), b.geometry.location.lng());
+            return distA - distB;
+          });
+
         resultsByCategory[category] = uniqueResults;
       }
-      
+
       setPlacesByCategory(resultsByCategory);
     } catch (err) {
       console.error('載入附近地點時發生錯誤:', err);
@@ -290,44 +228,32 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
 
   useEffect(() => {
     if (!currentLocation) return;
-    
-    const shouldFetch = !lastFetchLocation.current || 
-      calculateDistance(
-        lastFetchLocation.current.lat, 
-        lastFetchLocation.current.lng, 
-        currentLocation.lat, 
-        currentLocation.lng
-      ) > 0.1;
-    
+
+    const shouldFetch = !lastFetchLocation.current || calculateDistance(lastFetchLocation.current.lat, lastFetchLocation.current.lng, currentLocation.lat, currentLocation.lng) > 0.1;
+
     if (shouldFetch) {
       fetchAllNearbyPlaces(currentLocation);
       lastFetchLocation.current = currentLocation;
     }
   }, [currentLocation, fetchAllNearbyPlaces]);
 
-  const filteredCategories = categoryOrder.filter(category => 
-    categoryFilter === 'All' || category === categoryFilter
-  );
+  const filteredCategories = categoryOrder.filter((category) => categoryFilter === 'All' || category === categoryFilter);
 
   return (
     <NearbyContainer>
-      <NearbyListFilter 
-        categories={categoryOrder} 
-        selectedCategory={categoryFilter} 
-        onChange={setCategoryFilter} 
-      />
-      
+      <NearbyListFilter categories={categoryOrder} selectedCategory={categoryFilter} onChange={setCategoryFilter} />
+
       {error && (
         <ErrorMessage>
           {error}
-          <button 
+          <button
             onClick={() => fetchAllNearbyPlaces(currentLocation)}
-            style={{ 
-              marginLeft: '1rem', 
-              padding: '0.25rem 0.5rem', 
-              background: '#c33', 
-              color: 'white', 
-              border: 'none', 
+            style={{
+              marginLeft: '1rem',
+              padding: '0.25rem 0.5rem',
+              background: '#c33',
+              color: 'white',
+              border: 'none',
               borderRadius: '0.25rem',
               cursor: 'pointer'
             }}
@@ -337,47 +263,36 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
         </ErrorMessage>
       )}
 
-      {filteredCategories.map(category => {
+      {filteredCategories.map((category) => {
         const places = placesByCategory[category];
         if (!places || places.length === 0) return null;
-        
+
         return (
           <CategoryBlock key={category}>
             <CategoryTitle>{t(`category.${category.toLowerCase()}`, category)}</CategoryTitle>
-            {places.map(place => (
+            {places.map((place) => (
               <PlaceCard key={place.place_id}>
                 <MarkerIcon>
                   <FaMapMarkerAlt />
                 </MarkerIcon>
                 <PlaceInfo>
                   <PlaceName>{place.name}</PlaceName>
-                  <PlaceType>
-                    {place.types && place.types.length > 0 ? getPlaceTypeTranslation(place.types[0]) : ''}
-                  </PlaceType>
+                  <PlaceType>{place.types && place.types.length > 0 ? getPlaceTypeTranslation(place.types[0]) : ''}</PlaceType>
                   <PlaceDistance>
                     <span>{place.vicinity || place.formatted_address}</span>
                     <small>
                       {t('distanceWithValue', {
-                        value: calculateDistance(
-                          currentLocation.lat, 
-                          currentLocation.lng, 
-                          place.geometry.location.lat(), 
-                          place.geometry.location.lng()
-                        ).toFixed(2)
+                        value: calculateDistance(currentLocation.lat, currentLocation.lng, place.geometry.location.lat(), place.geometry.location.lng()).toFixed(2)
                       })}
                     </small>
                   </PlaceDistance>
                 </PlaceInfo>
-                <MapIconLink 
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name || '')}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
+                <MapIconLink href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name || '')}`} target="_blank" rel="noopener noreferrer">
                   <GrMapLocation size={20} />
                 </MapIconLink>
-                <PlaceImage 
-                  src={place.photos?.length ? place.photos[0].getUrl() : defaultImage} 
-                  alt={place.name || ''} 
+                <PlaceImage
+                  src={place.photos?.length ? place.photos[0].getUrl() : defaultImage}
+                  alt={place.name || ''}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = defaultImage;
                   }}
@@ -388,12 +303,8 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
           </CategoryBlock>
         );
       })}
-      
-      {isLoading && (
-        <p style={{ margin: '1rem 0', color: '#888' }}>
-          {t('loading', '正在載入附近地點...')}
-        </p>
-      )}
+
+      {isLoading && <p style={{ margin: '1rem 0', color: '#888' }}>{t('loading')}</p>}
     </NearbyContainer>
   );
 };

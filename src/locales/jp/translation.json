@@ -1,4 +1,7 @@
 {
+  "public": {
+    "relocate": "再配置"
+  },
   "category": {
     "all": "すべて",
     "attraction": "観光地",
@@ -82,7 +85,6 @@
     "reenterNewPassword": "新しいパスワードをもう一度入力してください",
     "saveChanges": "変更を保存"
   },
-  "relocate": "再配置",
   "weekday": {
     "sunday": "日曜日",
     "monday": "月曜日",
@@ -95,7 +97,25 @@
   "time": {
     "hourLabel": "{{hour}}時"
   },
-   "translate": {
+  "retry": "再試行",
+  "loading": "読み込み中...",
+  "explore": {
+    "openingHours": "営業時間",
+    "reviews": "レビュー",
+    "navigate": "Googleマップで開く",
+    "playDescription": "説明を再生",
+    "openNow": "営業中",
+    "closedNow": "閉店中",
+    "status": "ステータス",
+    "geolocationNotSupported": "お使いのブラウザは位置情報取得に対応していません",
+    "geolocationPermissionDenied": "ユーザーが位置情報の許可を拒否しました",
+    "noData": "表示できるデータがありません"
+  },
+  "wikipedia": {
+    "noWikiExtract": "ウィキペディアに紹介が見つかりませんでした。",
+    "intro": "ウィキペディアの紹介"
+  },
+  "translate": {
     "typeOrSpeak": "何か入力するか話してください…",
     "translate": "翻訳",
     "translating": "翻訳中…"

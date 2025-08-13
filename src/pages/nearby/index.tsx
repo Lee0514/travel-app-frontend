@@ -45,7 +45,7 @@ const Nearby = () => {
         setLastUpdatedTime(Date.now());
       },
       () => {
-        toast.warning(t('relocate'), {
+        toast.warning(t('public.relocate'), {
           position: 'top-center',
           autoClose: 3000
         });
@@ -74,7 +74,7 @@ const Nearby = () => {
             cursor: 'pointer'
           }}
         >
-          📍 {t('relocate')}
+          📍 {t('public.relocate')}
         </button>
         <MapComponent location={currentLocation} />
         <NearbyListComponent currentLocation={currentLocation} />
