@@ -94,5 +94,10 @@
   },
   "time": {
     "hourLabel": "{{hour}}:00"
+  },
+  "translate": {
+    "typeOrSpeak": "Type or speak something...",
+    "translate": "Translate",
+    "translating": "Translating..."
   }
 }

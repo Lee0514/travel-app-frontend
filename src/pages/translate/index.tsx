@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FiMic } from 'react-icons/fi';
 import RecordingOverlay from "../../components/translation/RecordingOverlay";
 import CommonPhrases from '../../components/translation/CommonPhrases';
+import { useTranslation } from 'react-i18next';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -16,6 +17,7 @@ const LANGUAGES = [
 ];
 
 const TranslationPage = () => {
+  const { t } = useTranslation();
   const recognitionRef = useRef<any>(null);
   const [fromLang, setFromLang] = useState('en'); // 來源語言
   const [toLang, setToLang] = useState('ja'); // 目標語言
@@ -135,7 +137,7 @@ const TranslationPage = () => {
 
       <textarea
         className={styles.inputArea}
-        placeholder="Type or speak something..."
+        placeholder={t('translate.typeOrSpeak')}
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
       />
@@ -145,7 +147,7 @@ const TranslationPage = () => {
         onClick={handleTranslate}
         disabled={loading}
       >
-        {loading ? 'Translating...' : 'Translate'}
+        {loading ? t('translate.translating') : t('translate.translate')}
       </button>
 
       <div className={styles.outputArea}>
@@ -160,7 +162,7 @@ const TranslationPage = () => {
         )}
       </div>
 
-      <CommonPhrases lang={toLang} />
+      <CommonPhrases lang={toLang} sourceLang={fromLang} />
 
       {showOverlay && <RecordingOverlay onStop={handleStopRecording} />}
     </div>

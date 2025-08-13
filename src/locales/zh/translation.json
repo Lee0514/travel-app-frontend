@@ -94,5 +94,11 @@
   },
    "time": {
     "hourLabel": "{{hour}}時"
+  },
+  "translate": {
+    "typeOrSpeak": "輸入或說些什麼…",
+    "translate": "翻譯",
+    "translating": "翻譯中…"
+
   }
 }
