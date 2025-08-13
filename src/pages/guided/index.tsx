@@ -63,11 +63,6 @@ const WikiExtract = styled.p`
   color: #555;
 `;
 
-const StatusText = styled.span<{ $isOpen: boolean }>`
-  color: ${({ $isOpen }) => ($isOpen ? 'green' : 'red')};
-  font-weight: bold;
-`;
-
 const HoursContainer = styled.div`
   display: inline-block;
   min-width: 200px;
@@ -98,19 +93,6 @@ const ChevronIcon = styled.span`
 
 const centerDefault = { lat: 25.033964, lng: 121.564468 };
 
-function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371e3;
-  const φ1 = (lat1 * Math.PI) / 180;
-  const φ2 = (lat2 * Math.PI) / 180;
-  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
-  const a = Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
-}
-
 const Guided: React.FC = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -130,13 +112,9 @@ const Guided: React.FC = () => {
       setError(t('geolocationNotSupported'));
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCurrentLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
+      (pos) => {
+        setCurrentLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         setError(null);
         setPlace(null);
         setWikiExtract('');
@@ -157,29 +135,6 @@ const Guided: React.FC = () => {
 
   useEffect(() => {
     if (!currentLocation?.lat || !currentLocation?.lng) return;
-
-    const fetchNearbyAndDetails = async () => {
-      setLoading(true);
-      setError(null);
-      setPlace(null);
-
-      try {
-        await ensureGoogleMapsLoaded();
-        const results = await fetchNearbyPlaces(currentLocation, 'tourist_attraction', 2000, window.google.maps.places.RankBy.PROMINENCE);
-
-        if (results.length === 0) {
-          setError(t('noData'));
-          setPlace(null);
-          setLoading(false);
-          return;
-        }
-
-        setPlace(results[0]);
-
-        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
-
-        service.getDetails({ placeId: results[0].place_id! }, (detailedPlace, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK && detailedPlace) {
     const callbacks: FetchNearbyCallbacks = { setPlace, setError, setLoading };
     fetchNearbyAndDetails(currentLocation, callbacks, t);
   }, [currentLocation, t]);
