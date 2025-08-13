@@ -1,4 +1,7 @@
 {
+  "public": {
+    "relocate": "Relocate"
+  },
   "category": {
     "all": "All",
     "attraction": "View",
@@ -82,7 +85,6 @@
     "reenterNewPassword": "Re-enter new password",
     "saveChanges": "Save Changes"
   },
-  "relocate": "Relocate",
   "weekday": {
     "sunday": "Sun.",
     "monday": "Mon.",

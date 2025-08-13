@@ -1,95 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { fetchNearbyAndDetails, FetchNearbyCallbacks } from '../../utils/googleMapsPlaces';
 import { fetchWikiTitleBySearch, fetchWikiExtractByTitle } from '../../utils/googleMapsWiki';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-
-const ExploreContainer = styled.div`
-  max-width: 45rem;
-  margin: 5.5rem auto 1rem;
-  padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const ContentBox = styled.div`
-  width: 100%;
-  max-width: 40rem;
-  text-align: left;
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-`;
-
-const InfoSection = styled.div`
-  margin-top: 1.5rem;
-`;
-
-const Title = styled.h2`
-  margin-bottom: 0.5rem;
-`;
-
-const Text = styled.p`
-  margin: 0.25rem 0;
-`;
-
-const Button = styled.button`
-  margin-top: 1rem;
-  border: none;
-  background-color: #6b4c3b;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-`;
-
-const RelocateButton = styled.button`
-  margin: 1rem auto;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background-color: #333;
-  color: white;
-  border: none;
-  cursor: pointer;
-`;
-
-const WikiExtract = styled.p`
-  margin-top: 1rem;
-  font-style: italic;
-  color: #555;
-`;
-
-const HoursContainer = styled.div`
-  display: inline-block;
-  min-width: 200px;
-  max-width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  margin-top: 0.5rem;
-  cursor: pointer;
-`;
-
-const HoursHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const HoursList = styled.div`
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #eee;
-`;
-
-const ChevronIcon = styled.span`
-  margin-left: 1rem;
-  padding-top: 0.4rem;
-`;
+import styles from './Guided.module.css';
 
 const centerDefault = { lat: 25.033964, lng: 121.564468 };
 
@@ -145,45 +59,29 @@ const Guided: React.FC = () => {
         setWikiExtract('');
         return;
       }
-  
+
       setWikiLoading(true);
-  
-      const searchAndFetch = async (langCode: string, title: string) => {
-        try {
-          const searchRes = await fetch(
-            `https://${langCode}.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=search&srsearch=${encodeURIComponent(
-              title
-            )}`
-          );
-          const searchData = await searchRes.json();
-          if (searchData.query.search.length === 0) return null;
-  
-          const pageTitle = searchData.query.search[0].title;
-  
-          const summaryRes = await fetch(
-            `https://${langCode}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`
-          );
-          if (!summaryRes.ok) return null;
-          const summaryData = await summaryRes.json();
-          return summaryData.extract || null;
-        } catch {
-          return null;
-        }
+
+      const wikiLangMap: Record<string, string> = {
+        zh: 'zh',
+        en: 'en',
+        jp: 'ja',
       };
-  
-      let summary = await searchAndFetch('zh', place.name);
-      if (!summary) summary = await searchAndFetch('en', place.name);
-      if (!summary) summary = t('wikipedia.noWikiExtract');
-  
-      setWikiExtract(summary);
+      const wikiLang = wikiLangMap[lang] || 'zh';
+
+      try {
+        const title = await fetchWikiTitleBySearch(place.name, wikiLang);
+        const extract = title ? await fetchWikiExtractByTitle(title, wikiLang) : null;
+        setWikiExtract(extract || t('wikipedia.noWikiExtract'));
+      } catch {
+        setWikiExtract(t('wikipedia.noWikiExtract'));
+      }
+
       setWikiLoading(false);
     };
-  
+
     loadWiki();
-  }, [place, t]);
-  
-  
-  
+  }, [place?.name, lang, t]);
 
   const speakText = () => {
     if (isSpeaking) {
@@ -211,10 +109,12 @@ const Guided: React.FC = () => {
 
   if (loading || error || !place) {
     return (
-      <ExploreContainer>
+      <div className={styles.exploreContainer}>
         <p>{loading ? t('explore.loading') : error || t('explore.noData')}</p>
-        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('explore.relocate')}</RelocateButton>
-      </ExploreContainer>
+        <button className={styles.relocateButton} onClick={fetchCurrentLocation}>
+          📍 {t('public.relocate')}
+        </button>
+      </div>
     );
   }
 
@@ -223,44 +123,52 @@ const Guided: React.FC = () => {
   const todayText = weekdayText.length ? weekdayText[(new Date().getDay() + 6) % 7] : null;
 
   return (
-    <ExploreContainer>
-      <ContentBox>
-        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('rexplore.elocate')}</RelocateButton>
-        <Image src={imageUrl} alt={place.name || ''} />
-        <InfoSection>
-          <Title>{place.name}</Title>
+    <div className={styles.exploreContainer}>
+      <div className={styles.contentBox}>
+        <button className={styles.relocateButton} onClick={fetchCurrentLocation}>
+          📍 {t('public.relocate')}
+        </button>
+
+        <img className={styles.image} src={imageUrl} alt={place.name || ''} />
+
+        <div className={styles.infoSection}>
+          <h2 className={styles.title}>{place.name}</h2>
 
           {weekdayText.length > 0 && (
-            <HoursContainer onClick={() => setIsHoursExpanded((prev) => !prev)}>
-              <HoursHeader>
-                <Text>{todayText}</Text>
-                <ChevronIcon>{isHoursExpanded ? <FaChevronUp /> : <FaChevronDown />}</ChevronIcon>
-              </HoursHeader>
+            <div className={styles.hoursContainer} onClick={() => setIsHoursExpanded((prev) => !prev)}>
+              <div className={styles.hoursHeader}>
+                <p>{todayText}</p>
+                <span className={styles.chevronIcon}>{isHoursExpanded ? <FaChevronUp /> : <FaChevronDown />}</span>
+              </div>
               {isHoursExpanded && (
-                <HoursList>
+                <div className={styles.hoursList}>
                   {weekdayText.map((line, i) => (
-                    <Text key={i}>{line}</Text>
+                    <p key={i}>{line}</p>
                   ))}
-                </HoursList>
+                </div>
               )}
-            </HoursContainer>
+            </div>
           )}
 
-          <Text>
+          <p>
             {t('explore.reviews')}: ⭐ {place.rating ?? '-'} ({place.user_ratings_total ?? '-'})
-          </Text>
-          <Text>{place.vicinity || place.formatted_address || ''}</Text>
-          <Button onClick={openInGoogleMaps}>{t('explore.navigate')}</Button>
-        </InfoSection>
+          </p>
+          <p>{place.vicinity || place.formatted_address || ''}</p>
+          <button className={styles.button} onClick={openInGoogleMaps}>
+            {t('explore.navigate')}
+          </button>
+        </div>
 
-        <InfoSection>
+        <div className={styles.infoSection}>
           <h3>{t('wikipedia.intro')}</h3>
-          {wikiLoading ? <p>{t('explore.loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
-        </InfoSection>
+          {wikiLoading ? <p>{t('explore.loading')}</p> : <p className={styles.wikiExtract}>{wikiExtract}</p>}
+        </div>
 
-        <Button onClick={speakText}>{t('explore.playDescription')}</Button>
-      </ContentBox>
-    </ExploreContainer>
+        <button className={styles.button} onClick={speakText}>
+          {t('explore.playDescription')}
+        </button>
+      </div>
+    </div>
   );
 };
 

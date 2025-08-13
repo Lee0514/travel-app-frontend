@@ -1,4 +1,7 @@
 {
+  "public": {
+    "relocate": "再配置"
+  },
   "category": {
     "all": "すべて",
     "attraction": "観光地",
@@ -82,7 +85,6 @@
     "reenterNewPassword": "新しいパスワードをもう一度入力してください",
     "saveChanges": "変更を保存"
   },
-  "relocate": "再配置",
   "weekday": {
     "sunday": "日曜日",
     "monday": "月曜日",

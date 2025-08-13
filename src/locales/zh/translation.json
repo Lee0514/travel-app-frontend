@@ -1,4 +1,7 @@
 {
+  "public": {
+    "relocate": "重新定位"
+  },
   "category": {
     "all": "全部",
     "attraction": "景點",
@@ -82,7 +85,6 @@
     "reenterNewPassword": "再次輸入新密碼",
     "saveChanges": "儲存變更"
   },
-  "relocate": "重新定位",
   "weekday": {
     "sunday": "星期日",
     "monday": "星期一",
