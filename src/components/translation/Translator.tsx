@@ -22,7 +22,6 @@ const InputArea = styled.textarea`
   padding: 0.625rem;
   font-size: 1rem;
   resize: none;
-  margin-bottom: 0.75rem;
   background-color: #f0ede9;
   color: #4a4a4a;
   border-radius: 0.25rem;
@@ -38,7 +37,6 @@ const TranslateButton = styled.button<{ disabled?: boolean }>`
   cursor: pointer;
   border-radius: 0.25rem;
   transition: background-color 0.3s;
-  margin-bottom: 1rem;
 
   &:hover {
     background-color: ${({ disabled }) => (disabled ? '#bcb8b1' : '#87986a')};
