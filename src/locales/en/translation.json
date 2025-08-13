@@ -101,17 +101,16 @@
     "openingHours": "Opening Hours",
     "reviews": "Reviews",
     "navigate": "Open in Google Maps",
-    "playDescription": "Play Description"
+    "playDescription": "Play Description",
+    "openNow": "Open Now",
+    "closedNow": "Closed Now",
+    "status": "Status",
+    "geolocationNotSupported": "Your browser does not support geolocation",
+    "geolocationPermissionDenied": "Geolocation permission denied by user",
+    "noData": "No data available"
   },
   "wikipedia": {
     "noWikiExtract": "No Wikipedia introduction found.",
     "intro": "Wikipedia Introduction"
-  },
-  "openNow": "Open Now",
-  "closedNow": "Closed Now",
-  "status": "Status",
-  "reviews": "Reviews",
-  "geolocationNotSupported": "Your browser does not support geolocation",
-  "geolocationPermissionDenied": "Geolocation permission denied by user",
-  "noData": "No data available"
+  }
 }

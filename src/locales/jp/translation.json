@@ -101,17 +101,16 @@
     "openingHours": "営業時間",
     "reviews": "レビュー",
     "navigate": "Googleマップで開く",
-    "playDescription": "説明を再生"
+    "playDescription": "説明を再生",
+    "openNow": "営業中",
+    "closedNow": "閉店中",
+    "status": "ステータス",
+    "geolocationNotSupported": "お使いのブラウザは位置情報取得に対応していません",
+    "geolocationPermissionDenied": "ユーザーが位置情報の許可を拒否しました",
+    "noData": "表示できるデータがありません"
   },
-  "wikipedia" : {
+  "wikipedia": {
     "noWikiExtract": "ウィキペディアに紹介が見つかりませんでした。",
     "intro": "ウィキペディアの紹介"
-  },
-  "openNow": "営業中",
-  "closedNow": "閉店中",
-  "status": "ステータス",
-  "reviews": "レビュー",
-  "geolocationNotSupported": "お使いのブラウザは位置情報取得に対応していません",
-  "geolocationPermissionDenied": "ユーザーが位置情報の許可を拒否しました",
-  "noData": "表示できるデータがありません"
+  }
 }

@@ -109,7 +109,7 @@ const Guided: React.FC = () => {
 
   const fetchCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setError(t('geolocationNotSupported'));
+      setError(t('explore.geolocationNotSupported'));
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -120,7 +120,7 @@ const Guided: React.FC = () => {
         setWikiExtract('');
       },
       () => {
-        setError(t('geolocationPermissionDenied'));
+        setError(t('explore.geolocationPermissionDenied'));
         setCurrentLocation(centerDefault);
         setPlace(null);
         setWikiExtract('');
@@ -212,8 +212,8 @@ const Guided: React.FC = () => {
   if (loading || error || !place) {
     return (
       <ExploreContainer>
-        <p>{loading ? t('loading') : error || t('noData')}</p>
-        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('relocate')}</RelocateButton>
+        <p>{loading ? t('explore.loading') : error || t('explore.noData')}</p>
+        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('explore.relocate')}</RelocateButton>
       </ExploreContainer>
     );
   }
@@ -225,7 +225,7 @@ const Guided: React.FC = () => {
   return (
     <ExploreContainer>
       <ContentBox>
-        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('relocate')}</RelocateButton>
+        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('rexplore.elocate')}</RelocateButton>
         <Image src={imageUrl} alt={place.name || ''} />
         <InfoSection>
           <Title>{place.name}</Title>
@@ -247,7 +247,7 @@ const Guided: React.FC = () => {
           )}
 
           <Text>
-            {t('reviews')}: ⭐ {place.rating ?? '-'} ({place.user_ratings_total ?? '-'})
+            {t('explore.reviews')}: ⭐ {place.rating ?? '-'} ({place.user_ratings_total ?? '-'})
           </Text>
           <Text>{place.vicinity || place.formatted_address || ''}</Text>
           <Button onClick={openInGoogleMaps}>{t('explore.navigate')}</Button>
@@ -255,7 +255,7 @@ const Guided: React.FC = () => {
 
         <InfoSection>
           <h3>{t('wikipedia.intro')}</h3>
-          {wikiLoading ? <p>{t('loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
+          {wikiLoading ? <p>{t('explore.loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
         </InfoSection>
 
         <Button onClick={speakText}>{t('explore.playDescription')}</Button>
