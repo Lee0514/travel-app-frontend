@@ -109,7 +109,8 @@
     "status": "Status",
     "geolocationNotSupported": "Your browser does not support geolocation",
     "geolocationPermissionDenied": "Geolocation permission denied by user",
-    "noData": "No data available"
+    "noData": "No data available",
+    "loading": "Loading..."
   },
   "wikipedia": {
     "noWikiExtract": "No Wikipedia introduction found.",

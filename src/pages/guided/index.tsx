@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchNearbyAndDetails, FetchNearbyCallbacks } from '../../utils/googleMapsPlaces';
-import { fetchWikiTitleBySearch, fetchWikiExtractByTitle } from '../../utils/googleMapsWiki';
+import { fetchWikiTitlesBySearch, fetchWikiExtractByTitle, fetchWikiGeo } from '../../utils/googleMapsWiki';
+import { getDistance } from '../../utils/googleMapsUtils';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import styles from './Guided.module.css';
 
@@ -48,40 +49,71 @@ const Guided: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!currentLocation?.lat || !currentLocation?.lng) return;
+    if (!currentLocation.lat || !currentLocation.lng) return;
     const callbacks: FetchNearbyCallbacks = { setPlace, setError, setLoading };
     fetchNearbyAndDetails(currentLocation, callbacks, t);
   }, [currentLocation, t]);
 
   useEffect(() => {
     const loadWiki = async () => {
-      if (!place?.name) {
+      if (!place?.name || !place.geometry?.location) {
         setWikiExtract('');
         return;
       }
 
       setWikiLoading(true);
+      setWikiExtract('');
 
-      const wikiLangMap: Record<string, string> = {
-        zh: 'zh',
-        en: 'en',
-        jp: 'ja',
-      };
+      const wikiLangMap: Record<string, string> = { zh: 'zh', en: 'en', jp: 'ja' };
       const wikiLang = wikiLangMap[lang] || 'zh';
 
+      const noWikiTextMap: Record<string, string> = {
+        zh: '暫無維基百科資料，您可以參考 Google Maps 或其他旅遊網站了解更多資訊。',
+        en: 'No Wikipedia information available. You can check Google Maps or other travel sources for more details.',
+        jp: 'ウィキペディアの情報はありません。Googleマップや他の旅行情報をご確認ください。',
+      };
+
       try {
-        const title = await fetchWikiTitleBySearch(place.name, wikiLang);
-        const extract = title ? await fetchWikiExtractByTitle(title, wikiLang) : null;
-        setWikiExtract(extract || t('wikipedia.noWikiExtract'));
+        const searchName = place.name || place.vicinity || '';
+        if (!searchName) {
+          setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
+          setWikiLoading(false);
+          return;
+        }
+
+        const titles = await fetchWikiTitlesBySearch(searchName, wikiLang);
+        let matchedTitle: string | null = null;
+
+        for (const t of titles) {
+          const geo = await fetchWikiGeo(t, wikiLang, {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+          });
+          if (geo) {
+            matchedTitle = t;
+            break;
+          }
+        }
+
+        if (!matchedTitle) {
+          setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
+        } else {
+          const extract = await fetchWikiExtractByTitle(matchedTitle, wikiLang);
+          if (!extract || extract.length < 50) {
+            setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
+          } else {
+            setWikiExtract(extract);
+          }
+        }
       } catch {
-        setWikiExtract(t('wikipedia.noWikiExtract'));
+        setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
       }
 
       setWikiLoading(false);
     };
 
     loadWiki();
-  }, [place?.name, lang, t]);
+  }, [place, lang]);
 
   const speakText = () => {
     if (isSpeaking) {

@@ -113,7 +113,8 @@
     "status": "狀態",
     "geolocationNotSupported": "瀏覽器不支援地理定位",
     "geolocationPermissionDenied": "使用者拒絕地理定位權限",
-    "noData": "沒有資料可顯示"
+    "noData": "沒有資料可顯示",
+    "loading": "載入中..."
   },
   "wikipedia": {
     "noWikiExtract": "在維基百科上找不到相關介紹。",
