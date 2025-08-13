@@ -1,4 +1,7 @@
 {
+  "public": {
+    "relocate": "重新定位"
+  },
   "category": {
     "all": "全部",
     "attraction": "景點",
@@ -82,7 +85,6 @@
     "reenterNewPassword": "再次輸入新密碼",
     "saveChanges": "儲存變更"
   },
-  "relocate": "重新定位",
   "weekday": {
     "sunday": "星期日",
     "monday": "星期一",
@@ -105,12 +107,16 @@
     "openingHours": "營業時間",
     "reviews": "評論",
     "navigate": "前往 Google 地圖",
-    "playDescription": "播放介紹"
+    "playDescription": "播放介紹",
+    "openNow": "營業中",
+    "closedNow": "休息中",
+    "status": "狀態",
+    "geolocationNotSupported": "瀏覽器不支援地理定位",
+    "geolocationPermissionDenied": "使用者拒絕地理定位權限",
+    "noData": "沒有資料可顯示"
   },
   "wikipedia": {
     "noWikiExtract": "在維基百科上找不到相關介紹。",
     "intro": "維基百科介紹"
-  },
-  "openNow": "營業中",
-  "closedNow": "休息中"
+  }
 }
