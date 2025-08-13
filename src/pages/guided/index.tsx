@@ -2,11 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { fetchNearbyPlaces, ensureGoogleMapsLoaded } from '../../utils/googleMapsUtils';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const ExploreContainer = styled.div`
-  max-width: 800px;
-  margin: 1rem auto;
-  margin-top: 5.5rem;
+  max-width: 45rem;
+  margin: 5.5rem auto 1rem;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ContentBox = styled.div`
+  width: 100%;
+  max-width: 40rem;
+  text-align: left;
 `;
 
 const Image = styled.img`
@@ -52,15 +62,37 @@ const WikiExtract = styled.p`
   color: #555;
 `;
 
-const StatusText = styled.span<{ isOpen: boolean }>`
-  color: ${({ isOpen }) => (isOpen ? 'green' : 'red')};
+const StatusText = styled.span<{ $isOpen: boolean }>`
+  color: ${({ $isOpen }) => ($isOpen ? 'green' : 'red')};
   font-weight: bold;
 `;
 
-const Select = styled.select`
+const HoursContainer = styled.div`
+  display: inline-block;
+  min-width: 200px;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
   margin-top: 0.5rem;
-  padding: 0.3rem;
-  border-radius: 0.3rem;
+  cursor: pointer;
+`;
+
+const HoursHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const HoursList = styled.div`
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+`;
+
+const ChevronIcon = styled.span`
+  margin-left: 1rem;
+  padding-top: 0.4rem;
 `;
 
 const centerDefault = { lat: 25.033964, lng: 121.564468 };
@@ -89,6 +121,7 @@ const Guided: React.FC = () => {
   const [wikiExtract, setWikiExtract] = useState<string>('');
   const [wikiLoading, setWikiLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isHoursExpanded, setIsHoursExpanded] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const fetchCurrentLocation = () => {
@@ -104,10 +137,14 @@ const Guided: React.FC = () => {
           lng: position.coords.longitude
         });
         setError(null);
+        setPlace(null);
+        setWikiExtract('');
       },
       () => {
         setError(t('geolocationPermissionDenied'));
         setCurrentLocation(centerDefault);
+        setPlace(null);
+        setWikiExtract('');
       },
       { enableHighAccuracy: true }
     );
@@ -123,6 +160,7 @@ const Guided: React.FC = () => {
     const fetchNearbyAndDetails = async () => {
       setLoading(true);
       setError(null);
+      setPlace(null);
 
       try {
         await ensureGoogleMapsLoaded();
@@ -179,7 +217,10 @@ const Guided: React.FC = () => {
     if (!res.ok) throw new Error('Failed to fetch Wikipedia extract');
     const data = await res.json();
 
-    if (placeLocation && data.coordinates) {
+    if (placeLocation) {
+      if (!data.coordinates) {
+        return '';
+      }
       const dist = getDistance(placeLocation.lat, placeLocation.lng, data.coordinates.lat, data.coordinates.lon);
       if (dist > 1000) {
         return '';
@@ -283,50 +324,50 @@ const Guided: React.FC = () => {
     );
 
   const imageUrl = place.photos?.length ? place.photos[0].getUrl({ maxWidth: 800 }) : 'https://via.placeholder.com/800x400?text=No+Image';
-
-  const isOpenNow = place.opening_hours?.isOpen ? place.opening_hours.isOpen() : false;
-
   const weekdayText = place.opening_hours?.weekday_text || [];
   const todayIndex = new Date().getDay();
   const todayText = weekdayText.length ? weekdayText[(todayIndex + 6) % 7] : null;
 
   return (
     <ExploreContainer>
-      <RelocateButton onClick={fetchCurrentLocation}>📍 {t('relocate')}</RelocateButton>
+      <ContentBox>
+        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('relocate')}</RelocateButton>
+        <Image src={imageUrl} alt={place.name || ''} />
+        <InfoSection>
+          <Title>{place.name}</Title>
 
-      <Image src={imageUrl} alt={place.name || ''} />
-      <InfoSection>
-        <Title>{place.name}</Title>
+          {/* 營業時間與狀態 */}
+          {weekdayText.length > 0 && (
+            <HoursContainer onClick={() => setIsHoursExpanded((prev) => !prev)}>
+              <HoursHeader>
+                <Text>{todayText}</Text>
+                <ChevronIcon>{isHoursExpanded ? <FaChevronUp /> : <FaChevronDown />}</ChevronIcon>
+              </HoursHeader>
+              {isHoursExpanded && (
+                <HoursList>
+                  {weekdayText.map((line, i) => (
+                    <Text key={i}>{line}</Text>
+                  ))}
+                </HoursList>
+              )}
+            </HoursContainer>
+          )}
 
-        {/* 營業時間與狀態 */}
-        {todayText && <Text>{todayText}</Text>}
-        {weekdayText.length > 1 && (
-          <Select>
-            {weekdayText.map((line, i) => (
-              <option key={i} value={line}>
-                {line}
-              </option>
-            ))}
-          </Select>
-        )}
-        <Text>
-          {t('status')}: <StatusText isOpen={!!isOpenNow}>{isOpenNow ? t('openNow') : t('closedNow')}</StatusText>
-        </Text>
+          <Text>
+            {t('reviews')}: ⭐ {place.rating ?? '-'} ({place.user_ratings_total ?? '-'})
+          </Text>
+          <Text>{place.vicinity || place.formatted_address || ''}</Text>
+          <Button onClick={openInGoogleMaps}>{t('explore.navigate')}</Button>
+        </InfoSection>
 
-        <Text>
-          {t('reviews')}: ⭐ {place.rating ?? '-'} ({place.user_ratings_total ?? '-'})
-        </Text>
-        <Text>{place.vicinity || place.formatted_address || ''}</Text>
-        <Button onClick={openInGoogleMaps}>{t('explore.navigate')}</Button>
-      </InfoSection>
-
-      <InfoSection>
-        <h3>{t('wikipedia.intro')}</h3>
-        {wikiLoading ? <p>{t('loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
-      </InfoSection>
-      <Button onClick={speakText} style={{ backgroundColor: '#6b4c3b' }}>
-        {t('explore.playDescription')}
-      </Button>
+        <InfoSection>
+          <h3>{t('wikipedia.intro')}</h3>
+          {wikiLoading ? <p>{t('loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
+        </InfoSection>
+        <Button onClick={speakText} style={{ backgroundColor: '#6b4c3b' }}>
+          {t('explore.playDescription')}
+        </Button>
+      </ContentBox>
     </ExploreContainer>
   );
 };
