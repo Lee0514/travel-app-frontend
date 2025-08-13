@@ -118,6 +118,7 @@
   "translate": {
     "typeOrSpeak": "何か入力するか話してください…",
     "translate": "翻訳",
-    "translating": "翻訳中…"
+    "translating": "翻訳中…",
+    "browserNotSupported": "お使いのブラウザは音声認識に対応していません"
   }
 }

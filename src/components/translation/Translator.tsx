@@ -101,7 +101,7 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
         sourceLang: fromLang.toUpperCase(),
         targetLang: toLang.toUpperCase(),
       });
-      console.log('res', res);
+      
       const translated = res?.data?.translations[0]?.text;
       setTranslatedText(translated || textToTranslate);
     } catch (error) {

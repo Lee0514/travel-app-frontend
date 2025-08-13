@@ -4,6 +4,7 @@ import { FiMic } from 'react-icons/fi';
 import RecordingOverlay from '../../components/translation/RecordingOverlay';
 import CommonPhrases from '../../components/translation/CommonPhrases';
 import Translator from '../../components/translation/Translator';
+import { useTranslation } from 'react-i18next';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -16,6 +17,7 @@ const LANGUAGES = [
 ];
 
 const TranslationPage = () => {
+  const { t } = useTranslation();
   const recognitionRef = useRef<any>(null);
   const [fromLang, setFromLang] = useState('en');
   const [toLang, setToLang] = useState('zh-TW');
@@ -28,7 +30,7 @@ const TranslationPage = () => {
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('您的瀏覽器不支援語音辨識。');
+      alert(t('translate.browserNotSupported'));
       return;
     }
 
