@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { fetchNearbyPlaces, ensureGoogleMapsLoaded } from '../../utils/googleMapsUtils';
+import { fetchNearbyAndDetails, FetchNearbyCallbacks } from '../../utils/googleMapsPlaces';
+import { fetchWikiTitleBySearch, fetchWikiExtractByTitle } from '../../utils/googleMapsWiki';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const ExploreContainer = styled.div`
@@ -179,89 +180,55 @@ const Guided: React.FC = () => {
 
         service.getDetails({ placeId: results[0].place_id! }, (detailedPlace, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK && detailedPlace) {
-            setPlace(detailedPlace);
-          } else {
-            console.warn('getDetails failed:', status);
-          }
-          setLoading(false);
-        });
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t('loadError'));
-        setPlace(null);
-        setLoading(false);
-      }
-    };
-
-    fetchNearbyAndDetails();
+    const callbacks: FetchNearbyCallbacks = { setPlace, setError, setLoading };
+    fetchNearbyAndDetails(currentLocation, callbacks, t);
   }, [currentLocation, t]);
 
-  async function fetchWikiTitleBySearch(keyword: string, lang: string): Promise<string | null> {
-    const apiLang = lang === 'jp' ? 'ja' : lang.startsWith('zh') ? 'zh' : 'en';
-    const searchUrl = `https://${apiLang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(keyword)}&format=json&origin=*`;
-
-    const res = await fetch(searchUrl);
-    if (!res.ok) throw new Error('Failed to fetch Wikipedia search');
-    const data = await res.json();
-
-    if (data?.query?.search?.length > 0) {
-      return data.query.search[0].title;
-    }
-    return null;
-  }
-
-  async function fetchWikiExtractByTitle(title: string, lang: string, placeLocation?: google.maps.LatLngLiteral): Promise<string> {
-    const apiLang = lang === 'jp' ? 'ja' : lang.startsWith('zh') ? 'zh' : 'en';
-    const url = `https://${apiLang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Failed to fetch Wikipedia extract');
-    const data = await res.json();
-
-    if (placeLocation) {
-      if (!data.coordinates) {
-        return '';
-      }
-      const dist = getDistance(placeLocation.lat, placeLocation.lng, data.coordinates.lat, data.coordinates.lon);
-      if (dist > 1000) {
-        return '';
-      }
-    }
-
-    return data.extract || '';
-  }
-
   useEffect(() => {
-    if (!place?.name) {
-      setWikiExtract('');
-      return;
-    }
-
     const loadWiki = async () => {
-      setWikiLoading(true);
-      try {
-        const title = await fetchWikiTitleBySearch(place.name!, lang);
-        if (title) {
-          const extract = await fetchWikiExtractByTitle(title, lang, {
-            lat: place.geometry?.location?.lat() ?? 0,
-            lng: place.geometry?.location?.lng() ?? 0
-          });
-          if (extract) {
-            setWikiExtract(extract);
-          } else {
-            setWikiExtract(t('wikipedia.noWikiExtract'));
-          }
-        } else {
-          setWikiExtract(t('wikipedia.noWikiExtract'));
-        }
-      } catch {
-        setWikiExtract(t('wikipedia.noWikiExtract'));
-      } finally {
-        setWikiLoading(false);
+      if (!place?.name) {
+        setWikiExtract('');
+        return;
       }
+  
+      setWikiLoading(true);
+  
+      const searchAndFetch = async (langCode: string, title: string) => {
+        try {
+          const searchRes = await fetch(
+            `https://${langCode}.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=search&srsearch=${encodeURIComponent(
+              title
+            )}`
+          );
+          const searchData = await searchRes.json();
+          if (searchData.query.search.length === 0) return null;
+  
+          const pageTitle = searchData.query.search[0].title;
+  
+          const summaryRes = await fetch(
+            `https://${langCode}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`
+          );
+          if (!summaryRes.ok) return null;
+          const summaryData = await summaryRes.json();
+          return summaryData.extract || null;
+        } catch {
+          return null;
+        }
+      };
+  
+      let summary = await searchAndFetch('zh', place.name);
+      if (!summary) summary = await searchAndFetch('en', place.name);
+      if (!summary) summary = t('wikipedia.noWikiExtract');
+  
+      setWikiExtract(summary);
+      setWikiLoading(false);
     };
-
+  
     loadWiki();
-  }, [place, lang, t]);
+  }, [place, t]);
+  
+  
+  
 
   const speakText = () => {
     if (isSpeaking) {
@@ -274,59 +241,31 @@ const Guided: React.FC = () => {
     const langMap = { zh: 'zh-TW', en: 'en-US', jp: 'ja-JP' };
     const utterance = new SpeechSynthesisUtterance(wikiExtract);
     utterance.lang = langMap[lang as keyof typeof langMap] || 'zh-TW';
-
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      utteranceRef.current = null;
-    };
-
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-      utteranceRef.current = null;
-    };
-
+    utterance.onend = utterance.onerror = () => setIsSpeaking(false);
     utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);
     setIsSpeaking(true);
   };
 
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-    };
-  }, []);
+  useEffect(() => () => window.speechSynthesis.cancel(), []);
 
   const openInGoogleMaps = () => {
     if (!place) return;
-    const query = encodeURIComponent(place.name || '');
-    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name || '')}`);
   };
 
-  if (loading)
+  if (loading || error || !place) {
     return (
       <ExploreContainer>
-        <p>{t('loading')}</p>
-      </ExploreContainer>
-    );
-  if (error)
-    return (
-      <ExploreContainer>
-        <p>{error}</p>
+        <p>{loading ? t('loading') : error || t('noData')}</p>
         <RelocateButton onClick={fetchCurrentLocation}>📍 {t('relocate')}</RelocateButton>
       </ExploreContainer>
     );
-  if (!place)
-    return (
-      <ExploreContainer>
-        <p>{t('noData')}</p>
-        <RelocateButton onClick={fetchCurrentLocation}>📍 {t('relocate')}</RelocateButton>
-      </ExploreContainer>
-    );
+  }
 
-  const imageUrl = place.photos?.length ? place.photos[0].getUrl({ maxWidth: 800 }) : 'https://via.placeholder.com/800x400?text=No+Image';
+  const imageUrl = place.photos?.[0]?.getUrl({ maxWidth: 800 }) || 'https://via.placeholder.com/800x400?text=No+Image';
   const weekdayText = place.opening_hours?.weekday_text || [];
-  const todayIndex = new Date().getDay();
-  const todayText = weekdayText.length ? weekdayText[(todayIndex + 6) % 7] : null;
+  const todayText = weekdayText.length ? weekdayText[(new Date().getDay() + 6) % 7] : null;
 
   return (
     <ExploreContainer>
@@ -336,7 +275,6 @@ const Guided: React.FC = () => {
         <InfoSection>
           <Title>{place.name}</Title>
 
-          {/* 營業時間與狀態 */}
           {weekdayText.length > 0 && (
             <HoursContainer onClick={() => setIsHoursExpanded((prev) => !prev)}>
               <HoursHeader>
@@ -364,9 +302,8 @@ const Guided: React.FC = () => {
           <h3>{t('wikipedia.intro')}</h3>
           {wikiLoading ? <p>{t('loading')}</p> : <WikiExtract>{wikiExtract}</WikiExtract>}
         </InfoSection>
-        <Button onClick={speakText} style={{ backgroundColor: '#6b4c3b' }}>
-          {t('explore.playDescription')}
-        </Button>
+
+        <Button onClick={speakText}>{t('explore.playDescription')}</Button>
       </ContentBox>
     </ExploreContainer>
   );

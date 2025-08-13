@@ -110,5 +110,8 @@
   "openNow": "営業中",
   "closedNow": "閉店中",
   "status": "ステータス",
-  "reviews": "レビュー"
+  "reviews": "レビュー",
+  "geolocationNotSupported": "お使いのブラウザは位置情報取得に対応していません",
+  "geolocationPermissionDenied": "ユーザーが位置情報の許可を拒否しました",
+  "noData": "表示できるデータがありません"
 }

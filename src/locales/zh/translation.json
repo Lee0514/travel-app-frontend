@@ -114,5 +114,8 @@
   "openNow": "營業中",
   "closedNow": "休息中",
   "status": "狀態",
-  "reviews": "評論"
+  "reviews": "評論",
+  "geolocationNotSupported": "瀏覽器不支援地理定位",
+  "geolocationPermissionDenied": "使用者拒絕地理定位權限",
+  "noData": "沒有資料可顯示"
 }

@@ -110,5 +110,8 @@
   "openNow": "Open Now",
   "closedNow": "Closed Now",
   "status": "Status",
-  "reviews": "Reviews"
+  "reviews": "Reviews",
+  "geolocationNotSupported": "Your browser does not support geolocation",
+  "geolocationPermissionDenied": "Geolocation permission denied by user",
+  "noData": "No data available"
 }
