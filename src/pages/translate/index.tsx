@@ -1,10 +1,9 @@
 import React, { useRef, useState } from 'react';
 import styles from './translate.module.css';
-import axios from 'axios';
 import { FiMic } from 'react-icons/fi';
-import RecordingOverlay from "../../components/translation/RecordingOverlay";
+import RecordingOverlay from '../../components/translation/RecordingOverlay';
 import CommonPhrases from '../../components/translation/CommonPhrases';
-import { useTranslation } from 'react-i18next';
+import Translator from '../../components/translation/Translator';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -17,41 +16,12 @@ const LANGUAGES = [
 ];
 
 const TranslationPage = () => {
-  const { t } = useTranslation();
   const recognitionRef = useRef<any>(null);
-  const [fromLang, setFromLang] = useState('en'); // 來源語言
-  const [toLang, setToLang] = useState('ja'); // 目標語言
-  const [inputText, setInputText] = useState('');
-  const [translatedText, setTranslatedText] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [fromLang, setFromLang] = useState('en');
+  const [toLang, setToLang] = useState('zh-TW');
   const [listening, setListening] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
-
-  // 抽成一個可以用指定文字翻譯的函式
-  const handleTranslateWithText = async (textToTranslate: string) => {
-    if (!textToTranslate) return;// 如果輸入是空的就不翻譯
-
-    setLoading(true);
-    try {
-      const res = await axios.post('http://localhost:3001/translate', {
-        text: textToTranslate,
-        sourceLang: fromLang.toUpperCase(),
-        targetLang: toLang.toUpperCase(),
-      });
-
-      const translated = res?.data?.translations[0]?.text;
-      setTranslatedText(translated || textToTranslate);
-    } catch (error) {
-      console.error('翻譯錯誤:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 原本按鈕用的翻譯
-  const handleTranslate = () => {
-    handleTranslateWithText(inputText);
-  };
+  const [speechText, setSpeechText] = useState('');
 
   const handleSpeechInput = () => {
     const SpeechRecognition =
@@ -73,10 +43,8 @@ const TranslationPage = () => {
 
     recognition.onresult = (event: any) => {
       const speechResult = event.results[0][0].transcript;
-      setInputText(speechResult);
-
-      // 在這裡立刻翻譯當次語音
-      handleTranslateWithText(speechResult);
+      // 將辨識結果設置到 speechText 狀態
+      setSpeechText(speechResult);
     };
 
     recognition.onerror = (event: any) => {
@@ -87,7 +55,7 @@ const TranslationPage = () => {
 
     recognition.onend = () => {
       setListening(false);
-      setShowOverlay(false); // 自動關閉遮罩
+      setShowOverlay(false);
     };
 
     recognitionRef.current = recognition;
@@ -95,22 +63,9 @@ const TranslationPage = () => {
   };
 
   const handleStopRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      setShowOverlay(false);
-      setListening(false);
-    }
-  };
-
-  const handleSpeak = (text: string, lang: string) => {
-    if (!window.speechSynthesis) {
-      alert('此瀏覽器不支援語音播放。');
-      return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    window.speechSynthesis.speak(utterance);
+    if (recognitionRef.current) recognitionRef.current.stop();
+    setShowOverlay(false);
+    setListening(false);
   };
 
   return (
@@ -134,33 +89,8 @@ const TranslationPage = () => {
       >
         <FiMic />
       </button>
-
-      <textarea
-        className={styles.inputArea}
-        placeholder={t('translate.typeOrSpeak')}
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-      />
-
-      <button
-        className={styles.translateButton}
-        onClick={handleTranslate}
-        disabled={loading}
-      >
-        {loading ? t('translate.translating') : t('translate.translate')}
-      </button>
-
-      <div className={styles.outputArea}>
-        {translatedText}
-        {translatedText && (
-          <button
-            className={styles.playButton}
-            onClick={() => handleSpeak(translatedText, toLang)}
-          >
-            ▶
-          </button>
-        )}
-      </div>
+     
+      <Translator fromLang={fromLang} toLang={toLang} speechText={speechText} />
 
       <CommonPhrases lang={toLang} sourceLang={fromLang} />
 

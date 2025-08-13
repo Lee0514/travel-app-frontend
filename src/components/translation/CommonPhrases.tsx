@@ -39,7 +39,22 @@ const PlayButton = styled.button`
   border: none;
   cursor: pointer;
   font-size: 16px;
+
+  &:hover {
+    color: #87986a;
+  }
 `;
+
+// for speech synthesis
+const langMap: Record<string, string> = {
+  en: 'en-US',
+  'zh-TW': 'zh-TW',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+  fr: 'fr-FR',
+  de: 'de-DE',
+  es: 'es-ES',
+};
 
 const CommonPhrases = ({ lang, sourceLang }: CommonPhrasesProps) => {
   const [commonPhrases, setCommonPhrases] = useState<{ [key: string]: string }>({});
@@ -54,8 +69,9 @@ const CommonPhrases = ({ lang, sourceLang }: CommonPhrasesProps) => {
   const handlePlay = (text: string, voiceLang: string) => {
     if (!window.speechSynthesis) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    // 設定語言，跟來源或目標語言一致
-    utterance.lang = voiceLang;
+    // 設定播放語言，跟來源或目標語言一致
+    utterance.lang = langMap[voiceLang] || 'en-US';
+
     window.speechSynthesis.speak(utterance);
   };
 
