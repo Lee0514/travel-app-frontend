@@ -1,0 +1,70 @@
+.wrapper {
+  padding: 2rem;
+  max-width: 38rem;
+  margin: 5rem auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.selectorRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.selectorRow select {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+.micButton {
+  align-self: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: background-color 0.3s;
+  color: white;
+  background-color: #a3b18a;
+}
+
+.micButton.listening {
+  background-color: #d88c9a;
+}
+
+.micButton:hover:not(.listening) {
+  background-color: #87986a;
+}
+
+.micButton:hover.listening {
+  background-color: #e0a3ad;
+}
+
+/* 響應式 */
+@media (max-width: 600px) {
+  .wrapper {
+    padding: 1rem;
+    margin-top: 6rem;
+  }
+
+  .selectorRow {
+    flex-direction: column;
+  }
+
+  .micButton {
+    align-self: start;
+  }
+}

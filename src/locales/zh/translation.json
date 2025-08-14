@@ -119,5 +119,11 @@
   "wikipedia": {
     "noWikiExtract": "在維基百科上找不到相關介紹。",
     "intro": "維基百科介紹"
+  },
+  "translate": {
+    "typeOrSpeak": "輸入或說些什麼…",
+    "translate": "翻譯",
+    "translating": "翻譯中…",
+    "browserNotSupported": "您的瀏覽器不支援語音識別。"
   }
 }

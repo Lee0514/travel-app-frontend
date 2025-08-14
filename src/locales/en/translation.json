@@ -115,5 +115,11 @@
   "wikipedia": {
     "noWikiExtract": "No Wikipedia introduction found.",
     "intro": "Wikipedia Introduction"
+  },
+  "translate": {
+    "typeOrSpeak": "Type or speak something...",
+    "translate": "Translate",
+    "translating": "Translating...",
+    "browserNotSupported": "Your browser does not support speech recognition."
   }
 }
