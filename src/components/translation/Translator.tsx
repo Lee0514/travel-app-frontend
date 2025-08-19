@@ -96,7 +96,7 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
 
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3001/translate', {
+      const res = await axios.post('http://localhost:3001/api/translate', {
         text: textToTranslate,
         sourceLang: fromLang.toUpperCase(),
         targetLang: toLang.toUpperCase(),

@@ -61,7 +61,7 @@ const CommonPhrases = ({ lang, sourceLang }: CommonPhrasesProps) => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/phrases', { params: { lang } })
+      .get('http://localhost:3001/api/phrases', { params: { lang } })
       .then((res) => setCommonPhrases(res.data))
       .catch((err) => console.error('Error fetching phrases:', err));
   }, [lang]);
