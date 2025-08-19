@@ -53,15 +53,16 @@ const langMap: Record<string, string> = {
   ko: 'ko-KR',
   fr: 'fr-FR',
   de: 'de-DE',
-  es: 'es-ES',
+  es: 'es-ES'
 };
 
 const CommonPhrases = ({ lang, sourceLang }: CommonPhrasesProps) => {
   const [commonPhrases, setCommonPhrases] = useState<{ [key: string]: string }>({});
+  const backendUrl = import.meta.env.BACKEND_PUBLIC_API_BASE_URL || 'http://localhost:3001';
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/api/phrases', { params: { lang } })
+      .get(`https://travel-app-backend.vercel.app/api/phrases`, { params: { lang } })
       .then((res) => setCommonPhrases(res.data))
       .catch((err) => console.error('Error fetching phrases:', err));
   }, [lang]);

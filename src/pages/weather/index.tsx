@@ -39,9 +39,7 @@ const Weather: React.FC = () => {
     navigator.geolocation.getCurrentPosition(async (pos) => {
       const { latitude, longitude } = pos.coords;
       const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-      const res = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=10&aqi=no&alerts=no`
-      );
+      const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=10&aqi=no&alerts=no`);
       const data = await res.json();
       setLocation(data.location.name);
       setCurrentTemp(data.current.temp_c);
@@ -67,14 +65,7 @@ const Weather: React.FC = () => {
 
   return (
     <div className={styles.pageWrapper}>
-      <WeatherCard
-        location={location}
-        temp={currentTemp}
-        condition={condition}
-        icon={icon}
-        high={highTemp}
-        low={lowTemp}
-      />
+      <WeatherCard location={location} temp={currentTemp} condition={condition} icon={icon} high={highTemp} low={lowTemp} />
       <HourlyForecast hours={hourly} />
       <DailyForecast days={daily} />
     </div>
