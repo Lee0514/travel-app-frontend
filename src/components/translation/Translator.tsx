@@ -74,7 +74,7 @@ const langMap: Record<string, string> = {
   ko: 'ko-KR',
   fr: 'fr-FR',
   de: 'de-DE',
-  es: 'es-ES',
+  es: 'es-ES'
 };
 
 const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText }) => {
@@ -83,6 +83,7 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
   const [translatedText, setTranslatedText] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const backendUrl = import.meta.env.BACKEND_PUBLIC_API_BASE_URL || 'http://localhost:3001';
   // 當 speechText 變化就自動翻譯
   React.useEffect(() => {
     if (speechText) {
@@ -96,12 +97,12 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
 
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3001/api/translate', {
+      const res = await axios.post(`https://travel-app-backend.vercel.app/api/translate`, {
         text: textToTranslate,
         sourceLang: fromLang.toUpperCase(),
-        targetLang: toLang.toUpperCase(),
+        targetLang: toLang.toUpperCase()
       });
-      
+
       const translated = res?.data?.translations[0]?.text;
       setTranslatedText(translated || textToTranslate);
     } catch (error) {
@@ -126,11 +127,7 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
 
   return (
     <Wrapper>
-      <InputArea
-        placeholder={t('translate.typeOrSpeak')}
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-      />
+      <InputArea placeholder={t('translate.typeOrSpeak')} value={inputText} onChange={(e) => setInputText(e.target.value)} />
 
       <TranslateButton onClick={handleTranslate} disabled={loading}>
         {loading ? t('translate.translating') : t('translate.translate')}
@@ -138,11 +135,7 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
 
       <OutputArea>
         {translatedText}
-        {translatedText && (
-          <PlayButton onClick={() => handleSpeak(translatedText, toLang)}>
-            ▶
-          </PlayButton>
-        )}
+        {translatedText && <PlayButton onClick={() => handleSpeak(translatedText, toLang)}>▶</PlayButton>}
       </OutputArea>
     </Wrapper>
   );
