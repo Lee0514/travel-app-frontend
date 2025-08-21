@@ -50,3 +50,26 @@ export async function fetchNearbyAndDetails(
     setLoading(false);
   }
 }
+
+export async function getLatLngByPlaceName(placeName: string): Promise<google.maps.LatLngLiteral> {
+  await ensureGoogleMapsLoaded();
+
+  return new Promise((resolve, reject) => {
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+
+    const request: google.maps.places.TextSearchRequest = {
+      query: placeName,
+    };
+
+    service.textSearch(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+        const location = results[0].geometry?.location;
+        if (location) {
+          resolve({ lat: location.lat(), lng: location.lng() });
+          return;
+        }
+      }
+      reject(new Error('找不到地點或 Google Maps API 錯誤'));
+    });
+  });
+}

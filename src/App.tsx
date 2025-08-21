@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/home/index';
 import Translate from './pages/translate/index';
 import Header from './components/layouts/headers/Header';
-import Culture from './pages/culture/index';
 import Guided from './pages/guided/index';
 import Weather from './pages/weather/index';
 import Nearby from './pages/nearby/index';
@@ -20,7 +19,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/translate" element={<Translate />} />
-          <Route path="/culture" element={<Culture />} />
           <Route path="/guided" element={<Guided />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/nearby" element={<Nearby />} />
