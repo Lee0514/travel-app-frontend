@@ -14,9 +14,18 @@ const Container = styled.div`
   box-sizing: border-box;
   margin-top: 5rem;
 
-  @media (max-width: 900px) { padding: 1.25rem 3rem; margin-top: 6rem; }
-  @media (max-width: 600px) { padding: 0rem 0.5rem; margin-top: 6rem; }
-  @media (max-width: 300px) { padding: 0.75rem; margin-top: 1.5rem; }
+  @media (max-width: 900px) {
+    padding: 1.25rem 3rem;
+    margin-top: 6rem;
+  }
+  @media (max-width: 600px) {
+    padding: 0rem 0.5rem;
+    margin-top: 6rem;
+  }
+  @media (max-width: 300px) {
+    padding: 0.75rem;
+    margin-top: 1.5rem;
+  }
 `;
 
 const TopBar = styled.div`
@@ -48,7 +57,9 @@ const Nearby = () => {
     );
   };
 
-  useEffect(() => { fetchCurrentLocation(); }, []);
+  useEffect(() => {
+    fetchCurrentLocation();
+  }, []);
 
   const handleSearchNearby = async (query: string) => {
     try {
@@ -60,13 +71,10 @@ const Nearby = () => {
   };
 
   return (
-    <GoogleMapsProvider>
-      <Container>
+    <Container>
+      <GoogleMapsProvider>
         <TopBar>
-          <button
-            onClick={fetchCurrentLocation}
-            style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: '#333', color: 'white', border: 'none', cursor: 'pointer' }}
-          >
+          <button onClick={fetchCurrentLocation} style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: '#333', color: 'white', border: 'none', cursor: 'pointer' }}>
             📍 {t('public.relocate')}
           </button>
           <SearchBar onSearch={handleSearchNearby} />
@@ -74,8 +82,8 @@ const Nearby = () => {
         <MapComponent location={currentLocation} />
         <NearbyListComponent currentLocation={currentLocation} />
         <ToastContainer />
-      </Container>
-    </GoogleMapsProvider>
+      </GoogleMapsProvider>
+    </Container>
   );
 };
 
