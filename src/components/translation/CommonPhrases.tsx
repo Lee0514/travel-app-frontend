@@ -62,7 +62,7 @@ const CommonPhrases = ({ lang, sourceLang }: CommonPhrasesProps) => {
 
   useEffect(() => {
     axios
-      .get(`https://travel-app-backend.vercel.app/api/phrases`, { params: { lang } })
+      .get(`https://travel-app-backend-roan.vercel.app//api/phrases`, { params: { lang } })
       .then((res) => setCommonPhrases(res.data))
       .catch((err) => console.error('Error fetching phrases:', err));
   }, [lang]);

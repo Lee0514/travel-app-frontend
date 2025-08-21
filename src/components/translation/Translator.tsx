@@ -97,7 +97,7 @@ const Translator: React.FC<TranslatorProps> = ({ fromLang, toLang, speechText })
 
     setLoading(true);
     try {
-      const res = await axios.post(`https://travel-app-backend.vercel.app/api/translate`, {
+      const res = await axios.post(`https://travel-app-backend-roan.vercel.app//api/translate`, {
         text: textToTranslate,
         sourceLang: fromLang.toUpperCase(),
         targetLang: toLang.toUpperCase()
