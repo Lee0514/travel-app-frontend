@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styles from './weather.module.css';
 import WeatherCard from '../../components/weather/WeatherCard';
 import HourlyForecast from '../../components/weather/HourlyForecast';
 import DailyForecast from '../../components/weather/DailyForecast';
+
 export interface HourData {
   time: string;
   temp_c: number;
@@ -12,6 +14,7 @@ export interface HourData {
     icon: string;
   };
 }
+
 export interface DayData {
   date: string;
   day: {
@@ -25,7 +28,8 @@ export interface DayData {
   };
 }
 
-const Weather: React.FC = () => {
+const WeatherDetail: React.FC = () => {
+  const { location: locationParam } = useParams();
   const [location, setLocation] = useState('');
   const [currentTemp, setCurrentTemp] = useState<number | null>(null);
   const [condition, setCondition] = useState('');
@@ -36,11 +40,12 @@ const Weather: React.FC = () => {
   const [daily, setDaily] = useState<DayData[]>([]);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-      const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=10&aqi=no&alerts=no`);
+    const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+
+    const fetchWeather = async (query: string) => {
+      const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${query}&days=10&aqi=no&alerts=no`);
       const data = await res.json();
+
       setLocation(data.location.name);
       setCurrentTemp(data.current.temp_c);
       setCondition(data.current.condition.text);
@@ -60,8 +65,16 @@ const Weather: React.FC = () => {
       }
       setHourly(hours);
       setDaily(data.forecast.forecastday);
-    });
-  }, []);
+    };
+
+    if (locationParam === 'current') {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        fetchWeather(`${pos.coords.latitude},${pos.coords.longitude}`);
+      });
+    } else if (locationParam) {
+      fetchWeather(locationParam);
+    }
+  }, [locationParam]);
 
   return (
     <div className={styles.pageWrapper}>
@@ -72,4 +85,4 @@ const Weather: React.FC = () => {
   );
 };
 
-export default Weather;
+export default WeatherDetail;

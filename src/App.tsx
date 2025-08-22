@@ -3,7 +3,8 @@ import Home from './pages/home/index';
 import Translate from './pages/translate/index';
 import Header from './components/layouts/headers/Header';
 import Guided from './pages/guided/index';
-import Weather from './pages/weather/index';
+import WeatherOverview from './pages/weather/weatherOverview';
+import WeatherDetail from './pages/weather/weatherDetail';
 import Nearby from './pages/nearby/index';
 import Collection from './pages/collection/index';
 import UserLogin from './pages/userLogin/index';
@@ -20,7 +21,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/translate" element={<Translate />} />
           <Route path="/guided" element={<Guided />} />
-          <Route path="/weather" element={<Weather />} />
+          <Route path="/weather" element={<WeatherOverview />} />
+          <Route path="/weather/:location" element={<WeatherDetail />} />
           <Route path="/nearby" element={<Nearby />} />
           <Route path="/collection" element={<Collection />} />
           <Route path="/userLogin" element={<UserLogin />} />
