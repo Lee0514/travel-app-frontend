@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchNearbyAndDetails, FetchNearbyCallbacks } from '../../utils/googleMapsPlaces';
 import { fetchWikiTitlesBySearch, fetchWikiExtractByTitle, fetchWikiGeo } from '../../utils/googleMapsWiki';
-import { getDistance } from '../../utils/googleMapsUtils';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import SearchBar from '../../components/searchBar';
 import styles from './Guided.module.css';
 
 const centerDefault = { lat: 25.033964, lng: 121.564468 };
@@ -11,6 +11,8 @@ const centerDefault = { lat: 25.033964, lng: 121.564468 };
 const Guided: React.FC = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+
+  const noWikiTextMap = t('explore.noWikiText');
 
   const [currentLocation, setCurrentLocation] = useState(centerDefault);
   const [place, setPlace] = useState<google.maps.places.PlaceResult | null>(null);
@@ -48,73 +50,104 @@ const Guided: React.FC = () => {
     fetchCurrentLocation();
   }, []);
 
+  // 使用者位置抓附近景點
   useEffect(() => {
     if (!currentLocation.lat || !currentLocation.lng) return;
     const callbacks: FetchNearbyCallbacks = { setPlace, setError, setLoading };
     fetchNearbyAndDetails(currentLocation, callbacks, t);
   }, [currentLocation, t]);
 
-  useEffect(() => {
-    const loadWiki = async () => {
-      if (!place?.name || !place.geometry?.location) {
-        setWikiExtract('');
+  // 抓維基百科
+  const loadWikiByPlace = async (targetPlace: google.maps.places.PlaceResult) => {
+    if (!targetPlace?.name || !targetPlace.geometry?.location) {
+      setWikiExtract('');
+      return;
+    }
+
+    setWikiLoading(true);
+    setWikiExtract('');
+
+    const wikiLangMap: Record<string, string> = { zh: 'zh', en: 'en', jp: 'ja' };
+    const wikiLang = wikiLangMap[lang] || 'zh';
+
+    try {
+      const searchName = targetPlace.name || targetPlace.vicinity || '';
+      if (!searchName) {
+        setWikiExtract(noWikiTextMap);
+        setWikiLoading(false);
         return;
       }
 
-      setWikiLoading(true);
-      setWikiExtract('');
+      const titles = await fetchWikiTitlesBySearch(searchName, wikiLang);
+      let matchedTitle: string | null = null;
 
-      const wikiLangMap: Record<string, string> = { zh: 'zh', en: 'en', jp: 'ja' };
-      const wikiLang = wikiLangMap[lang] || 'zh';
-
-      const noWikiTextMap: Record<string, string> = {
-        zh: '暫無維基百科資料，您可以參考 Google Maps 或其他旅遊網站了解更多資訊。',
-        en: 'No Wikipedia information available. You can check Google Maps or other travel sources for more details.',
-        jp: 'ウィキペディアの情報はありません。Googleマップや他の旅行情報をご確認ください。',
-      };
-
-      try {
-        const searchName = place.name || place.vicinity || '';
-        if (!searchName) {
-          setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
-          setWikiLoading(false);
-          return;
+      for (const t of titles) {
+        const geo = await fetchWikiGeo(t, wikiLang, {
+          lat: targetPlace.geometry.location.lat(),
+          lng: targetPlace.geometry.location.lng()
+        });
+        if (geo) {
+          matchedTitle = t;
+          break;
         }
-
-        const titles = await fetchWikiTitlesBySearch(searchName, wikiLang);
-        let matchedTitle: string | null = null;
-
-        for (const t of titles) {
-          const geo = await fetchWikiGeo(t, wikiLang, {
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-          });
-          if (geo) {
-            matchedTitle = t;
-            break;
-          }
-        }
-
-        if (!matchedTitle) {
-          setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
-        } else {
-          const extract = await fetchWikiExtractByTitle(matchedTitle, wikiLang);
-          if (!extract || extract.length < 50) {
-            setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
-          } else {
-            setWikiExtract(extract);
-          }
-        }
-      } catch {
-        setWikiExtract(noWikiTextMap[lang] || noWikiTextMap.zh);
       }
 
-      setWikiLoading(false);
-    };
+      if (!matchedTitle) {
+        setWikiExtract(noWikiTextMap);
+      } else {
+        const extract = await fetchWikiExtractByTitle(matchedTitle, wikiLang);
+        if (!extract || extract.length < 50) {
+          setWikiExtract(noWikiTextMap);
+        } else {
+          setWikiExtract(extract);
+        }
+      }
+    } catch {
+      setWikiExtract(noWikiTextMap);
+    }
 
-    loadWiki();
+    setWikiLoading(false);
+  };
+
+  useEffect(() => {
+    if (place) loadWikiByPlace(place);
   }, [place, lang]);
 
+  //搜尋功能
+  const handleSearch = async (query: string) => {
+    setLoading(true);
+    setError(null);
+    setPlace(null);
+    setWikiExtract('');
+  
+    try {
+      const geocoder = new google.maps.Geocoder();
+      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) =>
+        geocoder.geocode({ address: query }, (res, status) => {
+          if (status === 'OK' && res) resolve(res);
+          else reject(status);
+        })
+      );
+  
+      if (!results.length) {
+        setError(t('explore.noData'));
+        setLoading(false);
+        return;
+      }
+  
+      const location = results[0].geometry.location;
+      const latLng = { lat: location.lat(), lng: location.lng() };
+  
+      const tempPlaceCallbacks: FetchNearbyCallbacks = { setPlace, setError, setLoading };
+      await fetchNearbyAndDetails(latLng, tempPlaceCallbacks, t);
+  
+    } catch (err) {
+      setError(t('explore.noData'));
+    }
+  
+    setLoading(false);
+  };
+  
   const speakText = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -157,9 +190,12 @@ const Guided: React.FC = () => {
   return (
     <div className={styles.exploreContainer}>
       <div className={styles.contentBox}>
-        <button className={styles.relocateButton} onClick={fetchCurrentLocation}>
-          📍 {t('public.relocate')}
-        </button>
+        <div className={styles.topBar}>
+          <button className={styles.relocateButton} onClick={fetchCurrentLocation}>
+            📍 {t('public.relocate')}
+          </button>
+          <SearchBar onSearch={handleSearch} />
+        </div>
 
         <img className={styles.image} src={imageUrl} alt={place.name || ''} />
 

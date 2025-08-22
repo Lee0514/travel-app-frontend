@@ -14,7 +14,6 @@
   "nav": {
     "home": "首頁",
     "collection": "收藏",
-    "culture": "文化",
     "guided": "導覽",
     "nearby": "附近",
     "weather": "天氣",
@@ -114,7 +113,9 @@
     "geolocationNotSupported": "瀏覽器不支援地理定位",
     "geolocationPermissionDenied": "使用者拒絕地理定位權限",
     "noData": "沒有資料可顯示",
-    "loading": "載入中..."
+    "loading": "載入中...",
+    "searchGuide": "搜尋景點名稱...",
+    "noWikiText": "暫無維基百科資料，您可以參考 Google Maps 或其他旅遊網站了解更多資訊。"
   },
   "wikipedia": {
     "noWikiExtract": "在維基百科上找不到相關介紹。",

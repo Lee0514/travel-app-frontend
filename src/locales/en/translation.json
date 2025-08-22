@@ -14,7 +14,6 @@
   "nav": {
     "home": "Home",
     "collection": "Collection",
-    "culture": "Culture",
     "guided": "Guided",
     "nearby": "Nearby",
     "weather": "Weather",
@@ -110,7 +109,9 @@
     "geolocationNotSupported": "Your browser does not support geolocation",
     "geolocationPermissionDenied": "Geolocation permission denied by user",
     "noData": "No data available",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "searchGuide": "Search for a place...",
+     "noWikiText": "No Wikipedia information available. You can check Google Maps or other travel sources for more details."
   },
   "wikipedia": {
     "noWikiExtract": "No Wikipedia introduction found.",

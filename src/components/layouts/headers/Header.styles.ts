@@ -114,29 +114,6 @@ export const RightSection = styled.div`
   }
 `;
 
-export const SearchBar = styled.input`
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  border: 1px solid #ccc;
-  outline: none;
-  margin-left: 1rem;
-  width: 180px;
-
-  @media (max-width: ${breakpoints.lg}) {
-    width: 140px;
-  }
-`;
-
-export const SearchIcon = styled.div`
-  display: flex;
-  border-radius: 50%;
-  margin-left: 1rem;
-
-  @media (min-width: ${breakpoints.sm}) {
-    display: flex;
-  }
-`;
-
 export const UserAvatar = styled.div`
   width: 32px;
   height: 30px;

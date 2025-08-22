@@ -38,7 +38,7 @@
 }
 
 .relocateButton {
-  margin: 1rem auto;
+  margin: 1rem 0;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   background-color: #333;
@@ -79,4 +79,11 @@
 .chevronIcon {
   margin-left: 1rem;
   padding-top: 0.4rem;
+}
+
+.topBar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
 }
