@@ -28,7 +28,7 @@ export interface DayData {
   };
 }
 
-const Weather: React.FC = () => {
+const WeatherDetail: React.FC = () => {
   const { location: locationParam } = useParams();
   const [location, setLocation] = useState('');
   const [currentTemp, setCurrentTemp] = useState<number | null>(null);
@@ -85,4 +85,4 @@ const Weather: React.FC = () => {
   );
 };
 
-export default Weather;
+export default WeatherDetail;

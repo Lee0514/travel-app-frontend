@@ -33,7 +33,14 @@
     "low": "Low",
     "clouds": "Clouds",
     "rain": "Rain",
-    "clear": "Clear"
+    "clear": "Clear",
+    "snow": "Snow",
+    "thunderstorm": "Thunderstorm",
+    "currentLocation": "Current Location",
+    "enterLocation": "Enter a location",
+    "search": "Search",
+    "userDeniedLocation": "User denied location access",
+    "cityNotFound": "No weather data found for this city"
   },
   "calendar": {
     "title": "Calendar",

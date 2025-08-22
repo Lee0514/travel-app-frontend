@@ -33,7 +33,14 @@
     "low": "最低",
     "clouds": "多雲",
     "rain": "下雨",
-    "clear": "晴朗"
+    "clear": "晴朗",
+    "snow": "雪",
+    "thunderstorm": "雷雨",
+    "currentLocation": "當前位置",
+    "enterLocation": "輸入地點或城市",
+    "search": "搜尋",
+    "userDeniedLocation": "使用者拒絕定位",
+    "cityNotFound": "查無該城市天氣資料"
   },
   "calendar": {
     "title": "行事曆",
