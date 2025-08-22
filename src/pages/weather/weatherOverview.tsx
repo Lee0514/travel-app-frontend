@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import WeatherCard from '@/components/weather/WeatherCard';
-import { FiMapPin } from 'react-icons/fi';
 import styles from './weather.module.css';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface WeatherData {
   location: string;
@@ -11,11 +11,12 @@ interface WeatherData {
   icon: string;
   high: number | null;
   low: number | null;
-  isCurrent?: boolean; // 新增欄位
+  isCurrent?: boolean;
 }
 
 const WeatherOverview = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [cities, setCities] = useState<string[]>(['Taipei', 'Tokyo']);
   const [input, setInput] = useState('');
@@ -64,7 +65,6 @@ const WeatherOverview = () => {
 
   useEffect(() => {
     const loadInitialCities = async () => {
-      // 先抓預設城市 Taipei / Tokyo
       for (const city of cities) {
         const data = await fetchWeather(city);
         if (data) {
@@ -72,12 +72,11 @@ const WeatherOverview = () => {
         }
       }
 
-      // 抓當前位置
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const query = `${position.coords.latitude},${position.coords.longitude}`;
-            const weatherData = await fetchWeather(query, true); // 設為 isCurrent
+            const weatherData = await fetchWeather(query, true);
             if (weatherData) {
               setCities((prev) => (prev.includes(weatherData.location) ? prev : [weatherData.location, ...prev]));
               setWeatherDataList((prev) => (prev.some((d) => d.location === weatherData.location) ? prev : [weatherData, ...prev]));
@@ -111,17 +110,21 @@ const WeatherOverview = () => {
       {/* 天氣卡片列表 */}
       <div className={styles.gridContainer}>
         {weatherDataList.map((data) => (
-          <WeatherCard
-            key={data.location}
-            location={data.location}
-            temp={data.temp}
-            condition={data.condition}
-            icon={data.icon}
-            high={data.high}
-            low={data.low}
-            onRemove={() => removeCity(data.location)}
-            isCurrent={data.isCurrent} // 傳給 WeatherCard
-          />
+          <div key={data.location} style={{ cursor: 'pointer' }} onClick={() => navigate(`/weather/${data.location}`)}>
+            <WeatherCard
+              location={data.location}
+              temp={data.temp}
+              condition={data.condition}
+              icon={data.icon}
+              high={data.high}
+              low={data.low}
+              onRemove={(e) => {
+                e.stopPropagation(); // 防止點擊刪除觸發跳轉
+                removeCity(data.location);
+              }}
+              isCurrent={data.isCurrent}
+            />
+          </div>
         ))}
       </div>
     </div>
