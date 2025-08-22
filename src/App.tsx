@@ -4,7 +4,6 @@ import Translate from './pages/translate/index';
 import Header from './components/layouts/headers/Header';
 import Culture from './pages/culture/index';
 import Guided from './pages/guided/index';
-import Weather from './pages/weather/index';
 import WeatherOverview from './pages/weather/weatherOverview';
 import WeatherDetail from './pages/weather/weatherDetail';
 import Nearby from './pages/nearby/index';
@@ -24,7 +23,6 @@ function App() {
           <Route path="/translate" element={<Translate />} />
           <Route path="/culture" element={<Culture />} />
           <Route path="/guided" element={<Guided />} />
-          {/* <Route path="/weather" element={<Weather />} /> */}
           <Route path="/weather" element={<WeatherOverview />} />
           <Route path="/weather/:location" element={<WeatherDetail />} />
           <Route path="/nearby" element={<Nearby />} />
