@@ -40,7 +40,9 @@
     "enterLocation": "Enter a location",
     "search": "Search",
     "userDeniedLocation": "User denied location access",
-    "cityNotFound": "No weather data found for this city"
+    "cityNotFound": "No weather data found for this city",
+    "addToList": "Add to List",
+    "back": "Back"
   },
   "calendar": {
     "title": "Calendar",

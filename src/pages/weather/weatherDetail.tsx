@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import styles from './weather.module.css';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import styles from './weatherDetail.module.css';
 import WeatherCard from '../../components/weather/WeatherCard';
 import HourlyForecast from '../../components/weather/HourlyForecast';
 import DailyForecast from '../../components/weather/DailyForecast';
+import { useTranslation } from 'react-i18next';
 
 export interface HourData {
   time: string;
@@ -29,7 +30,10 @@ export interface DayData {
 }
 
 const WeatherDetail: React.FC = () => {
+  const { t } = useTranslation();
   const { location: locationParam } = useParams();
+  const navigate = useNavigate();
+  const locationHook = useLocation();
   const [location, setLocation] = useState('');
   const [currentTemp, setCurrentTemp] = useState<number | null>(null);
   const [condition, setCondition] = useState('');
@@ -38,6 +42,11 @@ const WeatherDetail: React.FC = () => {
   const [lowTemp, setLowTemp] = useState<number | null>(null);
   const [hourly, setHourly] = useState<HourData[]>([]);
   const [daily, setDaily] = useState<DayData[]>([]);
+  const [isInList, setIsInList] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const params = new URLSearchParams(locationHook.search);
+  const isCurrentParam = params.get('current') === 'true';
 
   useEffect(() => {
     const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
@@ -65,6 +74,11 @@ const WeatherDetail: React.FC = () => {
       }
       setHourly(hours);
       setDaily(data.forecast.forecastday);
+
+      // 檢查是否在列表
+      const stored = JSON.parse(localStorage.getItem('cities') || '[]');
+      setIsInList(stored.includes(data.location.name));
+      setLoading(false);
     };
 
     if (locationParam === 'current') {
@@ -76,9 +90,30 @@ const WeatherDetail: React.FC = () => {
     }
   }, [locationParam]);
 
+  const addToList = () => {
+    const stored = JSON.parse(localStorage.getItem('cities') || '[]');
+    if (!stored.includes(location)) {
+      const updated = [...stored, location];
+      localStorage.setItem('cities', JSON.stringify(updated));
+      setIsInList(true);
+    }
+  };
+
   return (
     <div className={styles.pageWrapper}>
-      <WeatherCard location={location} temp={currentTemp} condition={condition} icon={icon} high={highTemp} low={lowTemp} />
+      {/* Header */}
+      <div className={styles.header}>
+        <button className={styles.backBtn} onClick={() => navigate(-1)}>
+          ← {t('weather.back')}
+        </button>
+        {!loading && !isInList && (
+          <button className={styles.addToListBtn} onClick={addToList}>
+            ＋ {t('weather.addToList')}
+          </button>
+        )}
+      </div>
+
+      <WeatherCard location={location} temp={currentTemp} condition={condition} icon={icon} high={highTemp} low={lowTemp} isCurrent={isCurrentParam} />
       <HourlyForecast hours={hourly} />
       <DailyForecast days={daily} />
     </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import WeatherCard from '@/components/weather/WeatherCard';
-import styles from './weather.module.css';
+import styles from './weatherOverview.module.css';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const WeatherOverview = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [cities, setCities] = useState<string[]>(['Taipei', 'Tokyo']);
+  const [cities, setCities] = useState<string[]>([]);
   const [input, setInput] = useState('');
   const [weatherDataList, setWeatherDataList] = useState<WeatherData[]>([]);
   const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
@@ -43,29 +43,49 @@ const WeatherOverview = () => {
     }
   };
 
-  const addCity = async () => {
+  const searchCity = async () => {
     const city = input.trim();
-    if (!city || cities.includes(city)) return;
+    if (!city) return;
 
+    // 如果城市已經在列表 → 直接跳 detail
+    if (cities.map((c) => c.toLowerCase()).includes(city.toLowerCase())) {
+      navigate(`/weather/${city}`);
+      return;
+    }
+
+    // 不在列表 → 先驗證是否存在
     const weatherData = await fetchWeather(city);
     if (!weatherData) {
       alert(t('weather.cityNotFound'));
       return;
     }
 
-    setCities((prev) => [...prev, weatherData.location]);
-    setWeatherDataList((prev) => [...prev, weatherData]);
+    // 跳轉 detail，但不加入列表
+    navigate(`/weather/${weatherData.location}`);
     setInput('');
   };
 
+  // 刪除城市時同步 localStorage
   const removeCity = (city: string) => {
-    setCities((prev) => prev.filter((c) => c !== city));
+    setCities((prev) => {
+      const updated = prev.filter((c) => c !== city);
+      localStorage.setItem('cities', JSON.stringify(updated));
+      return updated;
+    });
     setWeatherDataList((prev) => prev.filter((data) => data.location !== city));
   };
 
   useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('cities') || '[]');
+
+    if (!stored.length) {
+      localStorage.setItem('cities', JSON.stringify(['Taipei', 'Tokyo']));
+    }
+
+    setCities(stored);
+
     const loadInitialCities = async () => {
-      for (const city of cities) {
+      for (const city of stored) {
         const data = await fetchWeather(city);
         if (data) {
           setWeatherDataList((prev) => (prev.some((d) => d.location === data.location) ? prev : [...prev, data]));
@@ -78,8 +98,20 @@ const WeatherOverview = () => {
             const query = `${position.coords.latitude},${position.coords.longitude}`;
             const weatherData = await fetchWeather(query, true);
             if (weatherData) {
-              setCities((prev) => (prev.includes(weatherData.location) ? prev : [weatherData.location, ...prev]));
-              setWeatherDataList((prev) => (prev.some((d) => d.location === weatherData.location) ? prev : [weatherData, ...prev]));
+              if (!stored.includes(weatherData.location)) {
+                const updated = [weatherData.location, ...stored];
+                setCities(updated);
+                localStorage.setItem('cities', JSON.stringify(updated));
+              }
+              setWeatherDataList((prev) => {
+                const existsIndex = prev.findIndex((d) => d.location === weatherData.location);
+                if (existsIndex >= 0) {
+                  const newList = [...prev];
+                  newList[existsIndex] = weatherData; // 替換成最新的資料（含 isCurrent）
+                  return newList;
+                }
+                return [weatherData, ...prev];
+              });
             }
           },
           () => console.log('使用者拒絕定位')
@@ -88,6 +120,15 @@ const WeatherOverview = () => {
     };
 
     loadInitialCities();
+  }, []);
+
+  useEffect(() => {
+    const handleStorage = () => {
+      const stored = JSON.parse(localStorage.getItem('cities') || '["Taipei","Tokyo"]');
+      setCities(stored);
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
   return (
@@ -100,9 +141,9 @@ const WeatherOverview = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder={t('weather.enterLocation')}
           className={styles.searchInput}
-          onKeyDown={(e) => e.key === 'Enter' && addCity()}
+          onKeyDown={(e) => e.key === 'Enter' && searchCity()}
         />
-        <button onClick={addCity} className={styles.addButton}>
+        <button onClick={searchCity} className={styles.searchButton}>
           {t('weather.search')}
         </button>
       </div>
@@ -110,7 +151,7 @@ const WeatherOverview = () => {
       {/* 天氣卡片列表 */}
       <div className={styles.gridContainer}>
         {weatherDataList.map((data) => (
-          <div key={data.location} style={{ cursor: 'pointer' }} onClick={() => navigate(`/weather/${data.location}`)}>
+          <div key={data.location} style={{ cursor: 'pointer' }} onClick={() => navigate(`/weather/${data.location}?current=${data.isCurrent}`)}>
             <WeatherCard
               location={data.location}
               temp={data.temp}

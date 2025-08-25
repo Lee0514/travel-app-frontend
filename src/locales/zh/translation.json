@@ -40,7 +40,9 @@
     "enterLocation": "輸入地點或城市",
     "search": "搜尋",
     "userDeniedLocation": "使用者拒絕定位",
-    "cityNotFound": "查無該城市天氣資料"
+    "cityNotFound": "查無該城市天氣資料",
+    "addToList": "加入列表",
+    "back": "返回"
   },
   "calendar": {
     "title": "行事曆",

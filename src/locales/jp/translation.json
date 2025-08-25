@@ -40,7 +40,9 @@
     "enterLocation": "場所または都市を入力してください",
     "search": "検索",
     "userDeniedLocation": "ユーザーが位置情報の使用を拒否しました",
-    "cityNotFound": "この都市の天気情報が見つかりません"
+    "cityNotFound": "この都市の天気情報が見つかりません",
+    "addToList": "リストに追加",
+    "back": "戻る"
   },
   "calendar": {
     "title": "カレンダー",
