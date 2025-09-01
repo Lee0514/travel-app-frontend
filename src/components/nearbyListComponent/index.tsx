@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { GrMapLocation } from 'react-icons/gr';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import NearbyListFilter from '../nearbyListFilter';
 import { waitForGoogleMaps, calculateDistance, fetchNearbyPlaces } from '../../utils/googleMapsUtils';
@@ -19,6 +20,8 @@ interface CurrentLocation {
 
 interface NearbyListComponentProps {
   currentLocation: CurrentLocation;
+  onToggleFavorite?: (place: PlaceResult) => void;
+  isFavorited?: (placeId: string) => boolean;
 }
 
 const NearbyContainer = styled.div`
@@ -34,7 +37,7 @@ const NearbyContainer = styled.div`
 
 const PlaceCard = styled.div`
   display: grid;
-  grid-template-columns: 2rem 1fr auto auto;
+  grid-template-columns: 2rem 1fr auto auto auto;
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.8rem;
@@ -158,6 +161,20 @@ const ErrorMessage = styled.div`
   color: #c33;
 `;
 
+const HeartButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
 const categories: Record<string, string[]> = {
   Attraction: ['tourist_attraction', 'museum', 'park'],
   Hotel: ['lodging'],
@@ -171,7 +188,7 @@ const categoryOrder = Object.keys(categories);
 const defaultImage =
   'data:image/svg+xml,%3Csvg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="64" height="64" fill="%23e0e0e0"/%3E%3Ctext x="32" y="36" font-family="Arial" font-size="10" fill="%23666" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
 
-const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocation }) => {
+const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocation, onToggleFavorite, isFavorited }) => {
   const [placesByCategory, setPlacesByCategory] = useState<Record<string, PlaceResult[]>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -287,6 +304,11 @@ const NearbyListComponent: React.FC<NearbyListComponentProps> = ({ currentLocati
                     </small>
                   </PlaceDistance>
                 </PlaceInfo>
+
+                {/* ❤️ 收藏按鈕 */}
+                <HeartButton onClick={() => place.place_id && onToggleFavorite?.(place)}>
+                  {place.place_id && isFavorited?.(place.place_id) ? <AiFillHeart color="red" /> : <AiOutlineHeart color="red" />}
+                </HeartButton>
                 <MapIconLink href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name || '')}`} target="_blank" rel="noopener noreferrer">
                   <GrMapLocation size={20} />
                 </MapIconLink>

@@ -8,6 +8,23 @@ import { ToastContainer, toast } from 'react-toastify';
 import SearchBar from '../../components/searchBar';
 import { fetchNearbyAndDetails, getLatLngByPlaceName } from '../../utils/googleMapsPlaces';
 import 'react-toastify/dist/ReactToastify.css';
+import CollectionModal from '../../components/collectionModal';
+interface PlaceResult extends google.maps.places.PlaceResult {
+  geometry: {
+    location: google.maps.LatLng;
+  };
+}
+
+interface FavoriteItem {
+  id: string;
+  name: string;
+}
+
+interface Collection {
+  id: string;
+  name: string;
+  items: FavoriteItem[];
+}
 
 const Container = styled.div`
   padding: 1.5rem 5rem;
@@ -42,6 +59,22 @@ const Nearby = () => {
   const [currentLocation, setCurrentLocation] = useState(centerDefault);
   const [lastUpdatedTime, setLastUpdatedTime] = useState(Date.now());
 
+  // 收藏分類列表
+  const [collections, setCollections] = useState<Collection[]>(() => {
+    const stored = localStorage.getItem('collections');
+    return stored
+      ? JSON.parse(stored)
+      : [
+          { id: 'uncategorized', name: '未分類', items: [] }, // 預設未分類
+          { id: 'switzerland', name: '瑞士', items: [] },
+          { id: 'paris', name: '巴黎', items: [] },
+          { id: 'tokyo', name: '東京', items: [] }
+        ];
+  });
+
+  // modal state
+  const [collectionModal, setCollectionModal] = useState<PlaceResult | null>(null);
+
   const fetchCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -70,18 +103,101 @@ const Nearby = () => {
     }
   };
 
+  // 判斷是否已收藏（任意分類）
+  const isFavorited = (placeId: string) => collections.some((col) => col.items.some((item) => item.id === placeId));
+
+  // HeartButton 點擊 → 先加入未分類，同時打開 modal
+  const handleToggleFavorite = (place: PlaceResult) => {
+    console.log('place.place_id', place.place_id);
+    if (isFavorited(place.place_id!)) {
+      // 已收藏 → 取消收藏
+      setCollections((prev) => {
+        const updated = prev.map((col) => ({
+          ...col,
+          items: col.items.filter((i) => i.id !== place.place_id)
+        }));
+        localStorage.setItem('collections', JSON.stringify(updated));
+        return updated;
+      });
+    } else {
+      // 尚未收藏 → 開啟 modal，並先放到未分類
+      console.log('Open modal for:', place);
+      setCollectionModal(place);
+      setCollections((prev) => {
+        const updated = prev.map((col) =>
+          col.id === 'uncategorized'
+            ? {
+                ...col,
+                items: [...col.items, { id: place.place_id!, name: place.name || '' }]
+              }
+            : col
+        );
+        localStorage.setItem('collections', JSON.stringify(updated));
+        return updated;
+      });
+    }
+  };
+
+  // modal 裡選擇收藏分類
+  const handleAddToCollection = (collectionId: string) => {
+    if (!collectionModal) return;
+
+    setCollections((prev) => {
+      // 先把 place 從所有分類移除（避免重複）
+      let cleaned = prev.map((col) => ({
+        ...col,
+        items: col.items.filter((i) => i.id !== collectionModal.place_id)
+      }));
+
+      // 加到指定的分類
+      cleaned = cleaned.map((col) =>
+        col.id === collectionId
+          ? {
+              ...col,
+              items: [...col.items, { id: collectionModal.place_id!, name: collectionModal.name || '' }]
+            }
+          : col
+      );
+
+      localStorage.setItem('collections', JSON.stringify(cleaned));
+      return cleaned;
+    });
+    setCollectionModal(null);
+  };
+
   return (
     <Container>
       <GoogleMapsProvider>
         <TopBar>
-          <button onClick={fetchCurrentLocation} style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: '#333', color: 'white', border: 'none', cursor: 'pointer' }}>
+          <button
+            onClick={fetchCurrentLocation}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              backgroundColor: '#333',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
             📍 {t('public.relocate')}
           </button>
           <SearchBar onSearch={handleSearchNearby} />
         </TopBar>
+
         <MapComponent location={currentLocation} />
-        <NearbyListComponent currentLocation={currentLocation} />
+        <NearbyListComponent currentLocation={currentLocation} onToggleFavorite={handleToggleFavorite} isFavorited={isFavorited} />
         <ToastContainer />
+
+        {/* 收藏分類 Modal */}
+        {collectionModal?.place_id && (
+          <CollectionModal
+            collections={collections}
+            place={{ id: collectionModal.place_id, name: collectionModal.name || '' }}
+            onSave={handleAddToCollection}
+            onClose={() => setCollectionModal(null)}
+          />
+        )}
       </GoogleMapsProvider>
     </Container>
   );
