@@ -1,26 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { GoogleMapsProvider } from '../../providers';
 import MapComponent from '../../components/mapComponent';
 import NearbyListComponent from '../../components/nearbyListComponent';
 import { useTranslation } from 'react-i18next';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import SearchBar from '../../components/searchBar';
 import 'react-toastify/dist/ReactToastify.css';
 import CollectionModal from '../../components/collectionModal';
-import type { PlaceResult } from '../../types/place';
+import type { CurrentLocation } from '../../types/place';
 import { useNearbyPlaces } from '../../hooks/useNearbyPlaces';
-
-interface FavoriteItem {
-  id: string;
-  name: string;
-}
-
-interface Collection {
-  id: string;
-  name: string;
-  items: FavoriteItem[];
-}
+import { useCollections } from '../../hooks/useCollections';
 
 const Container = styled.div`
   padding: 1.5rem 5rem;
@@ -48,26 +38,35 @@ const TopBar = styled.div`
   margin-bottom: 1rem;
 `;
 
-const centerDefault = { lat: 25.033964, lng: 121.564468 };
+const Button = styled.div`
+  color: white;
+  border: none;
+  padding: 0.5rem 0.7rem;
+  font-size: 1em;
+  font-weight: 400;
+  font-family: inherit;
+  background-color: #333;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  border-radius: 5px;
+`;
+
+const centerDefault: CurrentLocation = { lat: 25.033964, lng: 121.564468 };
 
 const Nearby = () => {
   const { t } = useTranslation();
 
-  // 收藏分類
-  const [collections, setCollections] = useState<Collection[]>(() => {
-    const stored = localStorage.getItem('collections');
-    return stored
-      ? JSON.parse(stored)
-      : [
-          { id: 'uncategorized', name: '未分類', items: [] },
-          { id: 'switzerland', name: '瑞士', items: [] },
-          { id: 'paris', name: '巴黎', items: [] },
-          { id: 'tokyo', name: '東京', items: [] }
-        ];
-  });
+  // 收藏 hook
+  const {
+    collections,
+    collectionModal,
+    setCollectionModal,
+    isFavorited,
+    handleToggleFavorite,
+    handleAddToCollection,
+  } = useCollections();
 
-  const [collectionModal, setCollectionModal] = useState<PlaceResult | null>(null);
-
+  // 地圖 hook
   const { currentLocation, places, loading, fetchCurrentLocation } = useNearbyPlaces({
     defaultLocation: centerDefault,
   });
@@ -76,62 +75,11 @@ const Nearby = () => {
     if (fetchCurrentLocation) fetchCurrentLocation();
   }, [fetchCurrentLocation]);
 
-  const isFavorited = (placeId: string) =>
-    collections.some((col) => col.items.some((item) => item.id === placeId));
-
-  const handleToggleFavorite = (place: PlaceResult) => {
-    if (!place.place_id) return;
-
-    if (isFavorited(place.place_id)) {
-      setCollections((prev) => {
-        const updated = prev.map((col) => ({
-          ...col,
-          items: col.items.filter((i) => i.id !== place.place_id)
-        }));
-        localStorage.setItem('collections', JSON.stringify(updated));
-        return updated;
-      });
-    } else {
-      setCollectionModal(place);
-      setCollections((prev) => {
-        const updated = prev.map((col) =>
-          col.id === 'uncategorized'
-            ? { ...col, items: [...col.items, { id: place.place_id!, name: place.name || '' }] }
-            : col
-        );
-        localStorage.setItem('collections', JSON.stringify(updated));
-        return updated;
-      });
-    }
-  };
-
-  const handleAddToCollection = (collectionId: string) => {
-    if (!collectionModal) return;
-
-    setCollections((prev) => {
-      let cleaned = prev.map((col) => ({
-        ...col,
-        items: col.items.filter((i) => i.id !== collectionModal.place_id)
-      }));
-
-      cleaned = cleaned.map((col) =>
-        col.id === collectionId
-          ? { ...col, items: [...col.items, { id: collectionModal.place_id!, name: collectionModal.name || '' }] }
-          : col
-      );
-
-      localStorage.setItem('collections', JSON.stringify(cleaned));
-      return cleaned;
-    });
-
-    setCollectionModal(null);
-  };
-
   return (
     <Container>
       <GoogleMapsProvider>
         <TopBar>
-        <button onClick={() => fetchCurrentLocation()}>📍 {t('public.relocate')}</button>
+          <Button onClick={() => fetchCurrentLocation()}>📍 {t('public.relocate')}</Button>
           <SearchBar onSearch={(query) => fetchCurrentLocation(query)} />
         </TopBar>
 
@@ -149,14 +97,14 @@ const Nearby = () => {
 
         <ToastContainer />
 
-        {collectionModal?.place_id && (
+        {/* {collectionModal?.place_id && (
           <CollectionModal
             collections={collections}
             place={{ id: collectionModal.place_id, name: collectionModal.name || '' }}
             onSave={handleAddToCollection}
             onClose={() => setCollectionModal(null)}
           />
-        )}
+        )} */}
       </GoogleMapsProvider>
     </Container>
   );

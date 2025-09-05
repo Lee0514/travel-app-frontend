@@ -87,7 +87,7 @@ const PlaceDistance = styled.p`
 const MapIconLink = styled.a`
   color: #1b3a70;
   font-size: 1.1rem;
-  transition: color 0.2s ease-in-out;
+  margin-top: 5px;
 
   &:hover {
     color: #3498db;

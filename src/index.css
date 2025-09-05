@@ -46,14 +46,13 @@ h1 {
 
 button {
   border: none;
-  padding: 0.5rem 0.7rem;
+  padding: 0.5rem;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-  border-radius: 5px;
 }
 
 @media (prefers-color-scheme: light) {
