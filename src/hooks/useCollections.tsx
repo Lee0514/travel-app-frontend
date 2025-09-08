@@ -37,8 +37,7 @@ export function useCollections() {
     }
   };
 
-  const isFavorited = (placeId: string) =>
-    collections.some((col) => col.items.some((item) => item.id === placeId));
+  const isFavorited = (placeId: string) => collections.some((col) => col.items.some((item) => item.id === placeId));
 
   const handleToggleFavorite = (place: PlaceResult) => {
     if (!place.place_id) return;
@@ -57,11 +56,7 @@ export function useCollections() {
       // 先 show modal（使用者要選擇分類），同時先放到未分類（跟你原本行為一致）
       setCollectionModal(place);
       setCollections((prev) => {
-        const updated = prev.map((col) =>
-          col.id === 'uncategorized'
-            ? { ...col, items: [...col.items, { id: place.place_id!, name: place.name || '' }] }
-            : col
-        );
+        const updated = prev.map((col) => (col.id === 'uncategorized' ? { ...col, items: [...col.items, { id: place.place_id!, name: place.name || '' }] } : col));
         persist(updated);
         return updated;
       });
@@ -81,11 +76,7 @@ export function useCollections() {
         items: col.items.filter((i) => i.id !== placeId)
       }));
 
-      cleaned = cleaned.map((col) =>
-        col.id === collectionId
-          ? { ...col, items: [...col.items, { id: placeId, name: collectionModal.name || '' }] }
-          : col
-      );
+      cleaned = cleaned.map((col) => (col.id === collectionId ? { ...col, items: [...col.items, { id: placeId, name: collectionModal.name || '' }] } : col));
 
       persist(cleaned);
       return cleaned;
@@ -100,7 +91,7 @@ export function useCollections() {
     setCollectionModal,
     isFavorited,
     handleToggleFavorite,
-    handleAddToCollection,
+    handleAddToCollection
   } as const;
 }
 
