@@ -57,18 +57,11 @@ const Nearby = () => {
   const { t } = useTranslation();
 
   // 收藏 hook
-  const {
-    collections,
-    collectionModal,
-    setCollectionModal,
-    isFavorited,
-    handleToggleFavorite,
-    handleAddToCollection,
-  } = useCollections();
+  const { collections, collectionModal, setCollectionModal, isFavorited, handleToggleFavorite, handleAddToCollection } = useCollections();
 
   // 地圖 hook
   const { currentLocation, places, loading, fetchCurrentLocation } = useNearbyPlaces({
-    defaultLocation: centerDefault,
+    defaultLocation: centerDefault
   });
 
   useEffect(() => {
@@ -84,27 +77,18 @@ const Nearby = () => {
         </TopBar>
 
         <MapComponent location={currentLocation} />
-        {loading ? (
-          <p>{t('loading')}</p>
-        ) : (
-          <NearbyListComponent
-            currentLocation={currentLocation}
-            places={places}
-            onToggleFavorite={handleToggleFavorite}
-            isFavorited={isFavorited}
-          />
-        )}
+        {loading ? <p>{t('loading')}</p> : <NearbyListComponent currentLocation={currentLocation} places={places} onToggleFavorite={handleToggleFavorite} isFavorited={isFavorited} />}
 
         <ToastContainer />
 
-        {/* {collectionModal?.place_id && (
+        {collectionModal?.place_id && (
           <CollectionModal
-            collections={collections}
             place={{ id: collectionModal.place_id, name: collectionModal.name || '' }}
-            onSave={handleAddToCollection}
+            collections={collections}
+            onAddToCollection={handleAddToCollection}
             onClose={() => setCollectionModal(null)}
           />
-        )} */}
+        )}
       </GoogleMapsProvider>
     </Container>
   );

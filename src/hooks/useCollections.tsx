@@ -27,6 +27,7 @@ export function useCollections() {
     }
   });
 
+  // 存放當前要處理的 place（用來控制 Modal 開關）
   const [collectionModal, setCollectionModal] = useState<PlaceResult | null>(null);
 
   const persist = (next: Collection[]) => {
@@ -37,8 +38,10 @@ export function useCollections() {
     }
   };
 
+  /** 檢查某個地點是否已被收藏 */
   const isFavorited = (placeId: string) => collections.some((col) => col.items.some((item) => item.id === placeId));
 
+  /** 點擊愛心 → 如果已收藏則移除，否則打開 modal */
   const handleToggleFavorite = (place: PlaceResult) => {
     if (!place.place_id) return;
 
@@ -53,16 +56,12 @@ export function useCollections() {
         return updated;
       });
     } else {
-      // 先 show modal（使用者要選擇分類），同時先放到未分類（跟你原本行為一致）
+      // 打開 Modal，讓使用者選分類
       setCollectionModal(place);
-      setCollections((prev) => {
-        const updated = prev.map((col) => (col.id === 'uncategorized' ? { ...col, items: [...col.items, { id: place.place_id!, name: place.name || '' }] } : col));
-        persist(updated);
-        return updated;
-      });
     }
   };
 
+  /** 使用者在 Modal 選定分類 → 加入該分類 */
   const handleAddToCollection = (collectionId: string) => {
     if (!collectionModal) return;
 
@@ -70,13 +69,20 @@ export function useCollections() {
       const placeId = collectionModal.place_id;
       if (!placeId) return prev;
 
-      // 先從所有分類移除該 place（避免重複），再加到目標分類
+      // 先移除該 place
       let cleaned = prev.map((col) => ({
         ...col,
         items: col.items.filter((i) => i.id !== placeId)
       }));
 
-      cleaned = cleaned.map((col) => (col.id === collectionId ? { ...col, items: [...col.items, { id: placeId, name: collectionModal.name || '' }] } : col));
+      // 找有沒有這個 collection
+      const exists = cleaned.some((col) => col.id === collectionId);
+
+      if (exists) {
+        cleaned = cleaned.map((col) => (col.id === collectionId ? { ...col, items: [...col.items, { id: placeId, name: collectionModal.name || '' }] } : col));
+      } else {
+        cleaned = [...cleaned, { id: collectionId, name: collectionId, items: [{ id: placeId, name: collectionModal.name || '' }] }];
+      }
 
       persist(cleaned);
       return cleaned;
