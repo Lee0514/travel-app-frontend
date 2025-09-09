@@ -1,22 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import type { Collection } from '../../types/collection';
-import type { PlaceResult } from '../../types/place';
-import { DEFAULT_COLLECTIONS } from '../../types/collection';
+import type { PlaceResult } from '../..//types/place';
+import { DEFAULT_COLLECTIONS, initialState } from '../../types/collection';
 
 // 假裝 API 延遲
 const fakeApiDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-export interface CollectionsState {
-  collections: Collection[];
-  collectionModal: PlaceResult | null;
-  loading: boolean;
-}
-
-const initialState: CollectionsState = {
-  collections: DEFAULT_COLLECTIONS,
-  collectionModal: null,
-  loading: false
-};
 
 // 模擬 fetch
 export const fetchCollections = createAsyncThunk('collections/fetch', async () => {

@@ -4,9 +4,10 @@ import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { FiEdit, FiTrash } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import PlaceCard from '../placeCard';
-
+import { FavoriteItem, Collection } from '../../types/collection';
 // Mock data for fallback
-const mockCollections = [
+
+const mockCollections: Collection[] = [
   {
     id: 'switzerland',
     name: '瑞士',
@@ -36,7 +37,6 @@ const mockCollections = [
 
 const LOCAL_STORAGE_KEY = 'collections';
 
-// --- Styled Components (保持原本樣式不變) ---
 const Wrapper = styled.div`
   padding: 1rem;
 `;
@@ -189,7 +189,6 @@ const DropdownWrapper = styled.div`
   position: relative;
 `;
 
-// --- Component ---
 const CollectionsQuickNavigation = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
@@ -225,28 +224,28 @@ const CollectionsQuickNavigation = () => {
   };
 
   const handleEditCategory = (id: string, name: string) => {
-    updateCollections(collections.map((c) => (c.id === id ? { ...c, name } : c)));
+    updateCollections(collections.map((c: Collection) => (c.id === id ? { ...c, name } : c)));
     setShowModal(false);
     setIsEditingCategory(false);
     setEditingCategoryId(null);
   };
 
   const handleDeleteCategory = (id: string) => {
-    updateCollections(collections.filter((c) => c.id !== id));
+    updateCollections(collections.filter((c: Collection) => c.id !== id));
     setSelectedCollection(null);
   };
 
   const handleDeleteItem = (collectionId: string, itemId: string) => {
-    updateCollections(collections.map((c) => (c.id === collectionId ? { ...c, items: c.items.filter((i) => i.id !== itemId) } : c)));
+    updateCollections(collections.map((c: Collection) => (c.id === collectionId ? { ...c, items: c.items.filter((i) => i.id !== itemId) } : c)));
   };
 
-  const current = collections.find((c) => c.id === selectedCollection);
+  const current = collections.find((c: Collection) => c.id === selectedCollection);
 
   return (
     <Wrapper>
       {!selectedCollection ? (
         <Grid>
-          {collections.map((collection) => (
+          {collections.map((collection: Collection) => (
             <CollectionCard key={collection.id} onClick={() => setSelectedCollection(collection.id)}>
               <h3>{collection.name}</h3>
             </CollectionCard>
@@ -286,7 +285,7 @@ const CollectionsQuickNavigation = () => {
                   </DropdownItem>
                   <DropdownItem
                     onClick={() => {
-                      const confirmDelete = window.confirm(t('collection.confirmDeleteCategory', { name: current?.name }));
+                      const confirmDelete: boolean = window.confirm(t('collection.confirmDeleteCategory', { name: current?.name }));
                       if (confirmDelete && current) handleDeleteCategory(current.id);
                       setShowDropdown(false);
                     }}
@@ -299,8 +298,8 @@ const CollectionsQuickNavigation = () => {
             </DropdownWrapper>
           </HeaderRow>
 
-          {current?.items.map((item) => (
-            <PlaceCard key={item.id} id={item.id} name={item.name} onDelete={(id) => handleDeleteItem(current.id, id)} />
+          {current?.items.map((item: FavoriteItem) => (
+            <PlaceCard key={item.id} id={item.id} name={item.name} onDelete={(id: string) => handleDeleteItem(current.id, id)} />
           ))}
         </Detail>
       )}
