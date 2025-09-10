@@ -53,71 +53,33 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-  };
-
-  const handleLineLogin = () => {
-    console.log('LINE login clicked');
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <Wrapper>
-        <SocialLoginButtons onGoogleClick={handleGoogleLogin} onLineClick={handleLineLogin} />
+        <SocialLoginButtons />
 
         <FieldWrapper>
           <Label htmlFor="email">{t('auth.email')}</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            placeholder={t('auth.email')}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <Input id="email" type="email" autoComplete="email" placeholder={t('auth.email')} value={email} onChange={(e) => setEmail(e.target.value)} />
         </FieldWrapper>
 
         <FieldWrapper>
           <Label htmlFor="username">{t('auth.username')}</Label>
-          <Input
-            id="username"
-            type="text"
-            autoComplete="username"
-            placeholder={t('auth.username')}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <Input id="username" type="text" autoComplete="username" placeholder={t('auth.username')} value={name} onChange={(e) => setName(e.target.value)} />
         </FieldWrapper>
 
         <FieldWrapper>
           <Label htmlFor="password">{t('auth.password')}</Label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="password"
-            placeholder={t('auth.password')}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <Input id="password" type="password" autoComplete="password" placeholder={t('auth.password')} value={password} onChange={(e) => setPassword(e.target.value)} />
         </FieldWrapper>
 
         <FieldWrapper>
           <Label htmlFor="passwordCheck">{t('auth.confirmPassword')}</Label>
-          <Input
-            id="passwordCheck"
-            type="password"
-            autoComplete="confirmPassword"
-            placeholder={t('auth.confirmPassword')}
-            value={passwordCheck}
-            onChange={(e) => setPasswordCheck(e.target.value)}
-          />
+          <Input id="passwordCheck" type="password" autoComplete="confirmPassword" placeholder={t('auth.confirmPassword')} value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} />
         </FieldWrapper>
 
         <SubmitButton type="submit">{t('auth.submit')}</SubmitButton>
