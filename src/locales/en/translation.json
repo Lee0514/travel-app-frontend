@@ -62,7 +62,11 @@
     "done": "Done",
     "editCategory": "Edit Category",
     "deleteCategory": "Delete Category",
-    "confirmDeleteCategory": "Are you sure you want to delete the category \"{{name}}\"?"
+    "confirmDeleteCategory": "Are you sure you want to delete the category \"{{name}}\"?",
+    "addToCategoryTitle": "Add to Collection",
+    "addToCategoryDesc": "Which category do you want to add {{placeName}} to?",
+    "newCategoryPlaceholder": "New category name",
+    "createAndAdd": "Create and Add"
   },
   "auth": {
     "login": "Login",

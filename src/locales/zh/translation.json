@@ -62,7 +62,11 @@
     "done": "確定",
     "editCategory": "編輯分類",
     "deleteCategory": "刪除分類",
-    "confirmDeleteCategory": "確定要刪除分類「{{name}}」嗎？"
+    "confirmDeleteCategory": "確定要刪除分類「{{name}}」嗎？",
+    "addToCategoryTitle": "加入收藏分類",
+    "addToCategoryDesc": "要將 {{placeName}} 加入到哪個分類？",
+    "newCategoryPlaceholder": "新增分類名稱",
+    "createAndAdd": "建立並加入"
   },
   "auth": {
     "login": "登入",
