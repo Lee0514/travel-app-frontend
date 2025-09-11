@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import SocialLoginButtons from './btn/socialLoginButtons';
 import { useTranslation } from 'react-i18next';
 import { login } from '../../apis/auth';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slice/userSlice';
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,14 +55,30 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const data = await login(email, password);
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      const { user, accessToken, refreshToken } = data;
+
+      // 存 localStorage
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // 存 Redux
+      dispatch(
+        setUser({
+          id: user.id,
+          email: user.email,
+          userName: user.userName,
+          accessToken: accessToken,
+          refreshToken: refreshToken
+        })
+      );
+
       alert('登入成功！');
       navigate('/');
     } catch (err: any) {

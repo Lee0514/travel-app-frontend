@@ -1,31 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
-import { UserAvatar, UserDropdownMenu, DropdownItem } from './userMenu.styles';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { clearUser } from '../../../redux/slice/userSlice';
+import { UserAvatar, UserDropdownMenu, DropdownItem } from './userMenu.styles';
 
 const UserMenu = () => {
   const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('accessToken', accessToken);
-    setIsLoggedIn(!!accessToken);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const user = useSelector((state: RootState) => state.user); // 從 Redux 拿 user
 
   const handleClick = () => setShowMenu((prev) => !prev);
 
@@ -33,7 +22,7 @@ const UserMenu = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    setIsLoggedIn(false);
+    dispatch(clearUser()); // Redux 清空 user
     navigate('/');
     setShowMenu(false);
   };
@@ -46,7 +35,7 @@ const UserMenu = () => {
 
       {showMenu && (
         <UserDropdownMenu ref={menuRef}>
-          {isLoggedIn ? (
+          {user.id ? (
             <>
               <DropdownItem
                 onClick={() => {
