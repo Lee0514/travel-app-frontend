@@ -35,7 +35,7 @@ const SocialLoginButtons: React.FC = ({}) => {
 
   const handleGoogleLogin = async () => {
     try {
-      const res = await fetch(`${backendUrl}/api/auth/oauth/google`);
+      const res = await fetch(`${backendUrl}/auth/oauth/google`);
       console.log('res', res);
       const data = await res.json();
       if (data.url) {
@@ -47,16 +47,16 @@ const SocialLoginButtons: React.FC = ({}) => {
   };
 
   const handleLineLogin = async () => {
-    window.location.href = `${backendUrl}/api/auth/line`;
+    window.location.href = `${backendUrl}/auth/line`;
   };
 
   return (
     <ButtonRow>
-      <LoginButton onClick={handleGoogleLogin} $bgColor="#000" $color="#fff">
+      <LoginButton type="button" onClick={handleGoogleLogin} $bgColor="#000" $color="#fff">
         <FcGoogle size={20} />
         Google
       </LoginButton>
-      <LoginButton onClick={handleLineLogin} $bgColor="#00C300" $color="#fff">
+      <LoginButton type="button" onClick={handleLineLogin} $bgColor="#00C300" $color="#fff">
         <SiLine size={20} />
         LINE
       </LoginButton>

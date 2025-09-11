@@ -75,7 +75,9 @@ const LoginForm: React.FC = () => {
           email: user.email,
           userName: user.userName,
           accessToken: accessToken,
-          refreshToken: refreshToken
+          refreshToken: refreshToken,
+          avatar: user.avatar,
+          provider: user.provider
         })
       );
 
@@ -88,10 +90,9 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Wrapper>
-        <SocialLoginButtons />
-
+    <Wrapper>
+      <SocialLoginButtons />
+      <form onSubmit={handleSubmit}>
         <FieldWrapper>
           <Label htmlFor="email">{t('auth.email')}</Label>
           <Input id="email" type="email" autoComplete="email" placeholder={t('auth.email')} value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -103,8 +104,8 @@ const LoginForm: React.FC = () => {
         </FieldWrapper>
 
         <SubmitButton type="submit">{t('auth.login')}</SubmitButton>
-      </Wrapper>
-    </form>
+      </form>
+    </Wrapper>
   );
 };
 

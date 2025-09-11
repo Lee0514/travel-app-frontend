@@ -6,6 +6,8 @@ interface UserState {
   userName: string | null;
   accessToken: string | null;
   refreshToken: string | null;
+  avatar?: string;
+  provider?: 'email' | 'google' | 'line';
 }
 
 const initialState: UserState = {
@@ -13,7 +15,9 @@ const initialState: UserState = {
   email: null,
   userName: null,
   accessToken: null,
-  refreshToken: null
+  refreshToken: null,
+  avatar: '',
+  provider: 'email'
 };
 
 const userSlice = createSlice({
