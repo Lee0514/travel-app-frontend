@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SocialLoginButtons from './btn/socialLoginButtons';
 import { useTranslation } from 'react-i18next';
+import { login } from '../../apis/auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -50,11 +52,21 @@ const LoginForm: React.FC = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
+    try {
+      const data = await login(email, password);
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      alert('登入成功！');
+      navigate('/');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      alert(`登入失敗：${err.response?.data?.error || '伺服器錯誤'}`);
+    }
   };
 
   return (

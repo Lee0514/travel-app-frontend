@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SocialLoginButtons from './btn/socialLoginButtons';
 import { useTranslation } from 'react-i18next';
+import { signup } from '../../apis/auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,14 +49,44 @@ const SubmitButton = styled.button`
 `;
 
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (password !== passwordCheck) {
+      setError(t('auth.passwordMismatch'));
+      return;
+    }
+
+    try {
+      const res = await signup(email, password, passwordCheck, userName);
+      console.log('註冊成功:', res);
+
+      if (res?.accessToken) {
+        localStorage.setItem('accessToken', res.accessToken);
+        if (res.refreshToken) {
+          localStorage.setItem('refreshToken', res.refreshToken);
+        }
+
+        // @TODO: 存 user 資訊（之後放到 Redux）
+        localStorage.setItem('user', JSON.stringify(res.user));
+
+        // 跳轉首頁
+        navigate('/');
+      }
+    } catch (err: any) {
+      console.error(err);
+
+      setError(err.response?.data?.error || '註冊失敗');
+    }
   };
 
   return (
@@ -69,18 +101,20 @@ const LoginForm: React.FC = () => {
 
         <FieldWrapper>
           <Label htmlFor="username">{t('auth.username')}</Label>
-          <Input id="username" type="text" autoComplete="username" placeholder={t('auth.username')} value={name} onChange={(e) => setName(e.target.value)} />
+          <Input id="username" type="text" autoComplete="username" placeholder={t('auth.username')} value={userName} onChange={(e) => setUserName(e.target.value)} />
         </FieldWrapper>
 
         <FieldWrapper>
           <Label htmlFor="password">{t('auth.password')}</Label>
-          <Input id="password" type="password" autoComplete="password" placeholder={t('auth.password')} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input id="password" type="password" autoComplete="new-password" placeholder={t('auth.password')} value={password} onChange={(e) => setPassword(e.target.value)} />
         </FieldWrapper>
 
         <FieldWrapper>
           <Label htmlFor="passwordCheck">{t('auth.confirmPassword')}</Label>
-          <Input id="passwordCheck" type="password" autoComplete="confirmPassword" placeholder={t('auth.confirmPassword')} value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} />
+          <Input id="passwordCheck" type="password" autoComplete="new-password" placeholder={t('auth.confirmPassword')} value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} />
         </FieldWrapper>
+
+        {error && <p style={{ color: 'red', fontSize: '14px' }}>{error}</p>}
 
         <SubmitButton type="submit">{t('auth.submit')}</SubmitButton>
       </Wrapper>

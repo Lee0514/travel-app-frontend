@@ -9,9 +9,13 @@ const UserMenu = () => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  // 假登入狀態（之後改成 Redux）
-  const isLoggedIn = true;
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    console.log('accessToken', accessToken);
+    setIsLoggedIn(!!accessToken);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -25,6 +29,15 @@ const UserMenu = () => {
 
   const handleClick = () => setShowMenu((prev) => !prev);
 
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    navigate('/');
+    setShowMenu(false);
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       <UserAvatar onClick={handleClick}>
@@ -35,15 +48,23 @@ const UserMenu = () => {
         <UserDropdownMenu ref={menuRef}>
           {isLoggedIn ? (
             <>
-              <DropdownItem onClick={() => { navigate('/userEdit'); setShowMenu(false); }}>
+              <DropdownItem
+                onClick={() => {
+                  navigate('/userEdit');
+                  setShowMenu(false);
+                }}
+              >
                 {t(`auth.editUser`)}
               </DropdownItem>
-              <DropdownItem onClick={() => { alert('登出功能待串接'); setShowMenu(false); }}>
-                {t(`auth.logout`)}
-              </DropdownItem>
+              <DropdownItem onClick={handleLogout}>{t(`auth.logout`)}</DropdownItem>
             </>
           ) : (
-            <DropdownItem onClick={() => { navigate('/userLogin'); setShowMenu(false); }}>
+            <DropdownItem
+              onClick={() => {
+                navigate('/userLogin');
+                setShowMenu(false);
+              }}
+            >
               {t(`auth.login`)} / {t(`auth.register`)}
             </DropdownItem>
           )}

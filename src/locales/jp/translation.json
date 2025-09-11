@@ -91,7 +91,8 @@
     "enterNewPassword": "新しいパスワードを入力してください",
     "confirmNewPassword": "新しいパスワードの確認",
     "reenterNewPassword": "新しいパスワードをもう一度入力してください",
-    "saveChanges": "変更を保存"
+    "saveChanges": "変更を保存",
+    "passwordMismatch": "パスワードが一致しません"
   },
   "weekday": {
     "sunday": "日曜日",
