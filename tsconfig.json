@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["styled-components","node"]
+    "types": ["styled-components", "node"]
   },
-  "include": ["src"],
+  "include": ["src", "src/supabaseTest.ts"]
 }

@@ -1,27 +1,11 @@
 import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import { useTranslation } from 'react-i18next';
-import EventModal from './EventModal';
-import 'react-calendar/dist/Calendar.css';
 import { useSelector, useDispatch } from 'react-redux';
-import type { RootState, AppDispatch } from '../../redux/store';
+import { RootState, AppDispatch } from '../../redux/store';
 import { setEvents, addEvent, deleteEvent, EventData } from '../../redux/slice/upcomingSlice';
-import {
-  CalendarWrapper,
-  Container,
-  Title,
-  Dot,
-  EventList,
-  EventItem,
-  AddButton,
-  DeleteButton
-} from './UpcomingQuickNavigation.styles';
-
-// 假資料
-const mockEvents: Record<string, EventData[]> = {
-  '2025-09-29': [{ title: 'Meet client', note: 'Zoom' }],
-  '2025-09-30': [{ title: 'Travel to Tokyo', note: 'Morning flight' }]
-};
+import EventModal from './EventModal';
+import { CalendarWrapper, Container, Title, Dot, EventList, EventItem, AddButton, DeleteButton } from './UpcomingQuickNavigation.styles';
+import { supabase } from '../../supabaseTest';
 
 const formatDate = (date: Date) => {
   const y = date.getFullYear();
@@ -31,69 +15,110 @@ const formatDate = (date: Date) => {
 };
 
 const UpcomingQuickNavigation = () => {
-  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const events = useSelector((state: RootState) => state.upcoming.events);
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showModal, setShowModal] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
-  // fetch events from API
+  // 取得真實的 token
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const fetchEvents = async () => {
-      if (!token) {
-        // 沒有 token 使用假資料
-        dispatch(setEvents(mockEvents));
-        return;
+    const getToken = async () => {
+      const {
+        data: { session }
+      } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        setToken(session.access_token);
       }
+    };
+    getToken();
+  }, []);
+
+  // fetch events
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/events', {
+        const res = await fetch('http://localhost:3001/api/upcoming', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const data: Record<string, EventData[]> = await response.json();
+
+        if (!res.ok) {
+          console.error('Failed to fetch events:', res.status);
+          return;
+        }
+
+        const data: Record<string, EventData[]> = await res.json();
         dispatch(setEvents(data));
-      } catch (error) {
-        console.error('Failed to fetch events', error);
+      } catch (err) {
+        console.error(err);
       }
     };
 
     fetchEvents();
-  }, [dispatch]);
+  }, [dispatch, token]);
 
-  const currentEvents = selectedDate ? events[formatDate(selectedDate)] ?? [] : [];
+  const currentEvents = selectedDate ? (events[formatDate(selectedDate)] ?? []) : [];
 
-  const handleAddEvent = (title: string, note: string) => {
-    if (!selectedDate) return;
+  // 新增事件
+  const handleAddEvent = async (title: string, note: string) => {
+    if (!selectedDate || !token) return;
     const key = formatDate(selectedDate);
-    dispatch(addEvent({ date: key, event: { title, note } }));
-    setShowModal(false);
+
+    try {
+      const res = await fetch('http://localhost:3001/api/upcoming', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ title, note, date: key })
+      });
+
+      const data = await res.json();
+      const newEvent = data[0];
+
+      // 如果後端沒回傳 id，就自己先用 timestamp 產生
+      const eventWithId: EventData = {
+        id: newEvent?.id || Date.now().toString(),
+        title: newEvent.title,
+        note: newEvent.description
+      };
+
+      dispatch(addEvent({ date: key, event: eventWithId }));
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleDeleteEvent = (index: number) => {
-    if (!selectedDate) return;
-    const key = formatDate(selectedDate);
-    dispatch(deleteEvent({ date: key, index }));
+  // 刪除事件
+  const handleDeleteEvent = async (id: string, index: number) => {
+    if (!token) return;
+    const key = formatDate(selectedDate!);
+    try {
+      await fetch(`http://localhost:3001/api/upcoming/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      dispatch(deleteEvent({ date: key, index }));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <Container>
-      <Title>〖{t('calendar.title')}〗</Title>
+      <Title>Calendar</Title>
       <CalendarWrapper>
-        <Calendar
-          onClickDay={setSelectedDate}
-          tileContent={({ date }) => (events[formatDate(date)] ? <Dot title={t('calendar.hasEvent')} /> : null)}
-          locale={t('calendar.locale', { defaultValue: 'en-US' })}
-          value={selectedDate}
-        />
+        <Calendar onClickDay={setSelectedDate} tileContent={({ date }) => (events[formatDate(date)] ? <Dot /> : null)} value={selectedDate} />
       </CalendarWrapper>
 
       {selectedDate && (
         <EventList>
-          <h3>
-            {t('calendar.selectedDate')}: {formatDate(selectedDate)}
-          </h3>
-
+          <h3>Selected Date: {formatDate(selectedDate)}</h3>
           {currentEvents.length > 0 ? (
             currentEvents.map((event, i) => (
               <EventItem key={i}>
@@ -101,26 +126,17 @@ const UpcomingQuickNavigation = () => {
                   <strong>{event.title}</strong>
                   <p>{event.note}</p>
                 </div>
-                <DeleteButton
-                  onClick={() => handleDeleteEvent(i)}
-                  aria-label={t('calendar.deleteEvent')}
-                  title={t('calendar.deleteEvent')}
-                >
-                  ✕
-                </DeleteButton>
+                <DeleteButton onClick={() => handleDeleteEvent(event.id!, i)}>✕</DeleteButton>
               </EventItem>
             ))
           ) : (
-            <p>{t('calendar.noEvents')}</p>
+            <p>No events</p>
           )}
-
-          <AddButton onClick={() => setShowModal(true)}>＋ {t('calendar.addEvent')}</AddButton>
+          <AddButton onClick={() => setShowModal(true)}>＋ Add Event</AddButton>
         </EventList>
       )}
 
-      {showModal && selectedDate && (
-        <EventModal date={selectedDate} onClose={() => setShowModal(false)} onAdd={handleAddEvent} />
-      )}
+      {showModal && selectedDate && <EventModal date={selectedDate} onClose={() => setShowModal(false)} onAdd={handleAddEvent} />}
     </Container>
   );
 };

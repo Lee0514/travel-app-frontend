@@ -55,6 +55,27 @@ export const CalendarWrapper = styled.div`
     text-decoration: none;
     border-bottom: none;
   }
+
+  .react-calendar__navigation__prev2-button,
+  .react-calendar__navigation__prev-button,
+  .react-calendar__navigation__next-button,
+  .react-calendar__navigation__next2-button {
+    border-radius: 10px;
+    margin: 0.2rem 0.5rem;
+  }
+
+  .react-calendar__month-view__weekdays {
+    text-align: center;
+  }
+
+  .react-calendar__navigation {
+    display: flex;
+  }
+    
+  .react-calendar__navigation__label {
+    border-radius: 10px;
+    margin: 0.2rem;
+  }
 `;
 
 export const Container = styled.div`

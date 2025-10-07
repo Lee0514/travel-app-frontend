@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface EventData {
+  id: string
   title: string;
   note: string;
 }
