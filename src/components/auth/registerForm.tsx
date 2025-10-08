@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import SocialLoginButtons from './btn/socialLoginButtons';
 import { useTranslation } from 'react-i18next';
 import { signup } from '../../apis/auth';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slice/userSlice';
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,6 +58,7 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,16 +73,27 @@ const LoginForm: React.FC = () => {
       const res = await signup(email, password, passwordCheck, userName);
       console.log('註冊成功:', res);
 
-      if (res?.accessToken) {
-        localStorage.setItem('accessToken', res.accessToken);
-        if (res.refreshToken) {
-          localStorage.setItem('refreshToken', res.refreshToken);
-        }
+      if (res?.user) {
+        const { user, accessToken, refreshToken } = res;
 
-        // @TODO: 存 user 資訊（之後放到 Redux）
-        localStorage.setItem('user', JSON.stringify(res.user));
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('user', JSON.stringify(user));
 
+        // 存 Redux
+        dispatch(
+          setUser({
+            id: user.id,
+            email: user.email,
+            userName: user.userName,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            avatar: user.avatar,
+            provider: user.provider
+          })
+        );
         // 跳轉首頁
+        alert('註冊成功！');
         navigate('/');
       }
     } catch (err: any) {

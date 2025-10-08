@@ -39,12 +39,16 @@ export const logout = async () => {
  * 編輯個人檔案
  */
 export const editProfile = async (formData: FormData) => {
-  const res = await axios.post(`${API_BASE_URL}/auth/edit-profile`, formData, {
+  const token = localStorage.getItem('accessToken'); // 從 localStorage 取出登入時存的 accessToken
+
+  const response = await axios.post(`${API_BASE_URL}/auth/edit-profile`, formData, {
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}` // 帶上 token
     }
   });
-  return res.data;
+
+  return response.data.user; // 回傳更新後的 user
 };
 
 /**
@@ -61,6 +65,10 @@ export const getOAuthUrl = async (provider: 'google' | 'line') => {
  * （通常後端會直接處理，前端只需要打後端的 /auth/line/callback）
  */
 export const handleLineCallback = async (code: string) => {
-  const res = await axios.get(`${API_BASE_URL}/auth/line/callback?code=${code}`);
-  return res.data;
+  //  const urlParams = new URLSearchParams(window.location.search);
+  //   const code = urlParams.get('code');
+  if (!code) return;
+
+  const data = await fetch(`${API_BASE_URL}/auth/line/callback?code=${code}`).then((r) => r.json());
+  localStorage.setItem('accessToken', data.accessToken);
 };
