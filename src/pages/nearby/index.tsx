@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { GoogleMapsProvider } from '../../providers';
 import MapComponent from '../../components/mapComponent';
 import NearbyListComponent from '../../components/nearbyListComponent';
 import { useTranslation } from 'react-i18next';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import SearchBar from '../../components/searchBar';
-import { fetchNearbyAndDetails, getLatLngByPlaceName } from '../../utils/googleMapsPlaces';
 import 'react-toastify/dist/ReactToastify.css';
+import CollectionModal from '../../components/collectionModal';
+import type { CurrentLocation } from '../../types/place';
+import { useNearbyPlaces } from '../../hooks/useNearbyPlaces';
+import { useCollections } from '../../hooks/useCollections';
 
 const Container = styled.div`
   padding: 1.5rem 5rem;
@@ -35,53 +38,57 @@ const TopBar = styled.div`
   margin-bottom: 1rem;
 `;
 
-const centerDefault = { lat: 25.033964, lng: 121.564468 };
+const Button = styled.div`
+  color: white;
+  border: none;
+  padding: 0.5rem 0.7rem;
+  font-size: 1em;
+  font-weight: 400;
+  font-family: inherit;
+  background-color: #333;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  border-radius: 5px;
+`;
+
+const centerDefault: CurrentLocation = { lat: 25.033964, lng: 121.564468 };
 
 const Nearby = () => {
   const { t } = useTranslation();
-  const [currentLocation, setCurrentLocation] = useState(centerDefault);
-  const [lastUpdatedTime, setLastUpdatedTime] = useState(Date.now());
 
-  const fetchCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCurrentLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
-        setLastUpdatedTime(Date.now());
-      },
-      () => {
-        toast.warning(t('public.relocate'), { position: 'top-center', autoClose: 3000 });
-        setCurrentLocation(centerDefault);
-        setLastUpdatedTime(Date.now());
-      },
-      { enableHighAccuracy: true }
-    );
-  };
+  // 收藏 hook
+  const { collections, collectionModal, setCollectionModal, isFavorited, handleToggleFavorite, handleAddToCollection } = useCollections();
+
+  // 地圖 hook
+  const { currentLocation, places, loading, fetchCurrentLocation } = useNearbyPlaces({
+    defaultLocation: centerDefault
+  });
 
   useEffect(() => {
-    fetchCurrentLocation();
-  }, []);
-
-  const handleSearchNearby = async (query: string) => {
-    try {
-      const location = await getLatLngByPlaceName(query);
-      setCurrentLocation(location);
-    } catch {
-      toast.error(t('explore.noData'));
-    }
-  };
+    if (fetchCurrentLocation) fetchCurrentLocation();
+  }, [fetchCurrentLocation]);
 
   return (
     <Container>
       <GoogleMapsProvider>
         <TopBar>
-          <button onClick={fetchCurrentLocation} style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: '#333', color: 'white', border: 'none', cursor: 'pointer' }}>
-            📍 {t('public.relocate')}
-          </button>
-          <SearchBar onSearch={handleSearchNearby} />
+          <Button onClick={() => fetchCurrentLocation()}>📍 {t('public.relocate')}</Button>
+          <SearchBar onSearch={(query) => fetchCurrentLocation(query)} />
         </TopBar>
+
         <MapComponent location={currentLocation} />
-        <NearbyListComponent currentLocation={currentLocation} />
+        {loading ? <p>{t('loading')}</p> : <NearbyListComponent currentLocation={currentLocation} places={places} onToggleFavorite={handleToggleFavorite} isFavorited={isFavorited} />}
+
         <ToastContainer />
+
+        {collectionModal?.place_id && (
+          <CollectionModal
+            place={{ id: collectionModal.place_id, name: collectionModal.name || '' }}
+            collections={collections}
+            onAddToCollection={handleAddToCollection}
+            onClose={() => setCollectionModal(null)}
+          />
+        )}
       </GoogleMapsProvider>
     </Container>
   );

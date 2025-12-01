@@ -62,7 +62,11 @@
     "done": "完了",
     "editCategory": "カテゴリを編集",
     "deleteCategory": "カテゴリを削除",
-    "confirmDeleteCategory": "「{{name}}」カテゴリを削除してもよろしいですか？"
+    "confirmDeleteCategory": "「{{name}}」カテゴリを削除してもよろしいですか？",
+    "addToCategoryTitle": "コレクションに追加",
+    "addToCategoryDesc": "{{placeName}} をどの分類に追加しますか？",
+    "newCategoryPlaceholder": "新しい分類名",
+    "createAndAdd": "作成して追加"
   },
   "auth": {
     "login": "ログイン",

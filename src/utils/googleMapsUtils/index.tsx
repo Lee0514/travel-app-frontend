@@ -6,7 +6,7 @@ export const waitForGoogleMaps = (): Promise<void> => {
     }
 
     let attempts = 0;
-    const maxAttempts = 50;
+    const maxAttempts = 150;
 
     const check = setInterval(() => {
       attempts++;
@@ -59,7 +59,13 @@ export const ensureGoogleMapsLoaded = async (): Promise<void> => {
   await waitForGoogleMaps();
 };
 
-export const fetchNearbyPlaces = (location: google.maps.LatLngLiteral, type: string, radius = 2000, rankBy?: google.maps.places.RankBy): Promise<google.maps.places.PlaceResult[]> => {
+export const fetchNearbyPlaces = (
+  location: google.maps.LatLngLiteral,
+  type: string,
+  radius = 2000,
+  rankBy?: google.maps.places.RankBy,
+  query?: string
+): Promise<google.maps.places.PlaceResult[]> => {
   return new Promise(async (resolve, reject) => {
     try {
       await ensureGoogleMapsLoaded();
@@ -67,21 +73,37 @@ export const fetchNearbyPlaces = (location: google.maps.LatLngLiteral, type: str
       const map = new window.google.maps.Map(document.createElement('div'));
       const service = new window.google.maps.places.PlacesService(map);
 
-      const request: google.maps.places.PlaceSearchRequest = {
-        location: new window.google.maps.LatLng(location.lat, location.lng),
-        type,
-        ...(rankBy ? { rankBy } : { radius })
-      };
-
-      service.nearbySearch(request, (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          resolve(results);
-        } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-          resolve([]);
-        } else {
-          reject(new Error(`Places API error: ${status}`));
-        }
-      });
+      if (query) {
+        const request: google.maps.places.TextSearchRequest = {
+          location: new window.google.maps.LatLng(location.lat, location.lng),
+          query,
+          radius,
+        };
+        service.textSearch(request, (results, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+            resolve(results);
+          } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            resolve([]);
+          } else {
+            reject(new Error(`Places API error: ${status}`));
+          }
+        });
+      } else {
+        const request: google.maps.places.PlaceSearchRequest = {
+          location: new window.google.maps.LatLng(location.lat, location.lng),
+          type,
+          ...(rankBy ? { rankBy } : { radius }),
+        };
+        service.nearbySearch(request, (results, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+            resolve(results);
+          } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            resolve([]);
+          } else {
+            reject(new Error(`Places API error: ${status}`));
+          }
+        });
+      }
     } catch (err) {
       reject(err);
     }

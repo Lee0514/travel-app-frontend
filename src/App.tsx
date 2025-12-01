@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import Home from './pages/home/index';
 import Translate from './pages/translate/index';
 import Header from './components/layouts/headers/Header';
@@ -10,11 +11,12 @@ import Collection from './pages/collection/index';
 import UserLogin from './pages/userLogin/index';
 import UserRegister from './pages/userRegister/index';
 import UserEdit from './pages/userEdit/index';
+import { store } from './redux/store';
 import './i18n';
 
 function App() {
   return (
-    <>
+    <Provider store={store}>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -30,7 +32,7 @@ function App() {
           <Route path="/userEdit" element={<UserEdit />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </Provider>
   );
 }
 
