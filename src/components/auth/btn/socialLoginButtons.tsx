@@ -21,8 +21,8 @@ const LoginButton = styled.button<{ $bgColor?: string; $color?: string }>`
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: ${({ $bgColor }) => $bgColor|| '#f5f5f5'};
-  color: ${({ $color }) => $color|| '#000'};
+  background-color: ${({ $bgColor }) => $bgColor || '#f5f5f5'};
+  color: ${({ $color }) => $color || '#000'};
   transition: background-color 0.2s;
 
   &:hover {
@@ -30,19 +30,33 @@ const LoginButton = styled.button<{ $bgColor?: string; $color?: string }>`
   }
 `;
 
-type Props = {
-  onGoogleClick: () => void;
-  onLineClick: () => void;
-};
+const SocialLoginButtons: React.FC = ({}) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_DEVELOP_URL;
 
-const SocialLoginButtons: React.FC<Props> = ({ onGoogleClick, onLineClick }) => {
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await fetch(`${backendUrl}/auth/oauth/google`);
+      console.log('res', res);
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url; // 直接跳轉到 Supabase 提供的登入頁
+      }
+    } catch (err) {
+      console.error('Google login error:', err);
+    }
+  };
+
+  const handleLineLogin = async () => {
+    window.location.href = `${backendUrl}/auth/line`;
+  };
+
   return (
     <ButtonRow>
-      <LoginButton onClick={onGoogleClick} $bgColor="#000" $color="#fff">
+      <LoginButton type="button" onClick={handleGoogleLogin} $bgColor="#000" $color="#fff">
         <FcGoogle size={20} />
         Google
       </LoginButton>
-      <LoginButton onClick={onLineClick} $bgColor="#00C300" $color="#fff">
+      <LoginButton type="button" onClick={handleLineLogin} $bgColor="#00C300" $color="#fff">
         <SiLine size={20} />
         LINE
       </LoginButton>

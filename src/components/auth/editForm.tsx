@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { editProfile } from '../../apis/auth';
+import { setUser } from '../../redux/slice/userSlice';
 
 const Wrapper = styled.div`
   max-width: 400px;
@@ -58,9 +62,13 @@ const ErrorText = styled.span`
 
 const EditForm: React.FC = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
+  const isOAuthUser = user.provider !== 'email';
+
   const [avatar, setAvatar] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>('https://via.placeholder.com/80');
-  const [username, setUsername] = useState('');
+  const [previewUrl, setPreviewUrl] = useState<string>(user.avatar || 'https://via.placeholder.com/80');
+  const [username, setUsername] = useState(user.userName || '');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -74,34 +82,46 @@ const EditForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
-    const isChangingPassword = oldPassword || newPassword || confirmPassword;
 
-    if (isChangingPassword) {
-      if (!oldPassword || !newPassword || !confirmPassword) {
-        setError('若要更改密碼，請完整填寫所有密碼欄位。');
-        return;
+    if (!isOAuthUser) {
+      const isChangingPassword = oldPassword || newPassword || confirmPassword;
+      if (isChangingPassword) {
+        if (!oldPassword || !newPassword || !confirmPassword) {
+          setError('若要更改密碼，請完整填寫所有密碼欄位。');
+          return;
+        }
+        if (newPassword !== confirmPassword) {
+          setError('新密碼與確認密碼不一致。');
+          return;
+        }
       }
-
-      if (newPassword !== confirmPassword) {
-        setError('新密碼與確認密碼不一致。');
-        return;
-      }
-
-      // 🚨 通常舊密碼正確與否會由後端判斷
-      // 可以在 API 回傳錯誤時提示使用者
     }
 
-    console.log('表單送出');
-    console.log('Username:', username);
-    console.log('Avatar:', avatar);
-    console.log('Old Password:', oldPassword);
-    console.log('New Password:', newPassword);
+    try {
+      const formData = new FormData();
+      formData.append('username', username);
+      if (avatar) formData.append('avatar', avatar);
+      if (!isOAuthUser && newPassword) {
+        formData.append('oldPassword', oldPassword);
+        formData.append('newPassword', newPassword);
+      }
 
-    // 送出 API...
+      const updatedUser = await editProfile(formData);
+
+      // 更新 localStorage
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      // ✅ 更新 Redux store
+      dispatch(setUser(updatedUser));
+
+      alert('更新成功！');
+    } catch (err: any) {
+      console.error('Edit profile error:', err);
+      setError(err.response?.data?.error || '伺服器錯誤');
+    }
   };
 
   return (
@@ -115,50 +135,30 @@ const EditForm: React.FC = () => {
 
         <FieldWrapper>
           <Label>{t(`auth.username`)}</Label>
-          <Input
-            type="text"
-            value={username}
-            autoComplete="enterNewUsername"
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder={t(`auth.enterNewUsername`)}
-          />
+          <Input type="text" value={username} autoComplete="enterNewUsername" onChange={(e) => setUsername(e.target.value)} placeholder={t(`auth.enterNewUsername`)} />
         </FieldWrapper>
 
-        <FieldWrapper>
-          <Label>{t(`auth.currentPassword`)}</Label>
-          <Input
-            type="password"
-            value={oldPassword}
-            autoComplete="enterCurrentPassword"
-            onChange={(e) => setOldPassword(e.target.value)}
-            placeholder={t(`auth.enterCurrentPassword`)}
-          />
-        </FieldWrapper>
+        {!isOAuthUser && (
+          <>
+            <FieldWrapper>
+              <Label>{t(`auth.currentPassword`)}</Label>
+              <Input type="password" value={oldPassword} autoComplete="enterCurrentPassword" onChange={(e) => setOldPassword(e.target.value)} placeholder={t(`auth.enterCurrentPassword`)} />
+            </FieldWrapper>
 
-        <FieldWrapper>
-          <Label>{t(`auth.newPassword`)}</Label>
-          <Input
-            type="password"
-            value={newPassword}
-            autoComplete="enterNewPassword"
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder={t(`auth.enterNewPassword`)}
-          />
-        </FieldWrapper>
+            <FieldWrapper>
+              <Label>{t(`auth.newPassword`)}</Label>
+              <Input type="password" value={newPassword} autoComplete="enterNewPassword" onChange={(e) => setNewPassword(e.target.value)} placeholder={t(`auth.enterNewPassword`)} />
+            </FieldWrapper>
 
-        <FieldWrapper>
-          <Label>{t(`auth.confirmNewPassword`)}</Label>
-          <Input
-            type="password"
-            value={confirmPassword}
-            autoComplete="reenterNewPassword"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder={t(`auth.reenterNewPassword`)}
-          />
-        </FieldWrapper>
+            <FieldWrapper>
+              <Label>{t(`auth.confirmNewPassword`)}</Label>
+              <Input type="password" value={confirmPassword} autoComplete="reenterNewPassword" onChange={(e) => setConfirmPassword(e.target.value)} placeholder={t(`auth.reenterNewPassword`)} />
+            </FieldWrapper>
+          </>
+        )}
 
         {error && <ErrorText>{error}</ErrorText>}
-        
+
         <SubmitButton type="submit">{t(`auth.saveChanges`)}</SubmitButton>
       </Wrapper>
     </form>

@@ -95,7 +95,8 @@
     "enterNewPassword": "Enter new password",
     "confirmNewPassword": "Confirm New Password",
     "reenterNewPassword": "Re-enter new password",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "passwordMismatch": "Passwords do not match"
   },
   "weekday": {
     "sunday": "Sun.",

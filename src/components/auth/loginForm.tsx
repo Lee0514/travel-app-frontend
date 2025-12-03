@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SocialLoginButtons from './btn/socialLoginButtons';
 import { useTranslation } from 'react-i18next';
+import { login } from '../../apis/auth';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slice/userSlice';
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,6 +35,7 @@ const Input = styled.input`
 
 const SubmitButton = styled.button`
   padding: 10px;
+  margin-top: 1rem;
   width: 20rem;
   border: none;
   border-radius: 6px;
@@ -50,53 +55,58 @@ const LoginForm: React.FC = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-  };
-
-  const handleLineLogin = () => {
-    console.log('LINE login clicked');
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
+    try {
+      const data = await login(email, password);
+      const { user, accessToken, refreshToken } = data;
+
+      // 存 localStorage
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // 存 Redux
+      dispatch(
+        setUser({
+          id: user.id,
+          email: user.email,
+          userName: user.userName,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          avatar: user.avatar,
+          provider: user.provider
+        })
+      );
+
+      alert('登入成功！');
+      navigate('/');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      alert(`登入失敗：${err.response?.data?.error || '伺服器錯誤'}`);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Wrapper>
-        <SocialLoginButtons onGoogleClick={handleGoogleLogin} onLineClick={handleLineLogin} />
-        
+    <Wrapper>
+      <SocialLoginButtons />
+      <form onSubmit={handleSubmit}>
         <FieldWrapper>
           <Label htmlFor="email">{t('auth.email')}</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            placeholder={t('auth.email')}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <Input id="email" type="email" autoComplete="email" placeholder={t('auth.email')} value={email} onChange={(e) => setEmail(e.target.value)} />
         </FieldWrapper>
 
         <FieldWrapper>
           <Label htmlFor="password">{t('auth.password')}</Label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="password"
-            placeholder={t('auth.password')}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <Input id="password" type="password" autoComplete="password" placeholder={t('auth.password')} value={password} onChange={(e) => setPassword(e.target.value)} />
         </FieldWrapper>
 
         <SubmitButton type="submit">{t('auth.login')}</SubmitButton>
-      </Wrapper>
-    </form>
+      </form>
+    </Wrapper>
   );
 };
 
