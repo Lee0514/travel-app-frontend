@@ -9,6 +9,14 @@ export const UserAvatar = styled.button`
   padding-top: 0.65rem;
 `;
 
+export const AvatarImg = styled.img`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+`;
+
 export const UserDropdownMenu = styled.div`
   position: absolute;
   top: 36px;

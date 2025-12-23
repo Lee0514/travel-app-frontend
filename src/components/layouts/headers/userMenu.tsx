@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { clearUser } from '../../../redux/slice/userSlice';
-import { UserAvatar, UserDropdownMenu, DropdownItem } from './userMenu.styles';
+import { UserAvatar, AvatarImg, UserDropdownMenu, DropdownItem } from './userMenu.styles';
 
 const UserMenu = () => {
   const { t } = useTranslation();
@@ -20,8 +20,6 @@ const UserMenu = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
     dispatch(clearUser()); // Redux 清空 user
     navigate('/');
     setShowMenu(false);
@@ -29,9 +27,7 @@ const UserMenu = () => {
 
   return (
     <div style={{ position: 'relative' }}>
-      <UserAvatar onClick={handleClick}>
-        <FaUserCircle size={28} />
-      </UserAvatar>
+      <UserAvatar onClick={handleClick}>{user.avatar ? <AvatarImg src={user.avatar} alt={user.userName || 'user avatar'} /> : <FaUserCircle size={28} />}</UserAvatar>
 
       {showMenu && (
         <UserDropdownMenu ref={menuRef}>
