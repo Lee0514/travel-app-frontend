@@ -6,6 +6,8 @@ interface UserState {
   userName: string | null;
   avatar?: string;
   provider?: 'email' | 'google' | 'line';
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 const initialState: UserState = {
