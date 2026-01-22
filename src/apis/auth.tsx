@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_DEVELOP_URL || 'http://localhost:3001/';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_DEVELOP_URL || 'http://localhost:3001/api';
 
 /**
  * 註冊
@@ -31,7 +31,13 @@ export const login = async (email: string, password: string) => {
  * 登出
  */
 export const logout = async () => {
-  const res = await axios.post(`${API_BASE_URL}/auth/logout`);
+  const res = await axios.post(
+    `${API_BASE_URL}/auth/logout`,
+    {},
+    {
+      withCredentials: true
+    }
+  );
   return res.data;
 };
 
@@ -61,14 +67,12 @@ export const getOAuthUrl = async (provider: 'google' | 'line') => {
 };
 
 /**
- * LINE OAuth Callback
- * （通常後端會直接處理，前端只需要打後端的 /auth/line/callback）
+ * 取得目前登入使用者（支援 LINE cookie 登入）
  */
-export const handleLineCallback = async (code: string) => {
-  //  const urlParams = new URLSearchParams(window.location.search);
-  //   const code = urlParams.get('code');
-  if (!code) return;
+export const getMe = async () => {
+  const res = await axios.get(`${API_BASE_URL}/auth/me`, {
+    withCredentials: true // ✅ 必須，cookie 才會帶上
+  });
 
-  const data = await fetch(`${API_BASE_URL}/auth/line/callback?code=${code}`).then((r) => r.json());
-  localStorage.setItem('accessToken', data.accessToken);
+  return res.data; // { user: {...} }
 };

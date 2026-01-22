@@ -62,12 +62,10 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     try {
       const data = await login(email, password);
-      const { user, accessToken, refreshToken } = data;
+      const { user, accessToken } = data;
 
       // 存 localStorage
       localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('user', JSON.stringify(user));
 
       // 存 Redux
       dispatch(
@@ -75,8 +73,6 @@ const LoginForm: React.FC = () => {
           id: user.id,
           email: user.email,
           userName: user.userName,
-          accessToken: accessToken,
-          refreshToken: refreshToken,
           avatar: user.avatar,
           provider: user.provider
         })
