@@ -102,10 +102,10 @@ const EditForm: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append('username', username);
-      if (avatar) formData.append('avatar', avatar);
+      formData.append('userName', username);
+      if (avatar) formData.append('profileImage', avatar);
       if (!isOAuthUser && newPassword) {
-        formData.append('oldPassword', oldPassword);
+        formData.append('currentPassword', oldPassword);
         formData.append('newPassword', newPassword);
       }
 
