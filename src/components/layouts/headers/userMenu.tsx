@@ -16,7 +16,7 @@ const UserMenu = () => {
   const dispatch = useDispatch();
 
   const user = useSelector((state: RootState) => state.user); // 從 Redux 拿 user
-
+  const isOAuthUser = user.provider !== 'email';
   const handleClick = () => setShowMenu((prev) => !prev);
 
   const handleLogout = async () => {
@@ -40,14 +40,16 @@ const UserMenu = () => {
         <UserDropdownMenu ref={menuRef}>
           {user.id ? (
             <>
-              <DropdownItem
-                onClick={() => {
-                  navigate('/userEdit');
-                  setShowMenu(false);
-                }}
-              >
-                {t(`auth.editUser`)}
-              </DropdownItem>
+              {!isOAuthUser && (
+                <DropdownItem
+                  onClick={() => {
+                    navigate('/userEdit');
+                    setShowMenu(false);
+                  }}
+                >
+                  {t(`auth.editUser`)}
+                </DropdownItem>
+              )}
               <DropdownItem onClick={handleLogout}>{t(`auth.logout`)}</DropdownItem>
             </>
           ) : (

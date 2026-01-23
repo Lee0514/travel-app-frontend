@@ -71,7 +71,6 @@ const LoginForm: React.FC = () => {
 
     try {
       const res = await signup(email, password, passwordCheck, userName);
-      console.log('註冊成功:', res);
 
       if (res?.user) {
         const { user, accessToken, refreshToken } = res;
