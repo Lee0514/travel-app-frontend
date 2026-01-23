@@ -33,7 +33,7 @@ function AppContent() {
               id: u.id,
               email: u.email,
               userName: u.userName,
-              avatar: u.profileImage || '', // 後端回 profileImage，slice 用 avatar
+              avatar: u.profileImage || u.avatar || '', // 後端回 profileImage，slice 用 avatar
               provider: u.provider
             })
           );

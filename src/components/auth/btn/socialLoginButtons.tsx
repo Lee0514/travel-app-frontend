@@ -36,7 +36,6 @@ const SocialLoginButtons: React.FC = ({}) => {
   const handleGoogleLogin = async () => {
     try {
       const res = await fetch(`${backendUrl}/auth/oauth/google`);
-      console.log('res', res);
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url; // 直接跳轉到 Supabase 提供的登入頁

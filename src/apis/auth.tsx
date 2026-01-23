@@ -58,10 +58,10 @@ export const editProfile = async (formData: FormData) => {
 };
 
 /**
- * OAuth 登入 (Google / Line)
+ * OAuth 登入 (Google)
  * 會回傳一個 redirect URL
  */
-export const getOAuthUrl = async (provider: 'google' | 'line') => {
+export const getOAuthUrl = async (provider: 'google') => {
   const res = await axios.get(`${API_BASE_URL}/auth/oauth/${provider}`);
   return res.data;
 };
@@ -71,7 +71,7 @@ export const getOAuthUrl = async (provider: 'google' | 'line') => {
  */
 export const getMe = async () => {
   const res = await axios.get(`${API_BASE_URL}/auth/me`, {
-    withCredentials: true // ✅ 必須，cookie 才會帶上
+    withCredentials: true // cookie 才會帶上
   });
 
   return res.data; // { user: {...} }
