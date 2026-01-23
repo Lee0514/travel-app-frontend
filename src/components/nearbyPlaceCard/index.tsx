@@ -126,14 +126,7 @@ const PlaceCard: React.FC<Props> = ({ place, currentLocation, onToggleFavorite, 
   const { t } = useTranslation();
 
   // 計算距離
-  const distance = place.geometry?.location
-    ? calculateDistance(
-        currentLocation.lat,
-        currentLocation.lng,
-        place.geometry.location.lat(),
-        place.geometry.location.lng()
-      ).toFixed(2)
-    : null;
+  const distance = place.geometry?.location ? calculateDistance(currentLocation.lat, currentLocation.lng, place.geometry.location.lat(), place.geometry.location.lng()).toFixed(2) : null;
 
   return (
     <Card>
@@ -143,34 +136,21 @@ const PlaceCard: React.FC<Props> = ({ place, currentLocation, onToggleFavorite, 
 
       <PlaceInfo>
         <PlaceName>{place.name}</PlaceName>
-        <PlaceType>
-          {place.types && place.types.length > 0
-            ? t(`placeType.${place.types[0]}`, place.types[0])
-            : ''}
-        </PlaceType>
+        <PlaceType>{place.types && place.types.length > 0 ? t(`placeType.${place.types[0]}`, place.types[0]) : ''}</PlaceType>
         <PlaceDistance>
           <span>{place.vicinity || ''}</span>
           {distance && <small>{t('distanceWithValue', { value: distance })}</small>}
         </PlaceDistance>
       </PlaceInfo>
 
-      <HeartButton
-        isFavorited={place.place_id ? isFavorited?.(place.place_id) ?? false : false}
-        onClick={() => place.place_id && onToggleFavorite?.(place)}
-      />
+      <HeartButton isFavorited={place.place_id ? (isFavorited?.(place.place_id) ?? false) : false} onClick={() => place.place_id && onToggleFavorite?.(place)} />
 
-      <MapIconLink
-        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-          place.name || ''
-        )}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <MapIconLink href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name || '')}`} target="_blank" rel="noopener noreferrer">
         <GrMapLocation size={20} />
       </MapIconLink>
 
       <PlaceImage
-        src={place.photos?.length ? place.photos[0].getUrl() : defaultImage}
+        src={place.photos?.length ? place.photos[0].getUrl({ maxWidth: 400 }) : defaultImage}
         alt={place.name || ''}
         onError={(e) => {
           (e.target as HTMLImageElement).src = defaultImage;
