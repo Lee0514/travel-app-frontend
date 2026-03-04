@@ -8,31 +8,31 @@ import { FavoriteItem, Collection } from '../../types/collection';
 // Mock data for fallback
 
 const mockCollections: Collection[] = [
-  {
-    id: 'switzerland',
-    name: '瑞士',
-    items: [
-      { id: 'lucerne', name: '琉森' },
-      { id: 'zermatt', name: '策馬特' },
-      { id: 'bern', name: '伯恩' }
-    ]
-  },
-  {
-    id: 'paris',
-    name: '巴黎',
-    items: [
-      { id: 'eiffel', name: '艾菲爾鐵塔' },
-      { id: 'louvre', name: '羅浮宮' }
-    ]
-  },
-  {
-    id: 'tokyo',
-    name: '東京',
-    items: [
-      { id: 'shibuya', name: '澀谷' },
-      { id: 'skytree', name: '晴空塔' }
-    ]
-  }
+  // {
+  //   id: 'switzerland',
+  //   name: '瑞士',
+  //   items: [
+  //     { id: 'lucerne', name: '琉森' },
+  //     { id: 'zermatt', name: '策馬特' },
+  //     { id: 'bern', name: '伯恩' }
+  //   ]
+  // },
+  // {
+  //   id: 'paris',
+  //   name: '巴黎',
+  //   items: [
+  //     { id: 'eiffel', name: '艾菲爾鐵塔' },
+  //     { id: 'louvre', name: '羅浮宮' }
+  //   ]
+  // },
+  // {
+  //   id: 'tokyo',
+  //   name: '東京',
+  //   items: [
+  //     { id: 'shibuya', name: '澀谷' },
+  //     { id: 'skytree', name: '晴空塔' }
+  //   ]
+  // }
 ];
 
 const LOCAL_STORAGE_KEY = 'collections';
